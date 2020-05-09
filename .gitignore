@@ -1,6 +1,6 @@
 .idea/*
-!.idea/runConfigurations
-!.idea/dictionaries
+!.idea/runConfigurations/*
+!.idea/dictionaries/*
 
 
 *.iml

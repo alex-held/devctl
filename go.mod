@@ -8,4 +8,3 @@ require (
 	github.com/thatisuday/commando v1.0.4
 	gopkg.in/yaml.v2 v2.2.8
 )
-//	github.com/Masterminds/semver v1.5.0
