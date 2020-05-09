@@ -1,0 +1,14 @@
+# .kodiak.toml
+version = 1
+
+[merge]
+merge.automerge_label = "🚀 merge it!"
+blacklist_labels = ["wip"]
+method = "rebase"
+
+[merge.message]
+title = "github_default"
+body = "github_default"
+include_pr_number = true
+body_type = "markdown"
+strip_html_comments = false
