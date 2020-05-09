@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	api "github.com/alex-held/io.alexheld.cli.java-home/api/config"
+	"github.com/thatisuday/commando"
 	"os"
 	"path"
 )
-
-import "github.com/thatisuday/commando"
 
 func main() {
 
@@ -30,7 +30,7 @@ func main() {
 
 			sdk := args["sdk"].Value
 
-			var directory string
+			//  var directory string
 			baseDir := ".dev-env"
 			homeDir, homeDirError := os.UserHomeDir()
 
@@ -41,21 +41,38 @@ func main() {
 
 			sdkDir := path.Join(homeDir, baseDir, "sdk")
 			fmt.Printf("Resolved dev-env sdk root directory %v", sdkDir)
+			fmt.Println()
 
-			switch sdk {
-			case "java":
-				directory = "jdk"
-			case "javafx":
-				directory = "javafx"
-			default:
-				fmt.Errorf("%v is not a valid sdk", sdk)
+			/*     switch sdk {
+			       case "java":
+			           directory = "jdk"
+			       case "javafx":
+			           directory = "javafx"
+			       default:
+			           fmt.Errorf("%v is not a valid sdk", sdk)
+			           os.Exit(1)
+			       }*/
+
+			config, err := api.LoadConfig()
+
+			if err != nil {
 				os.Exit(1)
 			}
 
-			fmt.Printf("sdk = %v", sdk)
-			fmt.Printf("directory = %v", directory)
+			if val, ok := config.Contexts[sdk]; ok {
+				fmt.Printf("\nPath=%v\n", val.Path)
+				os.Exit(0)
+			} else {
+				fmt.Errorf("No sdk context configured for sdk '%v'! ", sdk)
+				os.Exit(1)
+			}
+
+			/*   fmt.Printf("sdk = %v", sdk)
+			     fmt.Printf("directory = %v", directory)*/
 
 		})
+
+	commando.Parse(nil)
 
 	//  examplePtr := flag.String("example", "defaultValue", " Help text.")
 	textPtr := flag.String("text", "", "Text to parse (Required)")
