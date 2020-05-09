@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="api" type="GoTestRunConfiguration" factoryName="Go Test" show_console_on_std_err="true" show_console_on_std_out="true">
+    <module name="java-home" />
+    <working_directory value="$PROJECT_DIR$/" />
+    <go_parameters value="-i" />
+    <framework value="gotest" />
+    <kind value="DIRECTORY" />
+    <package value="$PROJECT_DIR$/api/" />
+    <directory value="$PROJECT_DIR$/api" />
+    <filePath value="$PROJECT_DIR$/" />
+    <method v="2" />
+  </configuration>
+</component>

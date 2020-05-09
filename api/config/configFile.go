@@ -1,7 +1,9 @@
 package api
 
 import (
+	"fmt"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
 )
 
 type (
@@ -92,4 +94,24 @@ func readYaml(yml string) ConfigFile {
 	}
 
 	return config
+}
+
+func LoadConfig() (*Config, error) {
+	configPath := "/Users/dev/.dev-env/config.yaml"
+	fmt.Printf("Loading Configuration from %v", configPath)
+
+	yamlBytes, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		fmt.Errorf("Error reading Configuration File '%v'!\n\n%v", configPath, err.Error())
+		return nil, err
+	}
+
+	yaml := string(yamlBytes)
+	config, parseError := parseYamlFromConfigFile(yaml)
+
+	if parseError != nil {
+		fmt.Errorf("Error parsing yaml into Config!\n\n%v\n\nError:\n%v", yaml, err.Error())
+		return nil, err
+	}
+	return config, nil
 }
