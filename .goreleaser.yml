@@ -1,23 +1,28 @@
 # Make sure to check the documentation at http://goreleaser.com
+
 project_name: dev-env
+
 env:
   - GO111MODULE=on
-#  - GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-
-env_files:
-  github_token: ~/.dotfiles/git/GITHUB_TOKEN
 
 before:
   hooks:
     - go mod download
-    - go generate .
 
 builds:
-- env:
-  - CGO_ENABLED=0
-
+  - env:
+    - CGO_ENABLED=0
+    - GO111MODULE=on
+  - binary: '{{ .ProjectName }}'
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+        - amd64
+        -
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 snapshot:
   name_template: "{{ .Tag }}-next"
 
@@ -30,17 +35,3 @@ changelog:
       - '^test:'
       - Merge pull request
       - Merge branch
-
-
-
-archives:
-  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-    replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
-    format_overrides:
-      - goos: windows
-        format: zip
