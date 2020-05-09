@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	api "github.com/alex-held/io.alexheld.cli.java-home/api/config"
+	api "github.com/alex-held/dev-env/api/config"
 	"github.com/thatisuday/commando"
 	"os"
 	"path"
