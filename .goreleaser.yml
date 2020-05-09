@@ -1,0 +1,35 @@
+# Make sure to check the documentation at http://goreleaser.com
+env:
+  - GO111MODULE=on
+before:
+  hooks:
+    - go mod download
+
+builds:
+- env:
+  - CGO_ENABLED=0
+  - GITHUB_TOKEN=${{ secrets.GH_PAT }}
+
+archives:
+- replacements:
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+    386: i386
+    amd64: x86_64
+
+#checksum:
+#  name_template: 'checksums.txt'
+
+#snapshot:
+#  name_template: "{{ .Tag }}-next"
+
+changelog:
+  skip: false
+  sort: asc
+  filters:
+    # commit messages matching the regexp listed here will be removed from
+    exclude:
+      - '^docs:'
+      - '^test'
+      - typo
