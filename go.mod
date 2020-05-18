@@ -3,7 +3,11 @@ module github.com/alex-held/dev-env
 go 1.14
 
 require (
-	github.com/blang/semver v2.2.0+incompatible
-	github.com/thatisuday/commando v1.0.4
-	gopkg.in/yaml.v2 v2.2.8
+	github.com/ghodss/yaml v1.0.0
+	github.com/olekukonko/tablewriter v0.0.4
+	github.com/spf13/afero v1.2.2
+	github.com/spf13/cobra v1.0.0
+	github.com/stretchr/testify v1.5.1
+	golang.org/x/text v0.3.2 // indirect
+	gopkg.in/yaml.v2 v2.2.4
 )
