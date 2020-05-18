@@ -13,16 +13,16 @@ type dotnet struct {
 	Versions map[string]Installable
 }
 
-func NewDotnet() dotnet {
+func NewDotnet() *dotnet {
 	sdk := dotnet{}
 	sdk.Versions["3.2.102"] = &Installation{
 		Version: "3.2.102",
 		Commands: []string{
-			"curl https://download.visualstudio.microsoft.com/download/pr/1016a722-2794-4381-88b8-29bf382901be/ea17a73205f9a7d33c2a4e38544935ba/dotnet-sdk-3.1.202-osx-x64.pkg >> /Users/dev/.dev-env/installers/dotnet-sdk-3.1.202-osx-x64.pkg",
-			"sudo installer -verbose -pkg /Users/dev/.dev-env/installers/dotnet-sdk-3.1.202-osx-x64.pkg -target /Users/dev/.dev-env/sdk/dotnet/",
+			"curl https://download.visualstudio.microsoft.com/download/pr/1016a722-2794-4381-88b8-29bf382901be/ea17a73205f9a7d33c2a4e38544935ba/dotnet-sdk-3.1.202-osx-x64.pkg >> /Users/dev/.dev-env/installers/dotnet-sdk-3.1.202-osx-x64.pkg", //nolint:lll
+			"sudo installer -verbose -pkg /Users/dev/.dev-env/installers/dotnet-sdk-3.1.202-osx-x64.pkg -target /Users/dev/.dev-env/sdk/dotnet/",                                                                                                 //nolint:lll
 		},
 	}
-	return sdk
+	return &sdk
 }
 
 func GetUserHome() string {

@@ -210,6 +210,15 @@ func (sm *StringMap) SortByKeys() []string {
 	return keys
 }
 
+func ReplaceVariablesIfAny(s string, variables map[string]string) string {
+	for key, value := range variables {
+		if ContainsTemplate(s) {
+			s = strings.ReplaceAll(s, key, value)
+		}
+	}
+	return s
+}
+
 func (m *Manifest) ResolveVariables() StringMap {
 	variables := m.populateVariables()
 
@@ -236,6 +245,33 @@ func (m *Manifest) ResolveVariables() StringMap {
 
 func (m *Manifest) VariableMap() map[string]string {
 	return m.Variables.ToMap()
+}
+
+func (m *Manifest) ResolveLinks() []Link {
+	variables := m.ResolveVariables()
+	var result []Link
+
+	for _, link := range m.Links {
+		resolvedSource := ReplaceVariablesIfAny(link.Source, variables)
+		resolvedTarget := ReplaceVariablesIfAny(link.Target, variables)
+		result = append(result, Link{
+			Source: resolvedSource,
+			Target: resolvedTarget,
+		})
+	}
+
+	return result
+}
+
+func (m *Manifest) ResolveCommands() []string {
+	variables := m.ResolveVariables()
+	var result []string
+
+	for _, command := range m.Install.Commands {
+		resolvedCommand := ReplaceVariablesIfAny(command, variables)
+		result = append(result, resolvedCommand)
+	}
+	return result
 }
 
 type Install struct {

@@ -1,6 +1,6 @@
 {
-  "sdkVersion": "3.2.202",
-  "sdkName": "dotnet",
+  "version": "3.2.202",
+  "sdk": "dotnet",
   "variables": {
     "url": "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz",
     "install-root": "[[_sdks]]/[[sdk]]/[[version]]",
@@ -12,11 +12,26 @@
       "curl [[url]] | tar -C [[install-root]] -x"
     ]
   },
-  "links": {
-    "[[install-root]]/sdk/[[version]]": "[[link-root]]/sdk/[[version]]",
-    "[[install-root]]/host/fxr": "[[link-root]]/host/fxr",
-    "[[install-root]]/shared/Microsoft.NETCore.App": "[[link-root]]/shared/Microsoft.NETCore.App/[[version]]",
-    "[[install-root]]/shared/Microsoft.AspNetCore.All": "[[link-root]]/shared/Microsoft.AspNetCore.All/[[version]]",
-    "[[install-root]]/shared/Microsoft.AspNetCore.App": "[[link-root]]/shared/Microsoft.AspNetCore.App/[[version]]"
-  }
+  "links": [
+    {
+      "source": "[[install-root]]/host/fxr",
+      "target": "[[link-root]]/host/fxr"
+    },
+    {
+      "source": "[[install-root]]/sdk/[[version]]",
+      "target": "[[link-root]]/sdk/[[version]]"
+    },
+    {
+      "source": "[[install-root]]/shared/Microsoft.NETCore.App",
+      "target": "[[link-root]]/shared/Microsoft.NETCore.App/[[version]]"
+    },
+    {
+      "source": "[[install-root]]/shared/Microsoft.AspNetCore.All",
+      "target": "[[link-root]]/shared/Microsoft.AspNetCore.All/[[version]]"
+    },
+    {
+      "source": "[[install-root]]/shared/Microsoft.AspNetCore.App",
+      "target": "[[link-root]]/shared/Microsoft.AspNetCore.App/[[version]]"
+    }
+  ]
 }
