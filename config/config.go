@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/spf13/afero"
 	"sort"
 )
@@ -97,9 +96,7 @@ func (config *Config) ListMatchingSdks(matcher func(sdk SDK) bool) []SDK {
 	for _, sdk := range config.Sdks {
 		if matcher(sdk) {
 			result = append(result, sdk)
-			fmt.Printf("matched sdk %#+v", sdk)
 		}
-		fmt.Printf("didnt match sdk %#+v", sdk.Name)
 	}
 	return result
 }

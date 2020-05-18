@@ -17,8 +17,8 @@ type StringSliceStringMap map[string]interface{}
 type StringMap map[string]string
 
 type Manifest struct {
-	Version   string               `json:"sdkVersion"`
-	SDK       string               `json:"sdkName"`
+	Version   string               `json:"version"`
+	SDK       string               `json:"sdk"`
 	Variables StringSliceStringMap `json:"variables"`
 	Install   Install              `json:"install"`
 	Links     []Link               `json:"links"`

@@ -38,8 +38,8 @@ func TestReadConfigFromFile(t *testing.T) {
 	sdk := config.Sdks[0]
 
 	a.Equal(sdk.Name, "java")
-	a.Equal(sdk.Name, "1.8")
-	a.Equal(sdk.Name, "/some/path")
+	a.Equal(sdk.Version, "1.8")
+	a.Equal(sdk.Path, "/some/path")
 }
 
 func TestWriteFile(t *testing.T) {
@@ -65,7 +65,7 @@ func TestWriteFile(t *testing.T) {
 func TestNewConfig(t *testing.T) {
 	a, fs := setup(t, "")
 	config := NewConfig(fs, filepath)
-	a.Empty(t, config.Sdks)
+	a.Empty(config.Sdks)
 }
 
 func TestAddSDKAddsASDK(t *testing.T) {
@@ -85,15 +85,13 @@ func TestAddSDKAddsASDK(t *testing.T) {
 }
 
 func TestJConfig_ListMatchingSdks(t *testing.T) {
-	a, fs := setup(t, "")
+	a, fs := setup(t, "{}")
 	config := NewConfig(fs, "config.json")
-	config.Sdks = append(config.Sdks, jdk)
-	config.Sdks = append(config.Sdks, SDK{
+	config.Sdks = append(config.Sdks, jdk, SDK{
 		Name:    "dotnet",
 		Version: "3.1.100",
 		Path:    "dotnet-3.1.100",
-	})
-	config.Sdks = append(config.Sdks, SDK{
+	}, SDK{
 		Name:    "dotnet",
 		Version: "2.1.0",
 		Path:    "dotnet-2.1.0",
@@ -109,19 +107,17 @@ func TestJConfig_ListMatchingSdks(t *testing.T) {
 func TestJConfig_ListSdks(t *testing.T) {
 	a, fs := setup(t, "")
 	config := NewConfig(fs, "config.json")
-	config.Sdks = append(config.Sdks, jdk)
-	config.Sdks = append(config.Sdks, SDK{
+	config.Sdks = append(config.Sdks, jdk, SDK{
 		Name:    "dotnet",
 		Version: "3.1.100",
 		Path:    "dotnet-3.1.100",
-	})
-	config.Sdks = append(config.Sdks, SDK{
+	}, SDK{
 		Name:    "dotnet",
 		Version: "2.1.0",
 		Path:    "dotnet-2.1.0",
 	})
 
 	result := config.ListSdks()
-
-	a.Len(result, 1)
+	length := len(result)
+	a.Equal(length, 3)
 }

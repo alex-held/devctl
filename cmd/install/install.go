@@ -43,7 +43,7 @@ func (provider *SDKProvider) GetLatestVersion(sdk string) string {
 }
 
 func (provider *SDKProvider) Install(sdk string, version string) error {
-	installPath := fmt.Sprintf("sdk/%s-%s", sdk, version)
+	installPath := fmt.Sprintf("%s-%s", sdk, version)
 	provider.Config.AddSDK(sdk, version, installPath)
 	return nil
 }

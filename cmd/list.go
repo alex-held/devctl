@@ -17,7 +17,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/alex-held/dev-env/config"
+	. "github.com/alex-held/dev-env/config"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"strings"
@@ -39,13 +39,13 @@ to quickly create a Cobra application.`,
 	},
 }
 
-func readOrCreateConfig() *config.Config {
+func readOrCreateConfig() *Config {
 	fs := afero.NewOsFs()
 	filepath := "/Users/dev/.dev-env/config.json"
 	printError := func(e error) {
 		_ = fmt.Errorf("Could not read config file from %s\n%s", filepath, e.Error())
 	}
-	ensureNoError := func(config *config.Config, e error) *config.Config {
+	ensureNoError := func(config *Config, e error) *Config {
 		if e != nil {
 			printError(e)
 			return nil
@@ -59,27 +59,27 @@ func readOrCreateConfig() *config.Config {
 		return nil
 	}
 	if exists {
-		config, err := config.ReadConfigFromFile(fs, filepath)
+		config, err := ReadConfigFromFile(fs, filepath)
 		return ensureNoError(config, err)
 	}
 
-	config := config.NewConfig(fs, filepath)
+	config := NewConfig(fs, filepath)
 	err = config.Save()
 	return ensureNoError(config, err)
 }
 
-func executeList(config config.Config, args []string) []config.SDK {
+func executeList(cfg Config, args []string) []SDK {
 	if len(args) == 0 {
-		result := config.ListSdks()
+		result := cfg.ListSdks()
 		prettyPrintSdkTable(result)
 		return result
 	}
 
-	result := []config.SDK{}
+	var result []SDK
 
 	for _, arg := range args {
 
-		for _, sdk := range config.ListMatchingSdks(func(sdk config.SDK) bool {
+		for _, sdk := range cfg.ListMatchingSdks(func(sdk SDK) bool {
 			return sdk.Name == arg
 		}) {
 			result = append(result, sdk)
@@ -91,11 +91,11 @@ func executeList(config config.Config, args []string) []config.SDK {
 
 }
 
-func prettyPrintSdkTable(sdks []config.SDK) {
+func prettyPrintSdkTable(sdks []SDK) {
 	println(formatSdkTable(sdks))
 }
 
-func formatSdkTable(sdks []config.SDK) string {
+func formatSdkTable(sdks []SDK) string {
 	sb := strings.Builder{}
 	sb.WriteString(fmt.Sprintf("\n|%10s|%10s|%20s|\n", "sdk", "version", "path"))
 	for _, sdk := range sdks {
