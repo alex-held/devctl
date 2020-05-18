@@ -2,11 +2,11 @@
   <configuration default="false" name="current java" type="GoApplicationRunConfiguration" factoryName="Go Application" show_console_on_std_err="true" show_console_on_std_out="true">
     <module name="java-home" />
     <working_directory value="$PROJECT_DIR$/" />
-    <kind value="DIRECTORY" />
+    <parameters value="current java" />
+    <kind value="PACKAGE" />
     <filePath value="$PROJECT_DIR$/main.go" />
-    <package value="github.com/alex-held/io.alexheld.cli.java-home" />
+    <package value="github.com/alex-held/dev-env" />
     <directory value="$PROJECT_DIR$/" />
-    <option name="run" value="false" />
     <method v="2" />
   </configuration>
 </component>
