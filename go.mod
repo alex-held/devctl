@@ -3,6 +3,7 @@ module github.com/alex-held/dev-env
 go 1.14
 
 require (
+	github.com/disiqueira/gotree v1.0.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/spf13/afero v1.2.2
