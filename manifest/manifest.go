@@ -4,82 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/alex-held/dev-env/cmd/install"
-	"github.com/olekukonko/tablewriter"
+	"github.com/alex-held/dev-env/config"
 	"github.com/spf13/afero"
 	"gopkg.in/yaml.v2"
-	path2 "path"
+	"os"
+	"os/exec"
+	. "path"
 	"sort"
 	"strings"
 )
-
-type StringSliceStringMap map[string]interface{}
-type StringMap map[string]string
-
-type Manifest struct {
-	Version   string               `json:"version"`
-	SDK       string               `json:"sdk"`
-	Variables StringSliceStringMap `json:"variables"`
-	Install   Install              `json:"install"`
-	Links     []Link               `json:"links"`
-}
-
-type Link struct {
-	Source string `json:"source"`
-	Target string `json:"target"`
-}
-
-// Formats the Manifest into a colorful table representation
-func (m *Manifest) Format() string {
-	variables := m.ResolveVariables()
-	tableString := &strings.Builder{}
-
-	table := tablewriter.NewWriter(tableString)
-	table.SetHeader([]string{"Kind", "Key", "Value"})
-
-	table.SetHeaderColor(
-		tablewriter.Colors{tablewriter.Normal, tablewriter.BgHiBlackColor},
-		tablewriter.Colors{tablewriter.Bold, tablewriter.BgRedColor},
-		tablewriter.Colors{tablewriter.Bold, tablewriter.BgHiGreenColor},
-	)
-
-	table.SetColumnColor(
-		tablewriter.Colors{tablewriter.Normal, tablewriter.BgWhiteColor},
-		tablewriter.Colors{tablewriter.Bold, tablewriter.FgRedColor},
-		tablewriter.Colors{tablewriter.Bold, tablewriter.FgGreenColor},
-	)
-
-	table.SetAutoFormatHeaders(true)
-
-	table.SetHeaderLine(true)
-	table.SetAutoWrapText(true)
-	table.SetBorder(false)
-	table.SetCenterSeparator("+")
-	table.SetColumnSeparator("|")
-	table.SetRowSeparator("-")
-
-	table.SetTablePadding("\t")
-	table.SetAutoMergeCells(true)
-
-	var vKeys []string
-	for key := range variables {
-		vKeys = append(vKeys, key)
-	}
-	sort.Strings(vKeys)
-
-	for _, key := range vKeys {
-		table.Append([]string{"Variable", key, variables[key]})
-	}
-	table.Append([]string{"", "", ""})
-
-	for _, val := range m.Links {
-
-		table.Append([]string{"Link", val.Source, val.Target})
-	}
-
-	table.Render()
-	return tableString.String()
-}
 
 func (m *StringSliceStringMap) ToMap() StringMap {
 	var result = map[string]string{}
@@ -100,11 +33,21 @@ func (m *StringSliceStringMap) ToMap() StringMap {
 
 func getPredefinedVariables() StringMap {
 	return StringMap{
-		"[[home]]":       install.GetUserHome(),
-		"[[_home]]":      install.GetDevEnvHome(),
-		"[[_sdks]]":      install.GetSdks(),
-		"[[_installers]": install.GetInstallers(),
-		"[[_manifests]]": install.GetManifests(),
+		"[[home]]":        config.GetUserHome(),
+		"[[_home]]":       config.GetDevEnvHome(),
+		"[[_sdks]]":       config.GetSdks(),
+		"[[_installers]]": config.GetInstallers(),
+		"[[_manifests]]":  config.GetManifests(),
+	}
+}
+
+func getPredefinedVariable() []Variable {
+	return []Variable{
+		{"[[home]]", config.GetUserHome()},
+		{"[[_home]]", config.GetDevEnvHome()},
+		{"[[_sdks]]", config.GetSdks()},
+		{"[[_installers]]", config.GetInstallers()},
+		{"[[_manifests]]", config.GetManifests()},
 	}
 }
 
@@ -210,6 +153,14 @@ func (sm *StringMap) SortByKeys() []string {
 	return keys
 }
 
+func ReplaceVariableIfAny(s string, variables Variables) string {
+	for _, variable := range variables {
+		if ContainsTemplate(s) {
+			s = strings.ReplaceAll(s, variable.Key, variable.Value)
+		}
+	}
+	return s
+}
 func ReplaceVariablesIfAny(s string, variables map[string]string) string {
 	for key, value := range variables {
 		if ContainsTemplate(s) {
@@ -263,19 +214,110 @@ func (m *Manifest) ResolveLinks() []Link {
 	return result
 }
 
-func (m *Manifest) ResolveCommands() []string {
-	variables := m.ResolveVariables()
-	var result []string
+func (m Manifest) ResolveInstructions() Instructions {
+	variables := m.ResolveVariable()
+	var result Instructions
 
-	for _, command := range m.Install.Commands {
-		resolvedCommand := ReplaceVariablesIfAny(command, variables)
-		result = append(result, resolvedCommand)
+	for _, instr := range m.Instructions {
+		re := instr.Resolve(variables)
+		result = append(result, re)
 	}
+
 	return result
 }
 
-type Install struct {
-	Commands []string `json:"commands"`
+func (m Manifest) ResolveCommands() []Instruction {
+	variables := m.ResolveVariables()
+	var result []Instruction
+
+	for _, command := range m.Instructions {
+
+		switch c := command.(type) {
+		case DevEnvCommand:
+
+			devEnvCommand := DevEnvCommand{
+				Command: c.Command,
+				Args:    []string{},
+			}
+
+			for _, arg := range c.Args {
+				resolvedArguments := ReplaceVariablesIfAny(arg, variables)
+				devEnvCommand.Args = append(devEnvCommand.Args, resolvedArguments)
+			}
+
+			result = append(result, &devEnvCommand)
+
+		case Pipe:
+
+		}
+
+	}
+
+	return result
+}
+
+func (pipe Pipe) Format() string {
+	sb := strings.Builder{}
+
+	for _, command := range pipe.Commands {
+		formatted := command.Format()
+		sb.WriteString(formatted)
+	}
+
+	return sb.String()
+}
+
+func (cmd DevEnvCommand) Format() string {
+	command := cmd.Command
+	for _, arg := range cmd.Args {
+		command += fmt.Sprintf(" %s", arg)
+	}
+	return command
+}
+
+func (cmd DevEnvCommand) Execute() error {
+	command := exec.Command(cmd.Command, cmd.Args...)
+	formatted := cmd.Format()
+	fmt.Printf("Executing solo command: '%s'", formatted)
+	err := command.Start()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (pipe Pipe) Execute() error {
+	cmd1 := exec.Command(pipe.Commands[0].Command, pipe.Commands[0].Args...)
+
+	orderedCommands := []*exec.Cmd{cmd1}
+	for i, command := range pipe.Commands {
+
+		if i == 0 {
+			continue
+		}
+
+		cNext := exec.Command(command.Command, command.Args...)
+		cNext.Stdin, _ = cmd1.StdoutPipe()
+		cNext.Stdout = os.Stdout
+		orderedCommands = append(orderedCommands, cNext)
+	}
+
+	fmt.Printf("Executing pipe '%#v'", pipe)
+
+	for i, command := range orderedCommands {
+		formatted := pipe.Commands[i].Format()
+		fmt.Printf("[%d/%d] Executing pipe command '%#v'", i, len(orderedCommands), formatted)
+
+		err := command.Start()
+
+		if err != nil {
+			fmt.Printf("Error: %s\n", err.Error())
+		}
+	}
+
+	return nil
 }
 
 func readJson(text string, manifest *Manifest) (*Manifest, error) {
@@ -298,11 +340,43 @@ func readYaml(text string, manifest *Manifest) (*Manifest, error) {
 	return manifest, nil
 }
 
+func (pipe Pipe) Resolve(variables Variables) Instruction {
+	return pipe.resolvePipe(variables)
+}
+
+func (cmd DevEnvCommand) Resolve(variables Variables) Instruction {
+	return cmd.resolveCommand(variables)
+}
+
+func (pipe Pipe) resolvePipe(variables Variables) Pipe {
+	result := Pipe{Commands: []DevEnvCommand{}}
+
+	for _, command := range pipe.Commands {
+		resolvedCommand := command.resolveCommand(variables)
+		result.Commands = append(result.Commands, resolvedCommand)
+	}
+	return result
+}
+
+func (cmd DevEnvCommand) resolveCommand(variables Variables) DevEnvCommand {
+	result := DevEnvCommand{
+		Command: cmd.Command,
+		Args:    []string{},
+	}
+
+	for _, commandArg := range cmd.Args {
+		resolvedArg := ReplaceVariableIfAny(commandArg, variables)
+		result.Args = append(result.Args, resolvedArg)
+	}
+
+	return result
+}
+
 func read(fs afero.Fs, path string) (*Manifest, error) {
-	manifestRootPath := install.GetManifests()
-	manifestPath := path2.Join(manifestRootPath, path)
+	manifestRootPath := config.GetManifests()
+	manifestPath := Join(manifestRootPath, path)
 	file, err := afero.ReadFile(fs, manifestPath)
-	fileExtension := path2.Ext(manifestPath)
+	fileExtension := Ext(manifestPath)
 	manifest := &Manifest{}
 
 	if err != nil {

@@ -2,10 +2,10 @@ package install
 
 import (
 	"fmt"
+	"github.com/alex-held/dev-env/manifest"
 	"github.com/spf13/afero"
 	"io"
 	"net/http"
-	"os"
 	"path"
 )
 
@@ -13,52 +13,8 @@ type dotnet struct {
 	Versions map[string]Installable
 }
 
-func NewDotnet() *dotnet {
-	sdk := dotnet{}
-	sdk.Versions["3.2.102"] = &Installation{
-		Version: "3.2.102",
-		Commands: []string{
-			"curl https://download.visualstudio.microsoft.com/download/pr/1016a722-2794-4381-88b8-29bf382901be/ea17a73205f9a7d33c2a4e38544935ba/dotnet-sdk-3.1.202-osx-x64.pkg >> /Users/dev/.dev-env/installers/dotnet-sdk-3.1.202-osx-x64.pkg", //nolint:lll
-			"sudo installer -verbose -pkg /Users/dev/.dev-env/installers/dotnet-sdk-3.1.202-osx-x64.pkg -target /Users/dev/.dev-env/sdk/dotnet/",                                                                                                 //nolint:lll
-		},
-	}
-	return &sdk
-}
-
-func GetUserHome() string {
-	userHome, err := os.UserHomeDir()
-
-	if err != nil {
-		fmt.Println("Error resolving $HOME\n", err.Error())
-		os.Exit(1)
-	}
-	return userHome
-}
-
-func GetDevEnvHome() string { return path.Join(GetUserHome(), ".dev-env") }
-func GetSdks() string       { return path.Join(GetDevEnvHome(), "sdk") }
-func GetInstallers() string { return path.Join(GetDevEnvHome(), "installers") }
-func GetManifests() string  { return path.Join(GetDevEnvHome(), "manifests") }
-
 type Installable interface {
-	Install(directory string) (string, error)
-}
-
-type Installation struct {
-	Version  string
-	Commands []string
-}
-
-func (installation *Installation) Install(directory string) (string, error) {
-	for _, command := range installation.Commands {
-		println(command)
-	}
-
-	return "", nil
-}
-
-type Artifact struct {
-	Url string
+	Install(m *manifest.Manifest) error
 }
 
 type UnixCommand struct {

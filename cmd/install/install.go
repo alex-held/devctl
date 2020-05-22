@@ -3,8 +3,11 @@ package install
 import (
 	"fmt"
 	"github.com/alex-held/dev-env/config"
+	. "github.com/alex-held/dev-env/manifest"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
+	"os"
+	"os/exec"
 )
 
 // installCmd represents the install command
@@ -42,6 +45,78 @@ func (provider *SDKProvider) GetLatestVersion(sdk string) string {
 	}
 }
 
+func prepareLinkingCommands(m Manifest) []Instruction {
+	var linkingCommands []Instruction
+
+	for _, link := range m.ResolveLinks() {
+		command := DevEnvCommand{
+			Command: "ln",
+			Args:    []string{"-s", link.Source, link.Target},
+		}
+		linkingCommands = append(linkingCommands, command)
+	}
+	return linkingCommands
+}
+
+type CommandExecutor struct {
+	installationCommands []Instruction
+	linkingCommands      []Instruction
+}
+
+func NewCommandExecutor(installationCommands []Instruction, linkingCommands []Instruction) *CommandExecutor {
+	return &CommandExecutor{
+		installationCommands,
+		linkingCommands,
+	}
+}
+
+func (executor *CommandExecutor) Execute() error {
+	commands := executor.GetCommands()
+
+	for _, command := range commands {
+		switch c := command.(type) {
+		case DevEnvCommand:
+
+			fmt.Println("Executing command: " + c.Format())
+
+			cmd := exec.Command(c.Command, c.Args...)
+			output, err := cmd.Output()
+			if err != nil {
+				fmt.Println("Error while running command. Error:'" + err.Error())
+				os.Exit(1)
+			}
+
+			println(output)
+		}
+
+		/*
+		   if err := cmd.Run(); err != nil {
+		       fmt.Println("Error while running command. Error:'" + err.Error())
+		       return err
+		   }*/
+	}
+	os.Exit(0)
+	return nil
+}
+
+func (executor *CommandExecutor) GetCommands() []Instruction {
+	linkingCommands := executor.linkingCommands
+	installationCommands := executor.installationCommands
+	commands := append(installationCommands, linkingCommands...)
+	return commands
+}
+
+//Install
+func Install(manifest Manifest) error {
+	executor := NewCommandExecutor(manifest.ResolveCommands(), prepareLinkingCommands(manifest))
+	err := executor.Execute()
+	if err != nil {
+		return err
+	}
+	fmt.Println("Successfully installed " + manifest.SDK)
+	return nil
+}
+
 func (provider *SDKProvider) Install(sdk string, version string) error {
 	installPath := fmt.Sprintf("%s-%s", sdk, version)
 	provider.Config.AddSDK(sdk, version, installPath)
@@ -49,12 +124,12 @@ func (provider *SDKProvider) Install(sdk string, version string) error {
 }
 
 func executeInstall(fs afero.Fs, args []string) {
-	config, err := config.ReadConfigFromFile(fs, "config.json")
-	provider := SDKProvider{Config: config}
-
-	sdk := args[0]
-	version := provider.GetLatestVersion(sdk)
-	err = provider.Install(sdk, version)
+	cfg, err := config.ReadConfigFromFile(fs, "config.json")
+	_ = config.GetManifests()
+	if cfg == nil {
+		os.Exit(1)
+		return
+	}
 
 	if err != nil {
 		fmt.Printf("ERROR: %s", err.Error())
