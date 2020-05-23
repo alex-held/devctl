@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/spf13/afero"
 	"sort"
 )
@@ -38,13 +39,13 @@ func NewConfig(fs afero.Fs, path string) *Config {
 	return config
 }
 
-func (config *Config) AddSDK(name string, version string, path string) *Config {
+func (config *Config) AddSDK(name string, version string) *Config {
 	config.Sdks = append(config.Sdks, SDK{
 		Name:    name,
 		Version: version,
-		Path:    path,
+		Path:    fmt.Sprintf("%s-%s", name, version),
 	})
-	config.Save()
+	_ = config.Save()
 	return config
 }
 

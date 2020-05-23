@@ -3,7 +3,7 @@ package install
 import (
 	"fmt"
 	. "github.com/alex-held/dev-env/config"
-	"github.com/alex-held/dev-env/manifest"
+	. "github.com/alex-held/dev-env/manifest"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	"os/exec"
@@ -49,36 +49,33 @@ func TestCommandExecutor_Execute(t *testing.T) {
 	}
 }
 
-func GetTestManifest() *manifest.Manifest {
-	m := manifest.Manifest{
+func GetTestManifest() *Manifest {
+	m := Manifest{
 		Version: "3.1.100",
 		SDK:     "dotnet",
-		Variables: manifest.StringSliceStringMap{
-			"url":          "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz",
-			"install-root": "[[_sdks]]/[[sdk]]/[[version]]",
-			"link-root":    "/usr/local/share/dotnet",
+		Variables: Variables{
+			{Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
+			{Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
+			{Key: "link-root", Value: "/usr/local/share/dotnet"},
 		},
-		Install: manifest.Installer{
-			Instructions: map[int]manifest.Instruction{
-				0: manifest.DevEnvCommand{
-					Command: "",
-					Args:    nil,
-				},
-				1: manifest.Pipe{
-					Commands: []manifest.DevEnvCommand{
-						{
-							Command: "curl",
-							Args:    []string{"[[url]]"},
-						},
-						{
-							Command: "tar",
-							Args:    []string{"-C", "[[install-root]]", "-x"},
-						},
+		Instructions: Instructions{
+			Step{
+				Command: &DevEnvCommand{Command: "mkdir", Args: []string{"-p", "[[install-root]]"}},
+			},
+			Step{
+				Pipe: []DevEnvCommand{
+					{
+						Command: "curl",
+						Args:    []string{"[[url]]"},
+					},
+					{
+						Command: "tar",
+						Args:    []string{"-C", "[[install-root]]", "-x"},
 					},
 				},
 			},
 		},
-		Links: []manifest.Link{
+		Links: []Link{
 			{Source: "[[install-root]]/host/fxr", Target: "[[link-root]]/host/fxr"},
 			{Source: "[[install-root]]/sdk/[[version]]", Target: "[[link-root]]/sdk/[[version]]"},
 			{Source: "[[install-root]]/shared/Microsoft.NETCore.App", Target: "[[link-root]]/shared/Microsoft.NETCore.App/[[version]]"},
@@ -87,7 +84,7 @@ func GetTestManifest() *manifest.Manifest {
 		},
 	}
 
-	manifest.PrintYaml(m)
-	manifest.PrintJson(m)
+	PrintYaml(m)
+	PrintJson(m)
 	return &m
 }

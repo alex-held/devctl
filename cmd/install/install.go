@@ -45,8 +45,8 @@ func (provider *SDKProvider) GetLatestVersion(sdk string) string {
 	}
 }
 
-func prepareLinkingCommands(m Manifest) []Instruction {
-	var linkingCommands []Instruction
+func prepareLinkingCommands(m Manifest) []Instructing {
+	var linkingCommands []Instructing
 
 	for _, link := range m.ResolveLinks() {
 		command := DevEnvCommand{
@@ -59,11 +59,11 @@ func prepareLinkingCommands(m Manifest) []Instruction {
 }
 
 type CommandExecutor struct {
-	installationCommands []Instruction
-	linkingCommands      []Instruction
+	installationCommands []Instructing
+	linkingCommands      []Instructing
 }
 
-func NewCommandExecutor(installationCommands []Instruction, linkingCommands []Instruction) *CommandExecutor {
+func NewCommandExecutor(installationCommands []Instructing, linkingCommands []Instructing) *CommandExecutor {
 	return &CommandExecutor{
 		installationCommands,
 		linkingCommands,
@@ -99,7 +99,7 @@ func (executor *CommandExecutor) Execute() error {
 	return nil
 }
 
-func (executor *CommandExecutor) GetCommands() []Instruction {
+func (executor *CommandExecutor) GetCommands() []Instructing {
 	linkingCommands := executor.linkingCommands
 	installationCommands := executor.installationCommands
 	commands := append(installationCommands, linkingCommands...)
@@ -108,18 +108,12 @@ func (executor *CommandExecutor) GetCommands() []Instruction {
 
 //Install
 func Install(manifest Manifest) error {
-	executor := NewCommandExecutor(manifest.ResolveCommands(), prepareLinkingCommands(manifest))
+	executor := NewCommandExecutor(manifest.ResolveInstructions(), prepareLinkingCommands(manifest))
 	err := executor.Execute()
 	if err != nil {
 		return err
 	}
 	fmt.Println("Successfully installed " + manifest.SDK)
-	return nil
-}
-
-func (provider *SDKProvider) Install(sdk string, version string) error {
-	installPath := fmt.Sprintf("%s-%s", sdk, version)
-	provider.Config.AddSDK(sdk, version, installPath)
 	return nil
 }
 
@@ -134,4 +128,6 @@ func executeInstall(fs afero.Fs, args []string) {
 	if err != nil {
 		fmt.Printf("ERROR: %s", err.Error())
 	}
+
+	cfg.AddSDK(args[0], args[1])
 }

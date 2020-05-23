@@ -71,9 +71,8 @@ func TestNewConfig(t *testing.T) {
 func TestAddSDKAddsASDK(t *testing.T) {
 	a, fs := setup(t, "")
 	config := NewConfig(fs, filepath)
-	config.AddSDK("java", "1.8", "/some/path")
+	config.AddSDK("java", "1.8")
 
-	a.Contains(config.Sdks, jdk)
 	file, err := afero.ReadFile(fs, filepath)
 	if err != nil {
 		t.Error(err)
@@ -81,7 +80,9 @@ func TestAddSDKAddsASDK(t *testing.T) {
 
 	newConfig := NewConfig(fs, filepath)
 	json.Unmarshal(file, &newConfig)
-	a.Contains(newConfig.Sdks, jdk)
+	a.Equal("java", newConfig.Sdks[0].Name)
+	a.Equal("1.8", newConfig.Sdks[0].Version)
+	a.Equal("java-1.8", newConfig.Sdks[0].Path)
 }
 
 func TestJConfig_ListMatchingSdks(t *testing.T) {
