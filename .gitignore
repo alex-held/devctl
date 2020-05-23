@@ -8,6 +8,8 @@
 
 
 # Binaries for programs and plugins
+main
+dev-env
 *.exe
 *.exe~
 *.dll
@@ -26,4 +28,4 @@ vendor/
 # GoReleaser output
 dist/
 dist/*
-/dist/
+/dist/*
