@@ -1,30 +1,38 @@
 package manifest
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 )
 
 type InstructionType int
 type Variables []Variable
-type Instructions []Instruction
+type Instructions []Step
 
 const (
 	Command InstructionType = iota
 	CommandPipe
 )
 
+func (variables *Variables) ToMap() StringMap {
+	result := StringMap{}
+
+	for _, variable := range *variables {
+		result[variable.Key] = variable.Value
+	}
+	return result
+}
+
 type StringSliceStringMap map[string]interface{}
 type StringMap map[string]string
 
 type Manifest struct {
-	Version      string               `json:"version"`
-	SDK          string               `json:"sdk"`
-	Variables    StringSliceStringMap `json:"variables"`
-	Variable     Variables            `json:"variable"`
-	Install      Installer            `json:"install"`
-	Instructions Instructions         `json:"instructions"`
-	Links        []Link               `json:"links"`
+	Version      string       `json:"version"`
+	SDK          string       `json:"sdk"`
+	Variables    Variables    `json:"variables,omitempty"`
+	Instructions Instructions `json:"instructions,omitempty"`
+	Links        []Link       `json:"links,omitempty"`
 }
 
 func (m *Manifest) ResolveVariable() Variables {
@@ -81,9 +89,9 @@ type Link struct {
 	Target string `json:"target"`
 }
 
-func NewInstaller(commands ...Instruction) *Installer {
+func NewInstaller(commands ...Instructing) *Installer {
 	i := Installer{
-		Instructions: map[int]Instruction{},
+		Instructions: map[int]Instructing{},
 		Commands:     []DevEnvCommand{},
 	}
 	for i2, command := range commands {
@@ -93,26 +101,67 @@ func NewInstaller(commands ...Instruction) *Installer {
 }
 
 type Installer struct {
-	Instructions map[int]Instruction `json:"instructions"`
+	Instructions map[int]Instructing `json:"instructions"`
 	Commands     []DevEnvCommand     `json:"commands"`
+}
+
+type Step struct {
+	Command *DevEnvCommand  `json:"command,omitempty"`
+	Pipe    []DevEnvCommand `json:"pipe,omitempty"`
 }
 
 type DevEnvCommand struct {
 	Command string   `json:"command,omitempty"`
-	Args    []string `json:"args,flow"`
+	Args    []string `json:"args,omitempty"`
 }
 
 type Pipe struct {
-	Commands []DevEnvCommand `json:"commands,inline"`
+	Commands []DevEnvCommand `json:"commands, omitempty"`
 }
 
-type Instruction interface {
+func (step *Step) ToInstruction() Instructing {
+	if step.Pipe != nil {
+		return Pipe{Commands: step.Pipe}
+	}
+	if step.Command != nil {
+		return DevEnvCommand{
+			Command: step.Command.Command,
+			Args:    step.Command.Args,
+		}
+	}
+	return nil
+}
+
+type Instructing interface {
 	Format() string
 	Execute() error
-	Resolve(variables Variables) Instruction
+	Resolve(variables Variables) Instructing
 }
 
 type Variable struct {
-	Key   string
-	Value string
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+func (m *Manifest) MustGetVariable(key string) string {
+	variable, err := m.GetVariable(key)
+	if err != nil {
+		panic(err.Error())
+	}
+	return *variable
+}
+
+func (m *Manifest) GetVariable(key string) (*string, error) {
+	if key == "sdk" {
+		return &m.SDK, nil
+	}
+	if key == "version" {
+		return &m.Version, nil
+	}
+	for _, variable := range m.Variables {
+		if variable.Key == key {
+			return &variable.Value, nil
+		}
+	}
+	return nil, fmt.Errorf("No variable with key '%s' in %+v ", key, m.Variables)
 }

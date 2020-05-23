@@ -118,7 +118,11 @@ func ResolveTemplateValues(val string, resolved map[string]string) map[string]st
 
 func (m *Manifest) populateVariables() StringMap {
 	predefined := getPredefinedVariables()
-	variables := m.Variables.ToMap()
+	variables := StringMap{}
+
+	for _, variable := range m.Variables {
+		variables[variable.Key] = variable.Value
+	}
 
 	for key, value := range variables {
 
@@ -214,47 +218,71 @@ func (m *Manifest) ResolveLinks() []Link {
 	return result
 }
 
-func (m Manifest) ResolveInstructions() Instructions {
+func (m Manifest) ResolveInstructions() []Instructing {
 	variables := m.ResolveVariable()
-	var result Instructions
+	var result []Instructing
 
 	for _, instr := range m.Instructions {
-		re := instr.Resolve(variables)
-		result = append(result, re)
-	}
-
-	return result
-}
-
-func (m Manifest) ResolveCommands() []Instruction {
-	variables := m.ResolveVariables()
-	var result []Instruction
-
-	for _, command := range m.Instructions {
-
-		switch c := command.(type) {
+		instruction := instr.ToInstruction()
+		re := instruction.Resolve(variables)
+		switch resolved := re.(type) {
 		case DevEnvCommand:
-
-			devEnvCommand := DevEnvCommand{
-				Command: c.Command,
-				Args:    []string{},
-			}
-
-			for _, arg := range c.Args {
-				resolvedArguments := ReplaceVariablesIfAny(arg, variables)
-				devEnvCommand.Args = append(devEnvCommand.Args, resolvedArguments)
-			}
-
-			result = append(result, &devEnvCommand)
-
+			result = append(result, resolved)
 		case Pipe:
-
+			result = append(result, resolved)
 		}
-
 	}
 
 	return result
 }
+
+/*
+func (m Manifest) ResolveCommands() []Instructing {
+    variables := m.ResolveVariables()
+    var result []Instructing
+
+    for _, command := range m.Instructions {
+        switch c := command.(type) {
+        case DevEnvCommand:
+
+            devEnvCommand := DevEnvCommand{
+                Command: c.Command,
+                Args:    []string{},
+            }
+
+            for _, arg := range c.Args {
+                resolvedArguments := ReplaceVariablesIfAny(arg, variables)
+                devEnvCommand.Args = append(devEnvCommand.Args, resolvedArguments)
+            }
+
+            result = append(result, &devEnvCommand)
+
+        case Pipe:
+
+        }
+
+    }
+
+    return result
+}
+*/
+/*func (i Step) Format() string {
+    switch i.Type {
+    case Command:
+        command := DevEnvCommand{
+            Command: i.Command,
+            Args:    i.Args,
+        }
+        return command.Format()
+    case CommandPipe:
+        pipe := Pipe{
+            Commands: i.Commands,
+        }
+        return pipe.Format()
+    default:
+        return fmt.Sprintf("%+v", i)
+    }
+}*/
 
 func (pipe Pipe) Format() string {
 	sb := strings.Builder{}
@@ -278,6 +306,25 @@ func (cmd DevEnvCommand) Format() string {
 	}
 	return command
 }
+
+/*
+func (i Step) Execute() error {
+    switch i.Type {
+    case Command:
+        command := DevEnvCommand{
+            Command: i.Command,
+            Args:    i.Args,
+        }
+        return command.Execute()
+    case CommandPipe:
+        pipe := Pipe{
+            Commands: i.Commands,
+        }
+        return pipe.Execute()
+    default:
+        return fmt.Errorf("Invalid instruction type: '%v' ", i.Type)
+    }
+}*/
 
 func (cmd DevEnvCommand) Execute() error {
 	command := exec.Command(cmd.Command, cmd.Args...)
@@ -344,11 +391,11 @@ func readYaml(text string, manifest *Manifest) (*Manifest, error) {
 	return manifest, nil
 }
 
-func (pipe Pipe) Resolve(variables Variables) Instruction {
+func (pipe Pipe) Resolve(variables Variables) Instructing {
 	return pipe.resolvePipe(variables)
 }
 
-func (cmd DevEnvCommand) Resolve(variables Variables) Instruction {
+func (cmd DevEnvCommand) Resolve(variables Variables) Instructing {
 	return cmd.resolveCommand(variables)
 }
 

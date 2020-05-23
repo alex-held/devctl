@@ -30,13 +30,12 @@ func TestResolveVariables(t *testing.T) {
 	manifest := Manifest{
 		Version: "3.1.100",
 		SDK:     "dotnet",
-		Variables: StringSliceStringMap{
-			"url":          "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz",
-			"install-root": "[[_sdks]]/[[sdk]]/[[version]]",
-			"link-root":    "/usr/local/share/dotnet",
+		Variables: Variables{
+			{Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
+			{Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
+			{Key: "link-root", Value: "/usr/local/share/dotnet"},
 		},
-		Install: Installer{},
-		Links:   nil,
+		Links: nil,
 	}
 
 	variables := manifest.ResolveVariables()
@@ -56,18 +55,17 @@ func TestManifest_ResolveCommands(t *testing.T) {
 	manifest := Manifest{
 		Version: "3.1.100",
 		SDK:     "dotnet",
-		Variables: StringSliceStringMap{
-			"url":          url,
-			"install-root": "[[_sdks]]/[[sdk]]/[[version]]",
-			"link-root":    "/usr/local/share/dotnet",
+		Variables: Variables{
+			{Key: "url", Value: url},
+			{Key: "install-root", Value: installRoot},
+			{Key: "link-root", Value: "/usr/local/share/dotnet"},
 		},
 		Instructions: Instructions{
-			DevEnvCommand{
-				Command: "mkdir",
-				Args:    []string{"-p", "[[install-root]]"},
+			Step{
+				Command: &DevEnvCommand{Command: "mkdir", Args: []string{"-p", "[[install-root]]"}},
 			},
-			Pipe{
-				Commands: []DevEnvCommand{
+			Step{
+				Pipe: []DevEnvCommand{
 					{
 						Command: "curl",
 						Args:    []string{"[[url]]"},
@@ -95,13 +93,12 @@ func TestManifest_ResolveLinks(t *testing.T) {
 	manifest := Manifest{
 		Version: "3.1.100",
 		SDK:     "dotnet",
-		Variables: StringSliceStringMap{
-			"url":          "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz",
-			"install-root": "[[_sdks]]/[[sdk]]/[[version]]",
-			"link-root":    "/usr/local/share/dotnet",
+		Variables: Variables{
+			{Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
+			{Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
+			{Key: "link-root", Value: "/usr/local/share/dotnet"},
 		},
-		Install: Installer{},
-		Links:   links,
+		Links: links,
 	}
 
 	resolvedLinks := manifest.ResolveLinks()
@@ -115,6 +112,10 @@ func TestManifest_ResolveLinks(t *testing.T) {
 	println(manifest.Format(Table))
 }
 
+func TestWriteYaml(t *testing.T) {
+	PrintYaml(manifest)
+}
+
 func TestReadYaml(t *testing.T) {
 	a, _ := setup(t)
 	file, _ := ReadFile(NewOsFs(), dotnetYAML)
@@ -124,31 +125,30 @@ func TestReadYaml(t *testing.T) {
 	a.NoError(err)
 	a.Len(manifest.Variables, 3)
 
-	a.Contains(manifest.Variables, "install-root")
-	a.Contains(manifest.Variables, "url")
-	a.Contains(manifest.Variables, "link-root")
-	a.Equal("https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz", manifest.Variables.ToMap()["url"]) //nolint:lll
-	a.Equal("[[_sdks]]/[[sdk]]/[[version]]", manifest.Variables.ToMap()["install-root"])
-	a.Equal("/usr/local/share/dotnet", manifest.Variables.ToMap()["link-root"])
-	a.Equal(Installer{
-		Instructions: map[int]Instruction{
-			0: DevEnvCommand{
-				Command: "mkdir",
-				Args:    []string{"-p", "[[install-root]]"},
-			},
-			1: Pipe{Commands: []DevEnvCommand{
-				{
-					Command: "curl",
-					Args:    []string{"[[url]]"},
-				},
-				{
-					Command: "tar",
-					Args:    []string{"-C", "[[install-root]]", "-x"},
-				},
-			}},
-		},
-	}, manifest.Install)
-	a.ElementsMatch(links, manifest.Links)
+	// Variables
+	a.Equal("[[_sdks]]/[[sdk]]/[[version]]", manifest.MustGetVariable("install-root"))
+	a.Equal("dotnet", manifest.MustGetVariable("sdk"))
+	a.Equal("3.2.202", manifest.MustGetVariable("version"))
+	a.Equal("/usr/local/share/dotnet", manifest.MustGetVariable("link-root"))
+	a.Equal("https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz", manifest.MustGetVariable("url"))
+
+	// Instructions
+	a.Equal(Step{Command: &DevEnvCommand{
+		Command: "mkdir",
+		Args:    []string{"-p", "[[install-root]]"},
+	}}, manifest.Instructions[0])
+
+	a.Equal(Step{Pipe: []DevEnvCommand{
+		{Command: "curl", Args: []string{"[[url]]"}},
+		{Command: "tar", Args: []string{"-C", "[[install-root]]", "-x"}},
+	}}, manifest.Instructions[1])
+
+	// Links
+	a.Equal(Link{Source: "[[install-root]]/host/fxr", Target: "[[link-root]]/host/fxr"}, manifest.Links[0])
+	a.Equal(Link{Source: "[[install-root]]/sdk/[[version]]", Target: "[[link-root]]/sdk/[[version]]"}, manifest.Links[1])
+	a.Equal(Link{Source: "[[install-root]]/shared/Microsoft.NETCore.App", Target: "[[link-root]]/shared/Microsoft.NETCore.App/[[version]]"}, manifest.Links[2])
+	a.Equal(Link{Source: "[[install-root]]/shared/Microsoft.AspNetCore.All", Target: "[[link-root]]/shared/Microsoft.AspNetCore.All/[[version]]"}, manifest.Links[3])
+	a.Equal(Link{Source: "[[install-root]]/shared/Microsoft.AspNetCore.App", Target: "[[link-root]]/shared/Microsoft.AspNetCore.App/[[version]]"}, manifest.Links[4])
 }
 
 func setup(t *testing.T) (*assert.Assertions, Fs) {

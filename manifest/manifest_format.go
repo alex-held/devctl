@@ -104,7 +104,7 @@ func (m *Manifest) formatTables() []tableFormat {
 		for _, variable := range m.ResolveVariable() {
 			table.Append([]string{variable.Key, variable.Value})
 		}
-	}, "Variable", "Value")
+	}, "Variables", "Value")
 
 	links := newTableFormat("Links", func(table *tablewriter.Table) {
 		for _, link := range m.ResolveLinks() {
