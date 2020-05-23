@@ -61,13 +61,13 @@ func TestManifest_ResolveCommands(t *testing.T) {
 			"install-root": "[[_sdks]]/[[sdk]]/[[version]]",
 			"link-root":    "/usr/local/share/dotnet",
 		},
-		Install: Installer{
-			Instructions: map[int]Instruction{
-				0: DevEnvCommand{
-					Command: "mkdir",
-					Args:    []string{"-p", "[[install-root]]"},
-				},
-				1: Pipe{Commands: []DevEnvCommand{
+		Instructions: Instructions{
+			DevEnvCommand{
+				Command: "mkdir",
+				Args:    []string{"-p", "[[install-root]]"},
+			},
+			Pipe{
+				Commands: []DevEnvCommand{
 					{
 						Command: "curl",
 						Args:    []string{"[[url]]"},
@@ -76,15 +76,15 @@ func TestManifest_ResolveCommands(t *testing.T) {
 						Command: "tar",
 						Args:    []string{"-C", "[[install-root]]", "-x"},
 					},
-				}},
+				},
 			},
 		},
 		Links: links,
 	}
 
-	resolvedCommands := manifest.ResolveCommands()
-	a.Equal(fmt.Sprintf("mkdir -p %s", installRoot), resolvedCommands[0])
-	a.Equal(fmt.Sprintf("curl %s | tar -C %s -x", url, installRoot), resolvedCommands[1])
+	resolvedCommands := manifest.ResolveInstructions()
+	a.Equal(fmt.Sprintf("mkdir -p %s", installRoot), resolvedCommands[0].Format())
+	a.Equal(fmt.Sprintf("curl %s | tar -C %s -x", url, installRoot), resolvedCommands[1].Format())
 }
 
 func TestManifest_ResolveLinks(t *testing.T) {
@@ -112,7 +112,7 @@ func TestManifest_ResolveLinks(t *testing.T) {
 	a.Equal(Link{Source: path.Join(installRoot, "shared/Microsoft.NETCore.App"), Target: path.Join(linkRoot, "shared/Microsoft.NETCore.App", "3.1.100")}, resolvedLinks[2])
 	a.Equal(Link{Source: path.Join(installRoot, "shared/Microsoft.AspNetCore.All"), Target: path.Join(linkRoot, "shared/Microsoft.AspNetCore.All", "3.1.100")}, resolvedLinks[3])
 	a.Equal(Link{Source: path.Join(installRoot, "shared/Microsoft.AspNetCore.App"), Target: path.Join(linkRoot, "shared/Microsoft.AspNetCore.App", "3.1.100")}, resolvedLinks[4])
-	println(manifest.Format())
+	println(manifest.Format(Table))
 }
 
 func TestReadYaml(t *testing.T) {

@@ -1,53 +1,64 @@
 package manifest
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestFormatAsTree(t *testing.T) {
-	manifest := Manifest{
-		Version: "3.2.202",
-		SDK:     "dotnet",
-		Variables: map[string]interface{}{
-			"url":          "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz", //nolint:lll
-			"install-root": "[[_sdks]]/[[sdk]]/[[version]]",
-			"link-root":    "/usr/local/share/dotnet",
-		},
-		Variable: []Variable{
-			{Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
-			{Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
-			{Key: "link-root", Value: "/usr/local/share/dotnet"},
-		},
-		Instructions: Instructions{
-			DevEnvCommand{
+type FormatTest struct {
+	t        *testing.T
+	Actual   string
+	Expected string
+}
 
-				Command: "mkdir",
-				Args:    []string{"-p", "[[install-root]]"},
-			},
-			Pipe{
-				Commands: []DevEnvCommand{
-					{
-						Command: "curl",
-						Args:    []string{"[[url]]"},
-					},
-					{
-						Command: "tar",
-						Args:    []string{"-C", "[[install-root]]", "-x"},
-					},
+var manifest = Manifest{
+	Version: "3.2.202",
+	SDK:     "dotnet",
+	Variables: map[string]interface{}{
+		"url":          "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz", //nolint:lll
+		"install-root": "[[_sdks]]/[[sdk]]/[[version]]",
+		"link-root":    "/usr/local/share/dotnet",
+	},
+	Variable: []Variable{
+		{Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
+		{Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
+		{Key: "link-root", Value: "/usr/local/share/dotnet"},
+	},
+	Instructions: Instructions{
+		DevEnvCommand{
+
+			Command: "mkdir",
+			Args:    []string{"-p", "[[install-root]]"},
+		},
+		Pipe{
+			Commands: []DevEnvCommand{
+				{
+					Command: "curl",
+					Args:    []string{"[[url]]"},
+				},
+				{
+					Command: "tar",
+					Args:    []string{"-C", "[[install-root]]", "-x"},
 				},
 			},
 		},
-		Links: []Link{
-			{Source: "[[install-root]]/host/fxr", Target: "[[link-root]]/host/fxr"},
-			{Source: "[[install-root]]/sdk/[[version]]", Target: "[[link-root]]/sdk/[[version]]"},
-			{Source: "[[install-root]]/shared/Microsoft.NETCore.App", Target: "[[link-root]]/shared/Microsoft.NETCore.App/[[version]]"},
-			{Source: "[[install-root]]/shared/Microsoft.AspNetCore.All", Target: "[[link-root]]/shared/Microsoft.AspNetCore.All/[[version]]"},
-			{Source: "[[install-root]]/shared/Microsoft.AspNetCore.App", Target: "[[link-root]]/shared/Microsoft.AspNetCore.App/[[version]]"},
-		},
-	}
+	},
+	Links: []Link{
+		{Source: "[[install-root]]/host/fxr", Target: "[[link-root]]/host/fxr"},
+		{Source: "[[install-root]]/sdk/[[version]]", Target: "[[link-root]]/sdk/[[version]]"},
+		{Source: "[[install-root]]/shared/Microsoft.NETCore.App", Target: "[[link-root]]/shared/Microsoft.NETCore.App/[[version]]"},
+		{Source: "[[install-root]]/shared/Microsoft.AspNetCore.All", Target: "[[link-root]]/shared/Microsoft.AspNetCore.All/[[version]]"},
+		{Source: "[[install-root]]/shared/Microsoft.AspNetCore.App", Target: "[[link-root]]/shared/Microsoft.AspNetCore.App/[[version]]"},
+	},
+}
 
-	expected := `dotnet-3.2.202
+func TestFormatAsTree(t *testing.T) {
+
+	test := FormatTest{
+		t:      t,
+		Actual: manifest.Format(Tree),
+		Expected: `dotnet-3.2.202
 └── variables
 │   ├── {Key:[[_home]] Value:/Users/dev/.dev-env}
 │   ├── {Key:[[_installers]] Value:/Users/dev/.dev-env/installers}
@@ -71,8 +82,64 @@ func TestFormatAsTree(t *testing.T) {
     └── 1
         └── curl https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz
         └── tar -C /Users/dev/.dev-env/sdk/dotnet/3.2.202 -x
-`
+`,
+	}
 
-	actual := manifest.FormatAsTree()
-	assert.Equal(t, expected, actual)
+	test.Run()
+}
+
+func TestFormatWithFormatTypeTable(t *testing.T) {
+	test := FormatTest{
+		t:      t,
+		Actual: manifest.Format(Table),
+		Expected: `
+Properties
+  Property | Value    
+----------- ----------
+  Version  | 3.2.202  
+  SDK      | dotnet   
+
+Variables
+  Variable         | Value                                                                                                                                                            
+------------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  [[_home]]        | /Users/dev/.dev-env                                                                                                                                              
+  [[_installers]]  | /Users/dev/.dev-env/installers                                                                                                                                   
+  [[_manifests]]   | /Users/dev/.dev-env/manifests                                                                                                                                    
+  [[_sdks]]        | /Users/dev/.dev-env/sdk                                                                                                                                          
+  [[home]]         | /Users/dev                                                                                                                                                       
+  [[install-root]] | /Users/dev/.dev-env/sdk/dotnet/3.2.202                                                                                                                           
+  [[link-root]]    | /usr/local/share/dotnet                                                                                                                                          
+  [[sdk]]          | dotnet                                                                                                                                                           
+  [[url]]          | https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz  
+  [[version]]      | 3.2.202                                                                                                                                                          
+
+Links
+  Source                                                                 | Target                                                           
+------------------------------------------------------------------------- ------------------------------------------------------------------
+  /Users/dev/.dev-env/sdk/dotnet/3.2.202/host/fxr                        | /usr/local/share/dotnet/host/fxr                                 
+  /Users/dev/.dev-env/sdk/dotnet/3.2.202/sdk/3.2.202                     | /usr/local/share/dotnet/sdk/3.2.202                              
+  /Users/dev/.dev-env/sdk/dotnet/3.2.202/shared/Microsoft.NETCore.App    | /usr/local/share/dotnet/shared/Microsoft.NETCore.App/3.2.202     
+  /Users/dev/.dev-env/sdk/dotnet/3.2.202/shared/Microsoft.AspNetCore.All | /usr/local/share/dotnet/shared/Microsoft.AspNetCore.All/3.2.202  
+  /Users/dev/.dev-env/sdk/dotnet/3.2.202/shared/Microsoft.AspNetCore.App | /usr/local/share/dotnet/shared/Microsoft.AspNetCore.App/3.2.202  
+
+Instructions
+  Order | Command                                                                                                                                                               
+-------- -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      0 | mkdir -p /Users/dev/.dev-env/sdk/dotnet/3.2.202                                                                                                                       
+      1 | curl https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz  
+        | tar -C /Users/dev/.dev-env/sdk/dotnet/3.2.202 -x                                                                                                                      
+`,
+	}
+
+	test.Run()
+}
+
+func (test *FormatTest) Run() {
+	actual := test.Actual
+	expected := test.Expected
+
+	fmt.Printf("%s\n%s\n", "EXPECTED", expected)
+	fmt.Printf("%s\n%s\n", "ACTUAL", actual)
+
+	assert.Equal(test.t, expected, actual)
 }

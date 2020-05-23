@@ -6,8 +6,20 @@ import (
 	"github.com/disiqueira/gotree"
 	"github.com/ghodss/yaml"
 	"github.com/olekukonko/tablewriter"
-	"sort"
 	"strings"
+)
+
+type tableFormat struct {
+	Caption string
+	Table   *tablewriter.Table
+	Writer  *strings.Builder
+}
+
+type FormatType int
+
+const (
+	Table FormatType = iota
+	Tree
 )
 
 func PrintYaml(manifest interface{}) {
@@ -20,6 +32,17 @@ func PrintJson(manifest interface{}) {
 	j, _ := json.MarshalIndent(manifest, "", "  ")
 	fmt.Println("JSON")
 	fmt.Println(string(j))
+}
+
+func (m *Manifest) Format(formatType FormatType) string {
+	switch formatType {
+	case Table:
+		return m.FormatTable()
+	case Tree:
+		return m.FormatAsTree()
+	default:
+		return fmt.Sprintf("%+v", *m)
+	}
 }
 
 func (m *Manifest) FormatAsTree() string {
@@ -62,54 +85,97 @@ func (m *Manifest) FormatAsTree() string {
 	return formattedTree
 }
 
-// Formats the Manifest into a colorful table representation
-func (m *Manifest) Format() string {
-	variables := m.ResolveVariables()
-	tableString := &strings.Builder{}
+func newTableFormat(name string, appender func(appender *tablewriter.Table), headers ...string) tableFormat {
+	writer := &strings.Builder{}
+	return tableFormat{
+		Caption: name,
+		Table:   createTable(writer, appender, headers...),
+		Writer:  writer,
+	}
+}
 
-	table := tablewriter.NewWriter(tableString)
-	table.SetHeader([]string{"Kind", "Key", "Value"})
+func (m *Manifest) formatTables() []tableFormat {
+	properties := newTableFormat("Properties", func(table *tablewriter.Table) {
+		table.Append([]string{"Version", m.Version})
+		table.Append([]string{"SDK", m.SDK})
+	}, "Property", "Value")
 
-	table.SetHeaderColor(
-		tablewriter.Colors{tablewriter.Normal, tablewriter.BgHiBlackColor},
-		tablewriter.Colors{tablewriter.Bold, tablewriter.BgRedColor},
-		tablewriter.Colors{tablewriter.Bold, tablewriter.BgHiGreenColor},
-	)
+	variables := newTableFormat("Variables", func(table *tablewriter.Table) {
+		for _, variable := range m.ResolveVariable() {
+			table.Append([]string{variable.Key, variable.Value})
+		}
+	}, "Variable", "Value")
 
-	table.SetColumnColor(
-		tablewriter.Colors{tablewriter.Normal, tablewriter.BgWhiteColor},
-		tablewriter.Colors{tablewriter.Bold, tablewriter.FgRedColor},
-		tablewriter.Colors{tablewriter.Bold, tablewriter.FgGreenColor},
-	)
+	links := newTableFormat("Links", func(table *tablewriter.Table) {
+		for _, link := range m.ResolveLinks() {
+			table.Append([]string{link.Source, link.Target})
+		}
+	}, "Source", "Target")
 
-	table.SetAutoFormatHeaders(true)
+	instructions := newTableFormat("Instructions", func(table *tablewriter.Table) {
+		for i, instruction := range m.ResolveInstructions() {
+			switch instr := instruction.(type) {
+			case DevEnvCommand:
+				table.Append([]string{fmt.Sprintf("%d", i), instruction.Format()})
+			case Pipe:
+				for _, command := range instr.Commands {
+					table.Append([]string{fmt.Sprintf("%d", i), command.Format()})
+				}
+			}
+		}
+	}, "Order", "Command")
 
+	return []tableFormat{
+		properties,
+		variables,
+		links,
+		instructions,
+	}
+}
+
+func (tableFormat *tableFormat) Format() string {
+	sb := strings.Builder{}
+	sb.WriteString(fmt.Sprintf("\n"))
+	sb.WriteString(fmt.Sprintf("%-3s\n", tableFormat.Caption))
+	tableString := tableFormat.Writer.String()
+	sb.WriteString(tableString)
+	return sb.String()
+}
+
+func createTable(writer *strings.Builder, appender func(appender *tablewriter.Table), headers ...string) *tablewriter.Table {
+	table := tablewriter.NewWriter(writer)
+	table.SetHeader(headers)
+	/*
+	   table.SetHeaderColor(
+	       tablewriter.Colors{tablewriter.Bold, tablewriter.FgWhiteColor},
+	       tablewriter.Colors{tablewriter.Bold, tablewriter.FgGreenColor},
+	   )
+
+	   table.SetColumnColor(
+	       tablewriter.Colors{tablewriter.FgWhiteColor},
+	       tablewriter.Colors{tablewriter.FgGreenColor},
+	   )
+	*/
+	table.SetAutoFormatHeaders(false)
+	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetHeaderLine(true)
-	table.SetAutoWrapText(true)
+	table.SetAutoWrapText(false)
 	table.SetBorder(false)
-	table.SetCenterSeparator("+")
+	table.SetCenterSeparator(" ")
 	table.SetColumnSeparator("|")
 	table.SetRowSeparator("-")
-
-	table.SetTablePadding("\t")
 	table.SetAutoMergeCells(true)
 
-	var vKeys []string
-	for key := range variables {
-		vKeys = append(vKeys, key)
-	}
-	sort.Strings(vKeys)
-
-	for _, key := range vKeys {
-		table.Append([]string{"Variable", key, variables[key]})
-	}
-	table.Append([]string{"", "", ""})
-
-	for _, val := range m.Links {
-
-		table.Append([]string{"Link", val.Source, val.Target})
-	}
-
+	appender(table)
 	table.Render()
-	return tableString.String()
+	return table
+}
+
+// Formats the Manifest into a colorful table representation
+func (m *Manifest) FormatTable() string {
+	sb := strings.Builder{}
+	for _, table := range m.formatTables() {
+		sb.WriteString(table.Format())
+	}
+	return sb.String()
 }

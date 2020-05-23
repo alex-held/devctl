@@ -258,10 +258,14 @@ func (m Manifest) ResolveCommands() []Instruction {
 
 func (pipe Pipe) Format() string {
 	sb := strings.Builder{}
+	maxIdx := len(pipe.Commands) - 1
 
-	for _, command := range pipe.Commands {
+	for idx, command := range pipe.Commands {
 		formatted := command.Format()
 		sb.WriteString(formatted)
+		if idx < maxIdx {
+			sb.WriteString(" | ")
+		}
 	}
 
 	return sb.String()

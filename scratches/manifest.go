@@ -67,8 +67,6 @@ var imported = Manifest{
 }
 
 func main() {
-
-	println(imported.FormatAsTree())
-	//  println(imported.Format())
+	println(imported.Format(Table))
 
 }
