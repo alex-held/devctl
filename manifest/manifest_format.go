@@ -57,11 +57,11 @@ func (m *Manifest) FormatAsTree() string {
 		variable.Add(formatted)
 	}
 
-	for _, link := range m.ResolveLinks() {
+	for _, link := range m.resolveLinks() {
 		links.Add(fmt.Sprintf("%+v", link))
 	}
 
-	for idx, cliExec := range m.ResolveInstructions() {
+	for idx, cliExec := range m.resolveInstallationInstructions() {
 		instruction := gotree.New(fmt.Sprintf("%d", idx))
 
 		switch command := cliExec.(type) {
@@ -107,7 +107,7 @@ func (m *Manifest) formatTables() []tableFormat {
 	}, "Variables", "Value")
 
 	links := newTableFormat("Links", func(table *tablewriter.Table) {
-		for _, link := range m.ResolveLinks() {
+		for _, link := range m.resolveLinks() {
 			table.Append([]string{link.Source, link.Target})
 		}
 	}, "Source", "Target")

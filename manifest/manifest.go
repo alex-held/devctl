@@ -7,8 +7,6 @@ import (
 	"github.com/alex-held/dev-env/config"
 	"github.com/spf13/afero"
 	"gopkg.in/yaml.v2"
-	"os"
-	"os/exec"
 	. "path"
 	"sort"
 	"strings"
@@ -202,40 +200,6 @@ func (m *Manifest) VariableMap() map[string]string {
 	return m.Variables.ToMap()
 }
 
-func (m *Manifest) ResolveLinks() []Link {
-	variables := m.ResolveVariables()
-	var result []Link
-
-	for _, link := range m.Links {
-		resolvedSource := ReplaceVariablesIfAny(link.Source, variables)
-		resolvedTarget := ReplaceVariablesIfAny(link.Target, variables)
-		result = append(result, Link{
-			Source: resolvedSource,
-			Target: resolvedTarget,
-		})
-	}
-
-	return result
-}
-
-func (m Manifest) ResolveInstructions() []Instructing {
-	variables := m.ResolveVariable()
-	var result []Instructing
-
-	for _, instr := range m.Instructions {
-		instruction := instr.ToInstruction()
-		re := instruction.Resolve(variables)
-		switch resolved := re.(type) {
-		case DevEnvCommand:
-			result = append(result, resolved)
-		case Pipe:
-			result = append(result, resolved)
-		}
-	}
-
-	return result
-}
-
 /*
 func (m Manifest) ResolveCommands() []Instructing {
     variables := m.ResolveVariables()
@@ -299,6 +263,30 @@ func (pipe Pipe) Format() string {
 	return sb.String()
 }
 
+func (cmd LinkCommand) GetCommands() []DevEnvCommand {
+
+	return []DevEnvCommand{
+		{
+			Command: "mkdir",
+			Args:    []string{"-p", Dir(cmd.Link.Target)},
+		},
+		{
+			Command: "ln",
+			Args:    []string{"-s", cmd.Link.Source, cmd.Link.Target},
+		},
+	}
+
+}
+
+func (cmd LinkCommand) Format() string {
+	sb := strings.Builder{}
+	commands := cmd.GetCommands()
+	for _, command := range commands {
+		sb.WriteString(fmt.Sprintf("%s; ", command.Format()))
+	}
+	return sb.String()
+}
+
 func (cmd DevEnvCommand) Format() string {
 	command := cmd.Command
 	for _, arg := range cmd.Args {
@@ -326,51 +314,6 @@ func (i Step) Execute() error {
     }
 }*/
 
-func (cmd DevEnvCommand) Execute() error {
-	command := exec.Command(cmd.Command, cmd.Args...)
-	formatted := cmd.Format()
-	fmt.Printf("Executing solo command: '%s'", formatted)
-	err := command.Start()
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (pipe Pipe) Execute() error {
-	cmd1 := exec.Command(pipe.Commands[0].Command, pipe.Commands[0].Args...)
-
-	orderedCommands := []*exec.Cmd{cmd1}
-	for i, command := range pipe.Commands {
-
-		if i == 0 {
-			continue
-		}
-
-		cNext := exec.Command(command.Command, command.Args...)
-		cNext.Stdin, _ = cmd1.StdoutPipe()
-		cNext.Stdout = os.Stdout
-		orderedCommands = append(orderedCommands, cNext)
-	}
-
-	fmt.Printf("Executing pipe '%#v'", pipe)
-
-	for i, command := range orderedCommands {
-		formatted := pipe.Commands[i].Format()
-		fmt.Printf("[%d/%d] Executing pipe command '%#v'", i, len(orderedCommands), formatted)
-
-		err := command.Start()
-
-		if err != nil {
-			fmt.Printf("Error: %s\n", err.Error())
-		}
-	}
-
-	return nil
-}
-
 func readJson(text string, manifest *Manifest) (*Manifest, error) {
 	err := json.Unmarshal([]byte(text), manifest)
 
@@ -389,38 +332,6 @@ func readYaml(text string, manifest *Manifest) (*Manifest, error) {
 	}
 
 	return manifest, nil
-}
-
-func (pipe Pipe) Resolve(variables Variables) Instructing {
-	return pipe.resolvePipe(variables)
-}
-
-func (cmd DevEnvCommand) Resolve(variables Variables) Instructing {
-	return cmd.resolveCommand(variables)
-}
-
-func (pipe Pipe) resolvePipe(variables Variables) Pipe {
-	result := Pipe{Commands: []DevEnvCommand{}}
-
-	for _, command := range pipe.Commands {
-		resolvedCommand := command.resolveCommand(variables)
-		result.Commands = append(result.Commands, resolvedCommand)
-	}
-	return result
-}
-
-func (cmd DevEnvCommand) resolveCommand(variables Variables) DevEnvCommand {
-	result := DevEnvCommand{
-		Command: cmd.Command,
-		Args:    []string{},
-	}
-
-	for _, commandArg := range cmd.Args {
-		resolvedArg := ReplaceVariableIfAny(commandArg, variables)
-		result.Args = append(result.Args, resolvedArg)
-	}
-
-	return result
 }
 
 func read(fs afero.Fs, path string) (*Manifest, error) {

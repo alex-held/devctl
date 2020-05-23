@@ -1,12 +1,12 @@
 package install
 
 import (
-	"fmt"
 	. "github.com/alex-held/dev-env/config"
+	"github.com/alex-held/dev-env/execution"
 	. "github.com/alex-held/dev-env/manifest"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
-	"os/exec"
+	"strings"
 	"testing"
 )
 
@@ -36,42 +36,46 @@ func TestInstallAddsSDKToConfig(t *testing.T) {
 
 func TestInstallManifest(t *testing.T) {
 	manifest := GetTestManifest()
-	err := Install(*manifest)
-	fmt.Errorf(err.Error())
-}
+	sb := strings.Builder{}
+	fs := afero.NewMemMapFs()
+	executor := execution.NewCommandExecutor(manifest, func(str string) {
+		sb.WriteString(str)
+	})
+	executor.FS = &fs
+	executor.Options.DryRun = true
 
-func TestCommandExecutor_Execute(t *testing.T) {
-	cmd := exec.Command("mkdir", "-p", "/Users/dev/.dev-env/sdk/dotnet/3.1.100")
-	err := cmd.Run()
+	err := executor.Execute()
+	assert.NoError(t, err)
 
-	if err != nil {
-		fmt.Println("ERROR: " + err.Error())
-	}
+	err = Install(*manifest)
 }
 
 func GetTestManifest() *Manifest {
 	m := Manifest{
-		Version: "3.1.100",
+		Version: "3.1.202",
 		SDK:     "dotnet",
 		Variables: Variables{
 			{Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
 			{Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
-			{Key: "link-root", Value: "/usr/local/share/dotnet"},
+			{Key: "link-root", Value: "/Users/dev/temp/usr/local/share/dotnet"},
 		},
 		Instructions: Instructions{
 			Step{
-				Command: &DevEnvCommand{Command: "mkdir", Args: []string{"-p", "[[install-root]]"}},
+				Command: &DevEnvCommand{
+					Command: "ls",
+					Args:    []string{"-a", "/Users/dev/temp/usr/local/share/dotnet"},
+				},
 			},
 			Step{
-				Pipe: []DevEnvCommand{
-					{
-						Command: "curl",
-						Args:    []string{"[[url]]"},
-					},
-					{
-						Command: "tar",
-						Args:    []string{"-C", "[[install-root]]", "-x"},
-					},
+				Command: &DevEnvCommand{
+					Command: "rm",
+					Args:    []string{"-rdf", "/Users/dev/temp/usr/local/share/dotnet"},
+				},
+			},
+			Step{
+				Command: &DevEnvCommand{
+					Command: "mkdir",
+					Args:    []string{"-p", "/Users/dev/temp/usr/local/share/dotnet/host"},
 				},
 			},
 		},
@@ -84,7 +88,5 @@ func GetTestManifest() *Manifest {
 		},
 	}
 
-	PrintYaml(m)
-	PrintJson(m)
 	return &m
 }

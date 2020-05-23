@@ -101,7 +101,7 @@ func TestManifest_ResolveLinks(t *testing.T) {
 		Links: links,
 	}
 
-	resolvedLinks := manifest.ResolveLinks()
+	resolvedLinks := manifest.resolveLinks()
 	manifest.Links = resolvedLinks
 
 	a.Equal(Link{Source: path.Join(installRoot, "host/fxr"), Target: path.Join(linkRoot, "host/fxr")}, resolvedLinks[0])

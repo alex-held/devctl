@@ -80,6 +80,9 @@ func TestFormatAsTree(t *testing.T) {
 	}
 
 	test.Run()
+
+	ioutil.WriteFile("/Users/dev/temp/table-manifest-expected", []byte(test.Expected), 0644)
+	ioutil.WriteFile("/Users/dev/temp/table-manifest-actual", []byte(test.Actual), 0644)
 }
 
 func TestFormatWithFormatTypeTable(t *testing.T) {
@@ -135,8 +138,12 @@ func (test *FormatTest) Run() {
 	actual := test.Actual
 	expected := test.Expected
 
-	fmt.Printf("%s\n%s\n", "EXPECTED", expected)
-	fmt.Printf("%s\n%s\n", "ACTUAL", actual)
+	fmt.Printf("<EXPECTED> %d\n", len(expected))
+	fmt.Println(expected)
+	fmt.Println()
 
+	fmt.Printf("<ACTUAL> %d\n", len(actual))
+	fmt.Println(actual)
+	fmt.Println()
 	assert.Equal(test.t, expected, actual)
 }

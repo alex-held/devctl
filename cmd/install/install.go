@@ -3,11 +3,11 @@ package install
 import (
 	"fmt"
 	"github.com/alex-held/dev-env/config"
+	. "github.com/alex-held/dev-env/execution"
 	. "github.com/alex-held/dev-env/manifest"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"os"
-	"os/exec"
 )
 
 // installCmd represents the install command
@@ -45,70 +45,11 @@ func (provider *SDKProvider) GetLatestVersion(sdk string) string {
 	}
 }
 
-func prepareLinkingCommands(m Manifest) []Instructing {
-	var linkingCommands []Instructing
-
-	for _, link := range m.ResolveLinks() {
-		command := DevEnvCommand{
-			Command: "ln",
-			Args:    []string{"-s", link.Source, link.Target},
-		}
-		linkingCommands = append(linkingCommands, command)
-	}
-	return linkingCommands
-}
-
-type CommandExecutor struct {
-	installationCommands []Instructing
-	linkingCommands      []Instructing
-}
-
-func NewCommandExecutor(installationCommands []Instructing, linkingCommands []Instructing) *CommandExecutor {
-	return &CommandExecutor{
-		installationCommands,
-		linkingCommands,
-	}
-}
-
-func (executor *CommandExecutor) Execute() error {
-	commands := executor.GetCommands()
-
-	for _, command := range commands {
-		switch c := command.(type) {
-		case DevEnvCommand:
-
-			fmt.Println("Executing command: " + c.Format())
-
-			cmd := exec.Command(c.Command, c.Args...)
-			output, err := cmd.Output()
-			if err != nil {
-				fmt.Println("Error while running command. Error:'" + err.Error())
-				os.Exit(1)
-			}
-
-			println(output)
-		}
-
-		/*
-		   if err := cmd.Run(); err != nil {
-		       fmt.Println("Error while running command. Error:'" + err.Error())
-		       return err
-		   }*/
-	}
-	os.Exit(0)
-	return nil
-}
-
-func (executor *CommandExecutor) GetCommands() []Instructing {
-	linkingCommands := executor.linkingCommands
-	installationCommands := executor.installationCommands
-	commands := append(installationCommands, linkingCommands...)
-	return commands
-}
-
 //Install
 func Install(manifest Manifest) error {
-	executor := NewCommandExecutor(manifest.ResolveInstructions(), prepareLinkingCommands(manifest))
+	executor := NewCommandExecutor(&manifest, func(str string) {
+		fmt.Print(str)
+	})
 	err := executor.Execute()
 	if err != nil {
 		return err
