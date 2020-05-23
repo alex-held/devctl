@@ -67,11 +67,12 @@ func NewInstructingFormatTest(i interface{}, expected string, after func(t Instr
 }
 
 func (test *InstructingFormatTest) Run(t *testing.T) {
-	err := test.Executor.Execute()
+	out, err := test.Executor.Execute()
 	assert.NoError(t, err)
 	actual := test.Output.String()
 	fmt.Printf("<EXPECTED>\n%s-\n", test.Expected)
 	fmt.Printf("<ACTUAL>\n%s-\n", actual)
+	fmt.Printf("<OUT>\n%s-\n", out)
 	assert.Equal(t, test.Expected, actual)
 }
 
@@ -116,7 +117,7 @@ func TestCommandExecutor_Execute(t *testing.T) {
 		output = output + str
 	})
 
-	err := executor.Execute()
+	output, err := executor.Execute()
 
 	//   assert.NoError(t, err)
 	if err != nil {

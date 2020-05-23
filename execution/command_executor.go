@@ -9,11 +9,24 @@ import (
 	"path"
 )
 
+type DefaultCommandFactory struct {
+}
+
+func (d DefaultCommandFactory) CreateDevEnv(command DevEnvCommand) (cmd *exec.Cmd) {
+	cmd = exec.Command(command.Command, command.Args...)
+	return cmd
+}
+
+type CommandFactory interface {
+	CreateDevEnv(command DevEnvCommand) (cmd *exec.Cmd)
+}
+
 type CommandExecutor struct {
-	Manifest *Manifest
-	Appender func(str string)
-	FS       *afero.Fs
-	Options  *CommandExecutorOptions
+	Manifest       *Manifest
+	Appender       func(str string)
+	FS             *afero.Fs
+	Options        *CommandExecutorOptions
+	CommandFactory CommandFactory
 }
 
 type CommandExecutorOptions struct {
@@ -35,21 +48,22 @@ func NewCommandExecutor(manifest *Manifest, appender func(str string)) *CommandE
 	options := NewCommandExecutorOptions()
 	fs := afero.NewOsFs()
 	return &CommandExecutor{
-		Manifest: manifest,
-		Appender: appender,
-		FS:       &fs,
-		Options:  options,
+		Manifest:       manifest,
+		Appender:       appender,
+		FS:             &fs,
+		Options:        options,
+		CommandFactory: DefaultCommandFactory{},
 	}
 }
 
-func (ce *CommandExecutor) Execute() error {
+func (ce *CommandExecutor) Execute() (output string, err error) {
 	instructions := ce.Manifest.ResolveInstructions()
-
+	var out []byte
 	for _, instruction := range instructions {
-		var err error
+
 		switch executable := instruction.(type) {
 		case DevEnvCommand:
-			err = ce.executeDevEnvCommand(executable)
+			output, err = ce.executeDevEnvCommand(executable)
 		case LinkCommand:
 			err = ce.executeLinkCommand(executable)
 		case Pipe:
@@ -57,10 +71,10 @@ func (ce *CommandExecutor) Execute() error {
 		}
 		if err != nil {
 			fmt.Printf("Error executing instruction %s\n%+v", err.Error(), instruction)
-			return err
+			return "", err
 		}
 	}
-	return nil
+	return string(out), nil
 }
 
 func (ce *CommandExecutor) append(format string, args ...interface{}) {
@@ -107,23 +121,24 @@ func (ce *CommandExecutor) executePipe(pipe Pipe) error {
 	return nil
 }
 
-func (ce *CommandExecutor) executeDevEnvCommand(executable DevEnvCommand) error {
-	command := exec.Command(executable.Command, executable.Args...)
+func (ce *CommandExecutor) executeDevEnvCommand(executable DevEnvCommand) (output string, err error) {
 
+	command := ce.CommandFactory.CreateDevEnv(executable)
+	var out []byte
 	formatted := executable.Format()
 	ce.append("[Command]\n")
 	ce.append("Executing command: '%s'\n", formatted)
 
 	if !ce.Options.DryRun {
-		err := command.Start()
+		out, err = command.CombinedOutput()
 		if err != nil {
 			ce.append("\n")
-			return err
+			return "", err
 		}
 	}
 
 	ce.append("\n")
-	return nil
+	return string(out), nil
 }
 
 func (ce *CommandExecutor) executeLinkCommand(cmd LinkCommand) error {
