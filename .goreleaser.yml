@@ -11,16 +11,16 @@ before:
 
 builds:
   - env:
-    - CGO_ENABLED=0
-    - GO111MODULE=on
+      - CGO_ENABLED=0
+      - GO111MODULE=on
   - binary: '{{ .ProjectName }}'
     goos:
       - darwin
       - linux
       - windows
     goarch:
-        - amd64
-        -
+      - amd64
+      -
 checksum:
   name_template: "checksums.txt"
 snapshot:
