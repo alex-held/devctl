@@ -11,6 +11,7 @@ import (
 )
 
 // installCmd represents the install command
+//noinspection GoUnusedGlobalVariable
 var installCmd = &cobra.Command{
 	Use:   "install",
 	Short: "A brief description of your command",
@@ -61,7 +62,7 @@ func Install(manifest Manifest) error {
 
 func executeInstall(fs afero.Fs, args []string) {
 	cfg, err := config.ReadConfigFromFile(fs, "config.json")
-	_ = config.GetManifests()
+	_ = DefaultPaths.GetManifests()
 	if cfg == nil {
 		os.Exit(1)
 		return

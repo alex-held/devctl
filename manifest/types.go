@@ -4,11 +4,6 @@ type InstructionType int
 type Variables []Variable
 type Instructions []Step
 
-const (
-	Command InstructionType = iota
-	CommandPipe
-)
-
 func (v *Variables) ToMap() StringMap {
 	result := StringMap{}
 
@@ -20,7 +15,6 @@ func (v *Variables) ToMap() StringMap {
 
 type Instructing interface {
 	Format() string
-	//    Execute(appender func(str string)) error
 	Resolve(variables Variables) Instructing
 }
 

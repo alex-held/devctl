@@ -55,7 +55,6 @@ func TestFormatAsTree(t *testing.T) {
 		Expected: `dotnet-3.2.202
 └── variables
 │   ├── {Key:[[_home]] Value:/Users/dev/.dev-env}
-│   ├── {Key:[[_installers]] Value:/Users/dev/.dev-env/installers}
 │   ├── {Key:[[_manifests]] Value:/Users/dev/.dev-env/manifests}
 │   ├── {Key:[[_sdks]] Value:/Users/dev/.dev-env/sdk}
 │   ├── {Key:[[home]] Value:/Users/dev}
@@ -81,8 +80,8 @@ func TestFormatAsTree(t *testing.T) {
 
 	test.Run()
 
-	ioutil.WriteFile("/Users/dev/temp/table-manifest-expected", []byte(test.Expected), 0644)
-	ioutil.WriteFile("/Users/dev/temp/table-manifest-actual", []byte(test.Actual), 0644)
+	_ = ioutil.WriteFile("/Users/dev/temp/table-manifest-expected", []byte(test.Expected), 0644)
+	_ = ioutil.WriteFile("/Users/dev/temp/table-manifest-actual", []byte(test.Actual), 0644)
 }
 
 func TestFormatWithFormatTypeTable(t *testing.T) {
@@ -100,7 +99,6 @@ Variables
   Variables        | Value                                                                                                                                                            
 ------------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------
   [[_home]]        | /Users/dev/.dev-env                                                                                                                                              
-  [[_installers]]  | /Users/dev/.dev-env/installers                                                                                                                                   
   [[_manifests]]   | /Users/dev/.dev-env/manifests                                                                                                                                    
   [[_sdks]]        | /Users/dev/.dev-env/sdk                                                                                                                                          
   [[home]]         | /Users/dev                                                                                                                                                       
@@ -130,8 +128,8 @@ Instructions
 
 	test.Run()
 
-	ioutil.WriteFile("/Users/dev/temp/table-manifest-expected", []byte(test.Expected), 0644)
-	ioutil.WriteFile("/Users/dev/temp/table-manifest-actual", []byte(test.Actual), 0644)
+	_ = ioutil.WriteFile("/Users/dev/temp/table-manifest-expected", []byte(test.Expected), 0644)
+	_ = ioutil.WriteFile("/Users/dev/temp/table-manifest-actual", []byte(test.Actual), 0644)
 }
 
 func (test *FormatTest) Run() {

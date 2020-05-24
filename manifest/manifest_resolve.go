@@ -8,7 +8,6 @@ import (
 
 func (m *Manifest) ResolveVariable() Variables {
 	var result Variables
-
 	variables := m.populateVariables()
 
 	for key, val := range variables {

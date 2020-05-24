@@ -2,7 +2,6 @@ package manifest
 
 import (
 	"fmt"
-	"github.com/alex-held/dev-env/config"
 	. "github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -41,16 +40,16 @@ func TestResolveVariables(t *testing.T) {
 
 	variables := manifest.ResolveVariables()
 	a.Equal("https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz", variables["[[url]]"])
-	a.Equal(config.GetSdks(), variables["[[_sdks]]"])
+	a.Equal(DefaultPaths.GetSdks(), variables["[[_sdks]]"])
 	a.Equal("dotnet", variables["[[sdk]]"])
 	a.Equal("3.1.100", variables["[[version]]"])
 	a.Equal("/usr/local/share/dotnet", variables["[[link-root]]"])
-	a.Equal(config.GetSdks()+"/"+"dotnet"+"/"+"3.1.100", variables["[[install-root]]"])
+	a.Equal(DefaultPaths.GetSdks()+"/"+"dotnet"+"/"+"3.1.100", variables["[[install-root]]"])
 }
 
 func TestManifest_ResolveCommands(t *testing.T) {
 	a, _ := setup(t)
-	installRoot := path.Join(config.GetSdks(), "dotnet", "3.1.100")
+	installRoot := path.Join(DefaultPaths.GetSdks(), "dotnet", "3.1.100")
 	url := "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"
 
 	manifest := Manifest{
@@ -88,7 +87,7 @@ func TestManifest_ResolveCommands(t *testing.T) {
 
 func TestManifest_ResolveLinks(t *testing.T) {
 	a, _ := setup(t)
-	installRoot := path.Join(config.GetSdks(), "dotnet", "3.1.100")
+	installRoot := path.Join(DefaultPaths.GetSdks(), "dotnet", "3.1.100")
 	linkRoot := "/usr/local/share/dotnet"
 
 	manifest := Manifest{

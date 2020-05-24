@@ -2,7 +2,6 @@ package manifest
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/alex-held/dev-env/config"
 	"github.com/spf13/afero"
@@ -11,6 +10,8 @@ import (
 	"sort"
 	"strings"
 )
+
+var DefaultPaths = &config.DefaultPathFactory{}
 
 func (m *StringSliceStringMap) ToMap() StringMap {
 	var result = map[string]string{}
@@ -29,23 +30,19 @@ func (m *StringSliceStringMap) ToMap() StringMap {
 	return result
 }
 
-func getPredefinedVariables() StringMap {
-	return StringMap{
-		"[[home]]":        config.GetUserHome(),
-		"[[_home]]":       config.GetDevEnvHome(),
-		"[[_sdks]]":       config.GetSdks(),
-		"[[_installers]]": config.GetInstallers(),
-		"[[_manifests]]":  config.GetManifests(),
-	}
-}
+//GetPredefinedVariables resolves global paths. A DefaultPathFactory can be put optionally.
+//Only the first factory will be used!
+func GetPredefinedVariables(optional ...config.DefaultPathFactory) StringMap {
+	factory := config.DefaultPathFactory{}
 
-func getPredefinedVariable() []Variable {
-	return []Variable{
-		{"[[home]]", config.GetUserHome()},
-		{"[[_home]]", config.GetDevEnvHome()},
-		{"[[_sdks]]", config.GetSdks()},
-		{"[[_installers]]", config.GetInstallers()},
-		{"[[_manifests]]", config.GetManifests()},
+	if len(optional) > 0 {
+		factory = optional[0]
+	}
+	return StringMap{
+		"[[home]]":       factory.GetUserHome(),
+		"[[_home]]":      factory.GetDevEnvHome(),
+		"[[_sdks]]":      factory.GetSdks(),
+		"[[_manifests]]": factory.GetManifests(),
 	}
 }
 
@@ -80,7 +77,7 @@ func ResolveTemplateValues(val string, resolved map[string]string) map[string]st
 		return resolved
 	}
 
-	predefinedVariables := getPredefinedVariables()
+	predefinedVariables := GetPredefinedVariables()
 
 	for ContainsTemplate(val) {
 		template, _ := GetTemplate(val)
@@ -115,21 +112,28 @@ func ResolveTemplateValues(val string, resolved map[string]string) map[string]st
 }
 
 func (m *Manifest) populateVariables() StringMap {
-	predefined := getPredefinedVariables()
+	predefined := GetPredefinedVariables()
 	variables := StringMap{}
 
 	for _, variable := range m.Variables {
 		variables[variable.Key] = variable.Value
+		key := variable.Key
+		value := variable.Value
+
+		// allow manual override of default variables
+		if key == "home" || key == "_home" || key == "_sdks" || key == "_installers" || key == "_manifests" {
+			predefined[templateStart+key+templateEnd] = value
+		}
 	}
 
 	for key, value := range variables {
 
-		if strings.HasPrefix(key, "[[") && strings.HasSuffix(key, "]]") {
+		if strings.HasPrefix(key, templateStart) && strings.HasSuffix(key, templateEnd) {
 			continue
 		}
 
-		if !strings.HasPrefix(key, "[[") && !strings.HasSuffix(key, "]]") {
-			template := fmt.Sprintf("[[%s]]", key)
+		if !strings.HasPrefix(key, templateStart) && !strings.HasSuffix(key, templateEnd) {
+			template := templateStart + key + templateEnd
 			delete(variables, key)
 			variables[template] = value
 		}
@@ -295,47 +299,25 @@ func (cmd DevEnvCommand) Format() string {
 	return command
 }
 
-/*
-func (i Step) Execute() error {
-    switch i.Type {
-    case Command:
-        command := DevEnvCommand{
-            Command: i.Command,
-            Args:    i.Args,
-        }
-        return command.Execute()
-    case CommandPipe:
-        pipe := Pipe{
-            Commands: i.Commands,
-        }
-        return pipe.Execute()
-    default:
-        return fmt.Errorf("Invalid instruction type: '%v' ", i.Type)
-    }
-}*/
-
 func readJson(text string, manifest *Manifest) (*Manifest, error) {
 	err := json.Unmarshal([]byte(text), manifest)
-
 	if err != nil {
 		return manifest, err
 	}
-
 	return manifest, nil
 }
 
 func readYaml(text string, manifest *Manifest) (*Manifest, error) {
 	err := yaml.Unmarshal([]byte(text), manifest)
-
 	if err != nil {
 		return manifest, err
 	}
-
 	return manifest, nil
 }
 
+//noinspection GoUnusedFunction
 func read(fs afero.Fs, path string) (*Manifest, error) {
-	manifestRootPath := config.GetManifests()
+	manifestRootPath := DefaultPaths.GetManifests()
 	manifestPath := Join(manifestRootPath, path)
 	file, err := afero.ReadFile(fs, manifestPath)
 	fileExtension := Ext(manifestPath)
@@ -351,6 +333,6 @@ func read(fs afero.Fs, path string) (*Manifest, error) {
 	case ".yaml":
 		return readYaml(string(file), manifest)
 	default:
-		return nil, errors.New(fmt.Sprintf("Unable to read manifest with path '%s'\nUnknown file extension '%s'\n", manifestPath, fileExtension))
+		return nil, fmt.Errorf("Unable to read manifest with path '%s'\nUnknown file extension '%s'\n", manifestPath, fileExtension)
 	}
 }

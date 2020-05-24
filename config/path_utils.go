@@ -6,9 +6,20 @@ import (
 	"path"
 )
 
+type PathFactory interface {
+	GetUserHome() string
+	GetDevEnvHome() string
+	GetSdks() string
+	GetManifests() string
+}
+
+type DefaultPathFactory struct {
+	UserHomeOverride *string
+	DevEnvOverride   *string
+}
+
 func GetUserHome() string {
 	userHome, err := os.UserHomeDir()
-
 	if err != nil {
 		fmt.Println("Error resolving $HOME\n", err.Error())
 		os.Exit(1)
@@ -16,7 +27,22 @@ func GetUserHome() string {
 	return userHome
 }
 
-func GetDevEnvHome() string { return path.Join(GetUserHome(), ".dev-env") }
-func GetSdks() string       { return path.Join(GetDevEnvHome(), "sdk") }
-func GetInstallers() string { return path.Join(GetDevEnvHome(), "installers") }
-func GetManifests() string  { return path.Join(GetDevEnvHome(), "manifests") }
+func (fac *DefaultPathFactory) GetUserHome() string {
+	if fac.UserHomeOverride != nil {
+		return *fac.UserHomeOverride
+	}
+	return GetUserHome()
+}
+
+func (fac *DefaultPathFactory) GetDevEnvHome() string {
+	var prefix = ".dev-env"
+	if fac.DevEnvOverride != nil {
+		prefix = *fac.DevEnvOverride
+	}
+	return path.Join(GetUserHome(), prefix)
+}
+
+func (fac *DefaultPathFactory) GetSdks() string { return path.Join(fac.GetDevEnvHome(), "sdk") }
+func (fac *DefaultPathFactory) GetManifests() string {
+	return path.Join(fac.GetDevEnvHome(), "manifests")
+}

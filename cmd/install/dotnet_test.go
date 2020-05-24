@@ -3,6 +3,7 @@ package install
 import (
 	"fmt"
 	"github.com/alex-held/dev-env/config"
+	"github.com/alex-held/dev-env/manifest"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	"os"
@@ -45,7 +46,7 @@ func (cmd *MockCommand) execute() string {
 func TestDownload_Saves_RemoteFile_ToDirectory(t *testing.T) {
 	test := newDownloadTest(t)
 	test.Url = "https://raw.githubusercontent.com/alex-held/dev-env/develop/go.mod"
-	test.Directory, _ = afero.TempDir(test.FS, config.GetDevEnvHome(), "")
+	test.Directory, _ = afero.TempDir(test.FS, manifest.DefaultPaths.GetDevEnvHome(), "")
 	test.Filename = "go.mod"
 	test.run()
 }
@@ -86,7 +87,7 @@ func newBaseTest(t *testing.T) BaseTest {
 func newDownloadTest(t *testing.T) DownloadTest {
 	return DownloadTest{
 		Url:       "",
-		Directory: config.GetDevEnvHome(),
+		Directory: manifest.DefaultPaths.GetDevEnvHome(),
 		BaseTest:  newBaseTest(t),
 	}
 }
@@ -95,7 +96,7 @@ func newInstallTest(t *testing.T, expected []string, commands ...Executable) Ins
 	return InstallTest{
 		Commands:  commands,
 		Expected:  expected,
-		Directory: config.GetDevEnvHome(),
+		Directory: manifest.DefaultPaths.GetDevEnvHome(),
 		BaseTest:  newBaseTest(t),
 	}
 }
@@ -124,17 +125,8 @@ func (test *DownloadTest) run() {
 func TestUserContext_GetSdks(t *testing.T) {
 	home, _ := os.UserHomeDir()
 	test := UserContextTest{
-		PathGetter: config.GetSdks,
+		PathGetter: manifest.DefaultPaths.GetSdks,
 		Expected:   path.Join(home, ".dev-env", "sdk"),
-	}
-	test.run(t)
-}
-
-func TestUserContext_GetInstallers(t *testing.T) {
-	home, _ := os.UserHomeDir()
-	test := UserContextTest{
-		PathGetter: config.GetInstallers,
-		Expected:   path.Join(home, ".dev-env", "installers"),
 	}
 	test.run(t)
 }
@@ -151,7 +143,7 @@ func TestUserContext_GetUserHome(t *testing.T) {
 func TestUserContext_GetDevEnvHome(t *testing.T) {
 
 	test := UserContextTest{
-		PathGetter: config.GetDevEnvHome,
+		PathGetter: manifest.DefaultPaths.GetDevEnvHome,
 		Expected:   path.Join(config.GetUserHome(), ".dev-env"),
 	}
 	test.run(t)
