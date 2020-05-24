@@ -5,11 +5,12 @@ import (
 	"github.com/alex-held/dev-env/config"
 	. "github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"path"
 	"testing"
 )
 
-var configFilePath = "/Users/dev/go/src/github.com/dev-env/testdata/manifest"
+var configFilePath = "/Users/dev/.go/src/github.com/alex-held/dev-env/testdata/manifest"
 var dotnetYAML = path.Join(configFilePath, "dotnet.yaml")
 var _ = path.Join(configFilePath, "dotnet.json")
 var _ = StringSliceStringMap{
@@ -118,7 +119,7 @@ func TestWriteYaml(t *testing.T) {
 
 func TestReadYaml(t *testing.T) {
 	a, _ := setup(t)
-	file, _ := ReadFile(NewOsFs(), dotnetYAML)
+	file, _ := ioutil.ReadFile(dotnetYAML)
 	yaml := string(file)
 	m := &Manifest{}
 	manifest, err := readYaml(yaml, m)

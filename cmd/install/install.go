@@ -50,7 +50,8 @@ func Install(manifest Manifest) error {
 	executor := NewCommandExecutor(&manifest, func(str string) {
 		fmt.Print(str)
 	})
-	err := executor.Execute()
+	out, err := executor.Execute()
+	println(out)
 	if err != nil {
 		return err
 	}

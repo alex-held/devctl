@@ -111,20 +111,8 @@ Creating link %s -> %s
 
 func TestCommandExecutor_Execute(t *testing.T) {
 	manifest := GetTestManifest()
-	var output = ""
-	executor := NewCommandExecutor(manifest, func(str string) {
-		fmt.Print(str)
-		output = output + str
-	})
 
-	output, err := executor.Execute()
-
-	//   assert.NoError(t, err)
-	if err != nil {
-		fmt.Println("ERROR: " + err.Error())
-	}
-
-	assert.Equal(t, `[Command]
+	expected := `[Command]
 Executing command: 'ls -a /Users/dev/temp/usr/local/share/dotnet'
 
 [Command]
@@ -132,6 +120,9 @@ Executing command: 'rm -rdf /Users/dev/temp/usr/local/share/dotnet'
 
 [Command]
 Executing command: 'mkdir -p /Users/dev/temp/usr/local/share/dotnet/host'
+
+[Command]
+Executing command: 'rm -rdf /Users/dev/temp/usr/local/share/dotnet/host'
 
 [Link]    
 Creating target directory /Users/dev/temp/usr/local/share/dotnet/host
@@ -153,7 +144,15 @@ Creating link /Users/dev/.dev-env/sdk/dotnet/3.1.202/shared/Microsoft.AspNetCore
 Creating target directory /Users/dev/temp/usr/local/share/dotnet/shared/Microsoft.AspNetCore.App
 Creating link /Users/dev/.dev-env/sdk/dotnet/3.1.202/shared/Microsoft.AspNetCore.App -> /Users/dev/temp/usr/local/share/dotnet/shared/Microsoft.AspNetCore.App/3.1.202
 
-`, output)
+`
+	var output = ""
+
+	executor := NewCommandExecutor(manifest, func(str string) {
+		output = output + str
+	})
+
+	_, _ = executor.Execute()
+	assert.Equal(t, expected, output)
 }
 
 func GetTestManifest() *Manifest {
@@ -182,6 +181,12 @@ func GetTestManifest() *Manifest {
 				Command: &DevEnvCommand{
 					Command: "mkdir",
 					Args:    []string{"-p", "/Users/dev/temp/usr/local/share/dotnet/host"},
+				},
+			},
+			Step{
+				Command: &DevEnvCommand{
+					Command: "rm",
+					Args:    []string{"-rdf", "/Users/dev/temp/usr/local/share/dotnet/host"},
 				},
 			},
 		},

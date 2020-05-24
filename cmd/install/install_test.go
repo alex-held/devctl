@@ -44,7 +44,9 @@ func TestInstallManifest(t *testing.T) {
 	executor.FS = &fs
 	executor.Options.DryRun = true
 
-	err := executor.Execute()
+	out, err := executor.Execute()
+
+	println(out)
 	assert.NoError(t, err)
 
 	err = Install(*manifest)
