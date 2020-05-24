@@ -91,39 +91,39 @@ func TestFormatWithFormatTypeTable(t *testing.T) {
 		Actual: manifest.Format(Table),
 		Expected: `
 Properties
-  Property | Value    
+  Property | Value
 ----------- ----------
-  Version  | 3.2.202  
-  SDK      | dotnet   
+  Version  | 3.2.202
+  SDK      | dotnet
 
 Variables
-  Variables        | Value                                                                                                                                                            
+  Variables        | Value
 ------------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  [[_home]]        | /Users/dev/.dev-env                                                                                                                                              
-  [[_manifests]]   | /Users/dev/.dev-env/manifests                                                                                                                                    
-  [[_sdks]]        | /Users/dev/.dev-env/sdk                                                                                                                                          
-  [[home]]         | /Users/dev                                                                                                                                                       
-  [[install-root]] | /Users/dev/.dev-env/sdk/dotnet/3.2.202                                                                                                                           
-  [[link-root]]    | /usr/local/share/dotnet                                                                                                                                          
-  [[sdk]]          | dotnet                                                                                                                                                           
-  [[url]]          | https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz  
-  [[version]]      | 3.2.202                                                                                                                                                          
+  [[_home]]        | /Users/dev/.dev-env
+  [[_manifests]]   | /Users/dev/.dev-env/manifests
+  [[_sdks]]        | /Users/dev/.dev-env/sdk
+  [[home]]         | /Users/dev
+  [[install-root]] | /Users/dev/.dev-env/sdk/dotnet/3.2.202
+  [[link-root]]    | /usr/local/share/dotnet
+  [[sdk]]          | dotnet
+  [[url]]          | https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz
+  [[version]]      | 3.2.202
 
 Links
-  Source                                                                 | Target                                                           
+  Source                                                                 | Target
 ------------------------------------------------------------------------- ------------------------------------------------------------------
-  /Users/dev/.dev-env/sdk/dotnet/3.2.202/host/fxr                        | /usr/local/share/dotnet/host/fxr                                 
-  /Users/dev/.dev-env/sdk/dotnet/3.2.202/sdk/3.2.202                     | /usr/local/share/dotnet/sdk/3.2.202                              
-  /Users/dev/.dev-env/sdk/dotnet/3.2.202/shared/Microsoft.NETCore.App    | /usr/local/share/dotnet/shared/Microsoft.NETCore.App/3.2.202     
-  /Users/dev/.dev-env/sdk/dotnet/3.2.202/shared/Microsoft.AspNetCore.All | /usr/local/share/dotnet/shared/Microsoft.AspNetCore.All/3.2.202  
-  /Users/dev/.dev-env/sdk/dotnet/3.2.202/shared/Microsoft.AspNetCore.App | /usr/local/share/dotnet/shared/Microsoft.AspNetCore.App/3.2.202  
+  /Users/dev/.dev-env/sdk/dotnet/3.2.202/host/fxr                        | /usr/local/share/dotnet/host/fxr
+  /Users/dev/.dev-env/sdk/dotnet/3.2.202/sdk/3.2.202                     | /usr/local/share/dotnet/sdk/3.2.202
+  /Users/dev/.dev-env/sdk/dotnet/3.2.202/shared/Microsoft.NETCore.App    | /usr/local/share/dotnet/shared/Microsoft.NETCore.App/3.2.202
+  /Users/dev/.dev-env/sdk/dotnet/3.2.202/shared/Microsoft.AspNetCore.All | /usr/local/share/dotnet/shared/Microsoft.AspNetCore.All/3.2.202
+  /Users/dev/.dev-env/sdk/dotnet/3.2.202/shared/Microsoft.AspNetCore.App | /usr/local/share/dotnet/shared/Microsoft.AspNetCore.App/3.2.202
 
 Instructions
-  Order | Command                                                                                                                                                               
+  Order | Command
 -------- -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      0 | mkdir -p /Users/dev/.dev-env/sdk/dotnet/3.2.202                                                                                                                       
-      1 | curl https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz  
-        | tar -C /Users/dev/.dev-env/sdk/dotnet/3.2.202 -x                                                                                                                      
+      0 | mkdir -p /Users/dev/.dev-env/sdk/dotnet/3.2.202
+      1 | curl https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz
+        | tar -C /Users/dev/.dev-env/sdk/dotnet/3.2.202 -x
 `,
 	}
 

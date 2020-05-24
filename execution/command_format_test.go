@@ -93,7 +93,7 @@ func TestLinkCommand_Format_When_Target_Directory_Not_Exists(t *testing.T) {
 		Target: "/target/dotnet/host/fxr",
 	}
 
-	test := NewInstructingFormatTest(link, fmt.Sprintf(`[Link]    
+	test := NewInstructingFormatTest(link, fmt.Sprintf(`[Link]
 Creating target directory %s
 Creating link %s -> %s
 
@@ -109,7 +109,7 @@ func TestLinkCommand_Format_When_Target_Directory_Already_Exists(t *testing.T) {
 		Target: "/target/dotnet/host/fxr",
 	}
 
-	test := NewInstructingFormatTest(link, fmt.Sprintf(`[Link]    
+	test := NewInstructingFormatTest(link, fmt.Sprintf(`[Link]
 Creating link %s -> %s
 
 `, link.Source, link.Target), func(tst InstructingFormatTest) {
@@ -136,23 +136,23 @@ Executing command: 'mkdir -p /Users/dev/temp/usr/local/share/dotnet/host'
 [Command]
 Executing command: 'rm -rdf /Users/dev/temp/usr/local/share/dotnet/host'
 
-[Link]    
+[Link]
 Creating target directory /Users/dev/temp/usr/local/share/dotnet/host
 Creating link /Users/dev/.dev-env/sdk/dotnet/3.1.202/host/fxr -> /Users/dev/temp/usr/local/share/dotnet/host/fxr
 
-[Link]    
+[Link]
 Creating target directory /Users/dev/temp/usr/local/share/dotnet/sdk
 Creating link /Users/dev/.dev-env/sdk/dotnet/3.1.202/sdk/3.1.202 -> /Users/dev/temp/usr/local/share/dotnet/sdk/3.1.202
 
-[Link]    
+[Link]
 Creating target directory /Users/dev/temp/usr/local/share/dotnet/shared/Microsoft.NETCore.App
 Creating link /Users/dev/.dev-env/sdk/dotnet/3.1.202/shared/Microsoft.NETCore.App -> /Users/dev/temp/usr/local/share/dotnet/shared/Microsoft.NETCore.App/3.1.202
 
-[Link]    
+[Link]
 Creating target directory /Users/dev/temp/usr/local/share/dotnet/shared/Microsoft.AspNetCore.All
 Creating link /Users/dev/.dev-env/sdk/dotnet/3.1.202/shared/Microsoft.AspNetCore.All -> /Users/dev/temp/usr/local/share/dotnet/shared/Microsoft.AspNetCore.All/3.1.202
 
-[Link]    
+[Link]
 Creating target directory /Users/dev/temp/usr/local/share/dotnet/shared/Microsoft.AspNetCore.App
 Creating link /Users/dev/.dev-env/sdk/dotnet/3.1.202/shared/Microsoft.AspNetCore.App -> /Users/dev/temp/usr/local/share/dotnet/shared/Microsoft.AspNetCore.App/3.1.202
 
