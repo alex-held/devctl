@@ -85,6 +85,7 @@ func TestFormatAsTree(t *testing.T) {
 }
 
 func TestFormatWithFormatTypeTable(t *testing.T) {
+
 	test := FormatTest{
 		t:      t,
 		Actual: manifest.Format(Table),

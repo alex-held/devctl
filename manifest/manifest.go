@@ -78,7 +78,6 @@ func ResolveTemplateValues(val string, resolved map[string]string) map[string]st
 	}
 
 	predefinedVariables := GetPredefinedVariables()
-
 	for ContainsTemplate(val) {
 		template, _ := GetTemplate(val)
 
@@ -88,7 +87,7 @@ func ResolveTemplateValues(val string, resolved map[string]string) map[string]st
 		}
 
 		// try resolve value using predefined variables
-		if templateValue, ok := predefinedVariables[template]; ok { // add predefined variable to resolved
+		if templateValue, ok := predefinedVariables[template]; ok { // add predefined value to resolved
 			if tValue, ok := resolved[template]; !ok {
 				resolved[template] = tValue
 			}
@@ -107,7 +106,6 @@ func ResolveTemplateValues(val string, resolved map[string]string) map[string]st
 			continue
 		}
 	}
-
 	return resolved
 }
 
@@ -121,7 +119,7 @@ func (m *Manifest) populateVariables() StringMap {
 		value := variable.Value
 
 		// allow manual override of default variables
-		if key == "home" || key == "_home" || key == "_sdks" || key == "_installers" || key == "_manifests" {
+		if key == "home" || key == "_home" || key == "_sdk" || key == "_manifests" {
 			predefined[templateStart+key+templateEnd] = value
 		}
 	}

@@ -29,7 +29,18 @@ func (test *InstructingFormatTest) MkDir(dirs ...string) {
 func NewInstructingFormatTest(i interface{}, expected string, after func(t InstructingFormatTest)) InstructingFormatTest {
 	sb := strings.Builder{}
 
-	m := Manifest{}
+	m := Manifest{
+		Variables: Variables{
+			{
+				Key:   "home",
+				Value: "/some/user/home",
+			},
+			{
+				Key:   "_home",
+				Value: "custom-dev-env-prefix",
+			},
+		},
+	}
 	switch instruction := i.(type) {
 	case DevEnvCommand:
 		m.Instructions = Instructions{
@@ -67,12 +78,11 @@ func NewInstructingFormatTest(i interface{}, expected string, after func(t Instr
 }
 
 func (test *InstructingFormatTest) Run(t *testing.T) {
-	out, err := test.Executor.Execute()
+	_, err := test.Executor.Execute()
 	assert.NoError(t, err)
 	actual := test.Output.String()
 	fmt.Printf("<EXPECTED>\n%s-\n", test.Expected)
 	fmt.Printf("<ACTUAL>\n%s-\n", actual)
-	fmt.Printf("<OUT>\n%s-\n", out)
 	assert.Equal(t, test.Expected, actual)
 }
 
@@ -105,6 +115,8 @@ Creating link %s -> %s
 `, link.Source, link.Target), func(tst InstructingFormatTest) {
 		tst.MkDir("/target/dotnet/host")
 	})
+
+	test.Executor.Manifest.Variables = append(test.Executor.Manifest.Variables, Variable{Key: "home", Value: "/some/user/home"})
 
 	test.Run(t)
 }
