@@ -1,5 +1,7 @@
 # dev-env
 
+[![Run on Repl.it](https://repl.it/badge/github/alex-held/dev-env)](https://repl.it/github/alex-held/dev-env)
+
 This tool will help you manage different sdk, PATH-variables, machine specific
 setups and so on. It is currently maintained and is under constant change.
 
