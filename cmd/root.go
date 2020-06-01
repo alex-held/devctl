@@ -14,17 +14,17 @@ var rootCmd = &cobra.Command{
 	Short: "A lightweight dev-environment manager/bootstrapper.",
 	Long: `dev-env can manage all kinds of sdks, runtime dependencies, plugins, EnvVars and directories.
 Examples and usage of using your application. For example:
-	
+
 dev-env install java 14.0.1
 
 dev-env current java
 
 dev-env config view
-	
+
 dev-env list
-	
+
 dev-env list dotnet
-	
+
 dev-env use go 1.14.x
 `,
 }
