@@ -1,14 +1,14 @@
 package main
 
 import (
-	"flag"
-	"fmt"
-	api "github.com/alex-held/dev-env/api/config"
-	"github.com/thatisuday/commando"
-	"os"
-	"path"
+	"github.com/alex-held/dev-env/cmd"
 )
 
+func main() {
+	cmd.Execute()
+}
+
+/*
 func main() {
 
 	commando.
@@ -51,7 +51,7 @@ func main() {
 			       default:
 			           fmt.Errorf("%v is not a valid sdk", sdk)
 			           os.Exit(1)
-			       }*/
+			       }
 
 			config, err := api.LoadConfig()
 
@@ -67,8 +67,8 @@ func main() {
 				os.Exit(1)
 			}
 
-			/*   fmt.Printf("sdk = %v", sdk)
-			     fmt.Printf("directory = %v", directory)*/
+			   fmt.Printf("sdk = %v", sdk)
+			     fmt.Printf("directory = %v", directory)
 
 		})
 
@@ -88,3 +88,6 @@ func main() {
 
 	fmt.Printf("textPtr: %s, metricPtr: %s, uniquePtr: %t\n", *textPtr, *metricPtr, *uniquePtr)
 }
+
+
+*/
