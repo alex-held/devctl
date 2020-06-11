@@ -11,71 +11,51 @@ import (
 )
 
 
-type VersionAPITest struct {
-    sdk string
+type SDKAPITest struct {
     body string
-    expectedVersions []string
+    expectedSDKs []string
 }
-type VersionAPITests []VersionAPITest
+type SDKAPITests []SDKAPITest
 
-func TestGetVersionFiles(t *testing.T) {
-    tests := VersionAPITests{
+func TestGetSDK(t *testing.T) {
+    tests := SDKAPITests{
         {
-            sdk:              "dotnet",
-            body:             "[{\"name\":\"3.1.202.yaml\",\"path\":\"sdk/dotnet/3.1.202.yaml\",\"sha\":\"ab4c4abcc41fed88d6e7ba56c8c8db094b448c04\",\"size\":1184,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet/3.1.202.yaml?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/blob/master/sdk/dotnet/3.1.202.yaml\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/blobs/ab4c4abcc41fed88d6e7ba56c8c8db094b448c04\",\"download_url\":\"https://raw.githubusercontent.com/alex-held/dev-env-registry/master/sdk/dotnet/3.1.202.yaml\",\"type\":\"file\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet/3.1.202.yaml?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/blobs/ab4c4abcc41fed88d6e7ba56c8c8db094b448c04\",\"html\":\"https://github.com/alex-held/dev-env-registry/blob/master/sdk/dotnet/3.1.202.yaml\"}}]",
-            expectedVersions: []string{"3.1.202"},
+            body:             "[{\"name\":\"dotnet\",\"path\":\"sdk/dotnet\",\"sha\":\"859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"size\":0,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"download_url\":null,\"type\":\"dir\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"html\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\"}},{\"name\":\"java\",\"path\":\"sdk/java\",\"sha\":\"859e4a060e287c06f777da09fbf8fe51dc4afc92\",\"size\":0,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/java?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/java\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc92\",\"download_url\":null,\"type\":\"dir\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/java?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc92\",\"html\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/java\"}}]",
+            expectedSDKs: []string{"dotnet", "java"},
+        },
+        {
+            body:             "[{\"name\":\"dotnet\",\"path\":\"sdk/dotnet\",\"sha\":\"859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"size\":0,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"download_url\":null,\"type\":\"dir\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"html\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\"}}]",
+            expectedSDKs: []string{"dotnet"},
         },
     }
-    tests.Run(t,  VersionAPI.GetSDKVersionFiles)
-}
-
-func TestGetVersions(t *testing.T) {
-    tests := VersionAPITests{
-        {
-            sdk:              "dotnet",
-            body:             "[{\"name\":\"3.1.202.yaml\",\"path\":\"sdk/dotnet/3.1.202.yaml\",\"sha\":\"ab4c4abcc41fed88d6e7ba56c8c8db094b448c04\",\"size\":1184,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet/3.1.202.yaml?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/blob/master/sdk/dotnet/3.1.202.yaml\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/blobs/ab4c4abcc41fed88d6e7ba56c8c8db094b448c04\",\"download_url\":\"https://raw.githubusercontent.com/alex-held/dev-env-registry/master/sdk/dotnet/3.1.202.yaml\",\"type\":\"file\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet/3.1.202.yaml?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/blobs/ab4c4abcc41fed88d6e7ba56c8c8db094b448c04\",\"html\":\"https://github.com/alex-held/dev-env-registry/blob/master/sdk/dotnet/3.1.202.yaml\"}}]",
-            expectedVersions: []string{"3.1.202"},
-        },
-    }
-    tests.Run(t,  VersionAPI.GetSDKVersions)
+    tests.Run(t,  SDKApi.GetSDKs)
 }
 
 
 
-func (test VersionAPITests) Run(t *testing.T, sut interface{}) {
-    createTestRegistry := func (test VersionAPITest, t *testing.T, ) ( RegistryAPI,  *httptest.Server)  {
+
+func (test SDKAPITests) Run(t *testing.T, sut interface{}) {
+    createTestRegistry := func (test SDKAPITest, t *testing.T, ) ( RegistryAPI,  *httptest.Server)  {
         handler := func(w http.ResponseWriter, r *http.Request) {
-            expectedPath := fmt.Sprintf("/content/sdk/%s", test.sdk)
+            expectedPath := fmt.Sprintf("/content/sdk")
             assert.Equal(t, expectedPath, r.URL.Path)
             w.Header().Set("Content-Type", "application/json")
             _, _ = io.WriteString(w, test.body)
         }
         server := httptest.NewServer(http.HandlerFunc(handler))
         return GithubRegistryApiClient{
-            baseUrl: server.URL,
+            baseUrl: server.URL + "repos/alex-held/dev-env-registry",
         }, server
     }
-    action := func(apiTest VersionAPITest) {
+    action := func(apiTest SDKAPITest) {
         api, ts := createTestRegistry(apiTest, t)
         defer ts.Close()
         switch actualSut := sut.(type) {
-        case func(api VersionAPI, s string) ([]string, error):
-            actual, err := actualSut(api, apiTest.sdk)
+        case func(api SDKApi) ([]string, error):
+            actual, err := actualSut(api)
             assert.NoError(t, err)
-            for _, version := range apiTest.expectedVersions {
-                assert.Contains(t, actual, version)
-            }
-        case func(api VersionAPI , s string) ([]GitHubFile, error):
-            actual, err := actualSut(api, apiTest.sdk)
-            assert.NoError(t, err)
-            var versions []string
-
-            for _, file := range actual {
-                versions = append(versions, file.Name)
-            }
-            for _, version := range apiTest.expectedVersions {
-                expectedFileName := version + ".yaml"
-                assert.Contains(t, versions, expectedFileName)
+            for _, sdk := range apiTest.expectedSDKs {
+                assert.Contains(t, actual, sdk)
             }
         default:
             t.FailNow()

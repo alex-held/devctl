@@ -4,9 +4,20 @@ import (
     "encoding/json"
     "io/ioutil"
     "net/http"
+    "net/url"
     "strings"
 )
 
+type api interface {
+    getUrl(path string, segements ...string) *url.URL
+    getContentUrl(paths ...string) *url.URL
+    getGitUrl(paths ...string) *url.URL
+    getFiles(uri *url.URL) (files []GitHubFile, err error)
+}
+type VersionAPI interface {
+    GetSDKVersionFiles(sdk string) (content []GitHubFile, err error)
+    GetSDKVersions(sdk string) (versions []string, err error)
+}
 
 func (client GithubRegistryApiClient) GetSDKVersionFiles(sdk string) (files []GitHubFile, err error) {
     var response *http.Response
@@ -40,9 +51,4 @@ func (client GithubRegistryApiClient) GetSDKVersions(sdk string) (versions []str
         versions = append(versions, version)
     }
     return versions, nil
-}
-
-type VersionAPI interface {
-    GetSDKVersionFiles(sdk string) (content []GitHubFile, err error)
-    GetSDKVersions(sdk string) (versions []string, err error)
 }
