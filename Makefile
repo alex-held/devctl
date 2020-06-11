@@ -1,6 +1,8 @@
 install_deps:
 	go mod download
 
+build:
+	go build
 # Standard go test
 test:
 	go test ./... -v -race
