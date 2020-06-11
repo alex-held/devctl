@@ -3,7 +3,6 @@ package install
 import (
 	"fmt"
 	"github.com/alex-held/dev-env/config"
-	. "github.com/alex-held/dev-env/execution"
 	. "github.com/alex-held/dev-env/manifest"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
@@ -22,7 +21,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		executeInstall(afero.NewOsFs(), args)
+		ExecuteInstall(afero.NewOsFs(), args)
 	},
 }
 
@@ -48,9 +47,9 @@ func (provider *SDKProvider) GetLatestVersion(sdk string) string {
 
 //Install
 func Install(manifest Manifest) error {
-	executor := NewCommandExecutor(&manifest, func(str string) {
-		fmt.Print(str)
-	})
+    var cmdSrc Commandource = manifest
+	executor := NewCommandExecutor(cmdSrc)
+
 	out, err := executor.Execute()
 	println(out)
 	if err != nil {
@@ -60,7 +59,7 @@ func Install(manifest Manifest) error {
 	return nil
 }
 
-func executeInstall(fs afero.Fs, args []string) {
+func ExecuteInstall(fs afero.Fs, args []string) {
 	cfg, err := config.ReadConfigFromFile(fs, "config.json")
 	_ = DefaultPaths.GetManifests()
 	if cfg == nil {

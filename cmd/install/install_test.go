@@ -1,12 +1,11 @@
-package install
+package install_test
 
 import (
+	. "github.com/alex-held/dev-env/cmd/install"
 	. "github.com/alex-held/dev-env/config"
-	"github.com/alex-held/dev-env/execution"
 	. "github.com/alex-held/dev-env/manifest"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
-	"strings"
 	"testing"
 )
 
@@ -25,7 +24,7 @@ func TestInstallAddsSDKToConfig(t *testing.T) {
 		},
 	}})
 
-	executeInstall(fs, []string{"dotnet", "3.1.100"})
+	ExecuteInstall(fs, []string{"dotnet", "3.1.100"})
 	config, _ := ReadConfigFromFile(fs, "config.json")
 	a.Len(config.Sdks, 2)
 	dotnetSDK := config.Sdks[1]
@@ -36,23 +35,17 @@ func TestInstallAddsSDKToConfig(t *testing.T) {
 
 func TestInstallManifest(t *testing.T) {
 	manifest := GetTestManifest()
-	sb := strings.Builder{}
-	fs := afero.NewMemMapFs()
-	executor := execution.NewCommandExecutor(manifest, func(str string) {
-		sb.WriteString(str)
-	})
-	executor.FS = &fs
-	executor.Options.DryRun = true
+	executor := NewCommandExecutor(&manifest)
 
 	out, err := executor.Execute()
 
 	println(out)
 	assert.NoError(t, err)
 
-	err = Install(*manifest)
+	err = Install(manifest)
 }
 
-func GetTestManifest() *Manifest {
+func GetTestManifest() Manifest {
 	m := Manifest{
 		Version: "3.1.202",
 		SDK:     "dotnet",
@@ -90,5 +83,14 @@ func GetTestManifest() *Manifest {
 		},
 	}
 
-	return &m
+	return m
+}
+
+func TestInstallWorks(t *testing.T) {
+	var  manifest Commandource = GetTestManifest()
+	executor := NewCommandExecutor(manifest)
+
+    execute, err := executor.Execute()
+    assert.NoError(t, err)
+    assert.NotEmpty(t, execute)
 }

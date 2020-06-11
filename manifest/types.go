@@ -2,7 +2,13 @@ package manifest
 
 type InstructionType int
 type Variables []Variable
+
 type Instructions []Step
+
+type Step struct {
+    Command *DevEnvCommand  `json:"command,omitempty"`
+    Pipe    []DevEnvCommand `json:"pipe,omitempty"`
+}
 
 func (v *Variables) ToMap() StringMap {
 	result := StringMap{}
@@ -11,11 +17,6 @@ func (v *Variables) ToMap() StringMap {
 		result[variable.Key] = variable.Value
 	}
 	return result
-}
-
-type Instructing interface {
-	Format() string
-	Resolve(variables Variables) Instructing
 }
 
 type StringSliceStringMap map[string]interface{}
@@ -49,38 +50,18 @@ func (v Variables) Less(i, j int) bool {
 	return v[i].Key < v[j].Key
 }
 
-type Link struct {
-	Source string `json:"source"`
-	Target string `json:"target"`
-}
+/*
 
-type Step struct {
-	Command *DevEnvCommand  `json:"command,omitempty"`
-	Pipe    []DevEnvCommand `json:"pipe,omitempty"`
+func (step *Step) ToInstruction() *Pipe {
+    if step.Pipe != nil {
+        return Pipe{Commands: step.Pipe}
+    }
+    if step.Command != nil {
+        return DevEnvCommand{
+            Command: step.Command.Command,
+            Args:    step.Command.Args,
+        }
+    }
+    return nil
 }
-
-type DevEnvCommand struct {
-	Command string   `json:"command,omitempty"`
-	Args    []string `json:"args,omitempty"`
-}
-
-type LinkCommand struct {
-	Link Link
-}
-
-type Pipe struct {
-	Commands []DevEnvCommand `json:"commands, omitempty"`
-}
-
-func (step *Step) ToInstruction() Instructing {
-	if step.Pipe != nil {
-		return Pipe{Commands: step.Pipe}
-	}
-	if step.Command != nil {
-		return DevEnvCommand{
-			Command: step.Command.Command,
-			Args:    step.Command.Args,
-		}
-	}
-	return nil
-}
+*/

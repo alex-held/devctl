@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/alex-held/dev-env/config"
-	"github.com/spf13/afero"
+    scriptish "github.com/ganbarodigital/go_scriptish"
+    "github.com/spf13/afero"
 	"gopkg.in/yaml.v2"
 	. "path"
 	"sort"
@@ -198,12 +199,38 @@ func (m *Manifest) ResolveVariables() StringMap {
 	return variables
 }
 
+
+func (cmd Manifest) GetInstructions() []Command {
+    var result []Command
+    for _, step := range cmd.resolveInstallationInstructions() {
+        if step.Command != nil {
+            cmd := step.Command
+            result = append(result, PipelineCommand{
+                Commands:    scriptish.NewSequence(scriptish.Exec(append([]string{cmd.Command}, cmd.Args...)...)),
+                CommandType: Single,
+            })
+        } else if step.Pipe != nil {
+            for _, step := range step.Pipe {
+                cmd := step
+                result = append(result, PipelineCommand{
+                    Commands:    scriptish.NewSequence(scriptish.Exec(append([]string{cmd.Command}, cmd.Args...)...)),
+                    CommandType: Single,
+                })
+            }
+        } else {
+            panic("Only  step.Command step.Pipe supported yet")
+        }
+    }
+    return result
+}
+
+
 func (m *Manifest) VariableMap() map[string]string {
 	return m.Variables.ToMap()
 }
 
 /*
-func (m Manifest) ResolveCommands() []Instructing {
+func (m Source) ResolveCommands() []Instructing {
     variables := m.ResolveVariables()
     var result []Instructing
 
@@ -249,20 +276,20 @@ func (m Manifest) ResolveCommands() []Instructing {
         return fmt.Sprintf("%+v", i)
     }
 }*/
-
+/*
 func (pipe Pipe) Format() string {
-	sb := strings.Builder{}
-	maxIdx := len(pipe.Commands) - 1
+    sb := strings.Builder{}
+    maxIdx := len(pipe.Commands) - 1
 
-	for idx, command := range pipe.Commands {
-		formatted := command.Format()
-		sb.WriteString(formatted)
-		if idx < maxIdx {
-			sb.WriteString(" | ")
-		}
-	}
+    for idx, command := range pipe.Commands {
+        formatted := command.Format()
+        sb.WriteString(formatted)
+        if idx < maxIdx {
+            sb.WriteString(" | ")
+        }
+    }
 
-	return sb.String()
+    return sb.String()
 }
 
 func (cmd LinkCommand) GetCommands() []DevEnvCommand {
@@ -287,15 +314,7 @@ func (cmd LinkCommand) Format() string {
 		sb.WriteString(fmt.Sprintf("%s; ", command.Format()))
 	}
 	return sb.String()
-}
-
-func (cmd DevEnvCommand) Format() string {
-	command := cmd.Command
-	for _, arg := range cmd.Args {
-		command += fmt.Sprintf(" %s", arg)
-	}
-	return command
-}
+}*/
 
 func readJson(text string, manifest *Manifest) (*Manifest, error) {
 	err := json.Unmarshal([]byte(text), manifest)

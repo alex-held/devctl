@@ -60,24 +60,23 @@ func (m *Manifest) FormatAsTree() string {
 	for _, link := range m.resolveLinks() {
 		links.Add(fmt.Sprintf("%+v", link))
 	}
+	/*
+	   for idx, cliExe := range m.resolveInstallationInstructions() {
+	       instruction := gotree.New(fmt.Sprintf("%d", idx))
+	       switch command := cliExe.(type) {
+	       case types.DevEnvCommand:
+	           formatted := fmt.Sprintf("%s", command.Format())
+	           instruction.Add(formatted)
+	       case Pipe:
+	           for _, command := range command.Commands {
+	               formatted := fmt.Sprintf("%s", command.Format())
+	               instruction.Add(formatted)
+	           }
+	       }
 
-	for idx, cliExec := range m.resolveInstallationInstructions() {
-		instruction := gotree.New(fmt.Sprintf("%d", idx))
-
-		switch command := cliExec.(type) {
-		case DevEnvCommand:
-			formatted := fmt.Sprintf("%s", command.Format())
-			instruction.Add(formatted)
-		case Pipe:
-			for _, command := range command.Commands {
-				formatted := fmt.Sprintf("%s", command.Format())
-				instruction.Add(formatted)
-			}
-		}
-
-		instructions.AddTree(instruction)
-	}
-
+	       instructions.AddTree(instruction)
+	   }
+	*/
 	root.AddTree(variable)
 	root.AddTree(links)
 	root.AddTree(instructions)
@@ -113,15 +112,8 @@ func (m *Manifest) formatTables() []tableFormat {
 	}, "Source", "Target")
 
 	instructions := newTableFormat("Instructions", func(table *tablewriter.Table) {
-		for i, instruction := range m.ResolveInstructions() {
-			switch instr := instruction.(type) {
-			case DevEnvCommand:
-				table.Append([]string{fmt.Sprintf("%d", i), instruction.Format()})
-			case Pipe:
-				for _, command := range instr.Commands {
-					table.Append([]string{fmt.Sprintf("%d", i), command.Format()})
-				}
-			}
+		for _, step := range m.GetInstructions() {
+			table.Append([]string{fmt.Sprintf("%d", step)})
 		}
 	}, "Order", "Command")
 
@@ -171,7 +163,7 @@ func createTable(writer *strings.Builder, appender func(appender *tablewriter.Ta
 	return table
 }
 
-// Formats the Manifest into a colorful table representation
+// Formats the Source into a colorful table representation
 func (m *Manifest) FormatTable() string {
 	sb := strings.Builder{}
 	for _, table := range m.formatTables() {

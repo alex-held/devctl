@@ -26,25 +26,25 @@ var links = []Link{
 }
 
 func TestResolveVariables(t *testing.T) {
-	a, _ := setup(t)
-	manifest := Manifest{
-		Version: "3.1.100",
-		SDK:     "dotnet",
-		Variables: Variables{
-			{Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
-			{Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
-			{Key: "link-root", Value: "/usr/local/share/dotnet"},
-		},
-		Links: nil,
-	}
+    a, _ := setup(t)
+    manifest := Manifest{
+        Version: "3.1.100",
+        SDK:     "dotnet",
+        Variables: Variables{
+            {Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
+            {Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
+            {Key: "link-root", Value: "/usr/local/share/dotnet"},
+        },
+        Links: nil,
+    }
 
-	variables := manifest.ResolveVariables()
-	a.Equal("https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz", variables["[[url]]"])
-	a.Equal(DefaultPaths.GetSdks(), variables["[[_sdks]]"])
-	a.Equal("dotnet", variables["[[sdk]]"])
-	a.Equal("3.1.100", variables["[[version]]"])
-	a.Equal("/usr/local/share/dotnet", variables["[[link-root]]"])
-	a.Equal(DefaultPaths.GetSdks()+"/"+"dotnet"+"/"+"3.1.100", variables["[[install-root]]"])
+    variables := manifest.ResolveVariables()
+    a.Equal("https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz", variables["[[url]]"])
+    a.Equal(DefaultPaths.GetSdks(), variables["[[_sdks]]"])
+    a.Equal("dotnet", variables["[[sdk]]"])
+    a.Equal("3.1.100", variables["[[version]]"])
+    a.Equal("/usr/local/share/dotnet", variables["[[link-root]]"])
+    a.Equal(DefaultPaths.GetSdks()+"/"+"dotnet"+"/"+"3.1.100", variables["[[install-root]]"])
 }
 
 func TestManifest_ResolveCommands(t *testing.T) {
@@ -80,9 +80,9 @@ func TestManifest_ResolveCommands(t *testing.T) {
 		Links: links,
 	}
 
-	resolvedCommands := manifest.ResolveInstructions()
-	a.Equal(fmt.Sprintf("mkdir -p %s", installRoot), resolvedCommands[0].Format())
-	a.Equal(fmt.Sprintf("curl %s | tar -C %s -x", url, installRoot), resolvedCommands[1].Format())
+	resolvedCommands := manifest.resolveInstallationInstructions()
+	a.Equal(fmt.Sprintf("mkdir -p %s", installRoot), resolvedCommands[0])
+	a.Equal(fmt.Sprintf("curl %s | tar -C %s -x", url, installRoot), resolvedCommands[1])
 }
 
 func TestManifest_ResolveLinks(t *testing.T) {
