@@ -4,14 +4,14 @@ import (
     "bufio"
     "bytes"
     "fmt"
-    _ "github.com/ganbarodigital/go_pipe/v5"
-    scriptish "github.com/ganbarodigital/go_scriptish"
-    "github.com/spf13/afero"
     "os"
     "os/exec"
     "strconv"
     "strings"
     "testing"
+    _ "github.com/ganbarodigital/go_pipe/v5"
+    scriptish "github.com/ganbarodigital/go_scriptish"
+    "github.com/spf13/afero"
 )
 
 type CommandType = int
@@ -110,9 +110,6 @@ func (d DevEnvCommand) GetPipeline() (cmd PipelineCommand) {
     return cmd
 }
 
-func (d DevEnvCommand) WriteTo(writer bufio.Writer) (err error) {
-    panic("implement me")
-}
 
 type Link struct {
     Source string `json:"source"`
@@ -129,24 +126,17 @@ func (p Pipe) GetPipeline() PipelineCommand {
     panic("implement me")
 }
 
-func (p Pipe) WriteTo(writer bufio.Writer) (err error) {
-    panic("implement me")
-}
 
 func (p Pipe) Execute(writer bufio.Writer) (err error) {
     panic("implement me")
 }
 
 func (p Pipe) GetCommandType() CommandType {
-    panic("implement me")
+    return Piped
 }
 
 type LinkCommand struct {
     Link Link
-}
-
-func (d LinkCommand) GetPipeline() PipelineCommand {
-    panic("implement me")
 }
 
 func (d LinkCommand) Execute(writer bufio.Writer) (err error) {
@@ -154,12 +144,9 @@ func (d LinkCommand) Execute(writer bufio.Writer) (err error) {
 }
 
 func (d LinkCommand) GetCommandType() CommandType {
-    panic("implement me")
+   return Single
 }
 
-func (d LinkCommand) WriteTo(writer bufio.Writer) (err error) {
-    panic("implement me")
-}
 
 func (d DevEnvCommand) Execute(writer bufio.Writer) (err error) {
     panic("implement me")
@@ -170,6 +157,11 @@ func (d DevEnvCommand) GetCommandType() CommandType { return Single }
 type PipelineCommand struct {
     Commands *scriptish.Sequence
     CommandType
+}
+
+func (p PipelineCommand) Print() {
+    writer := bufio.NewWriter(os.Stdout)
+    _ = p.WriteTo(*writer)
 }
 
 func (p PipelineCommand) GetPipeline() PipelineCommand {

@@ -2,11 +2,11 @@ package manifest
 
 import (
     "bufio"
+    "os/exec"
+    "strings"
+
     scriptish "github.com/ganbarodigital/go_scriptish"
     "github.com/spf13/afero"
-    "os/exec"
-    . "path"
-    "strings"
 )
 
 type DefaultCommandFactory struct {
@@ -71,35 +71,4 @@ func (manager CommandExecutor) Execute() ([]byte, error) {
     }
 
    return file2, nil
-}
-
-func CreateCommands(manager CommandExecutionManager) (result []PipelineCommand) {
-    result = []PipelineCommand{}
-    //factory := manager.GetFactory()
-    for _, iCommand := range manager.GetInstructions() {
-        switch instr := iCommand.(type) {
-        case LinkCommand:
-            targetParentDirectory := Dir(instr.Link.Target)
-            result = append(result, PipelineCommand{
-                Commands: scriptish.NewPipeline(
-                scriptish.Mkdir(targetParentDirectory, 777),
-                scriptish.Exec(instr.Link.Source, instr.Link.Target),
-            ),
-                CommandType: List})
-        case Pipe:
-            for _, command := range instr.Commands {
-                args := []string{command.Command}
-                args = append(args, command.Args...)
-                result = append(result, PipelineCommand{
-                    Commands:    scriptish.NewPipeline(scriptish.Exec(args...)),
-                    CommandType: Piped,
-                },
-                )
-            }
-        default:
-            //   fmt.Sprintf("%+v", iCommand)
-            continue
-        }
-    }
-    return result
 }

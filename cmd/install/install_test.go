@@ -34,7 +34,26 @@ func TestInstallAddsSDKToConfig(t *testing.T) {
 }
 
 func TestInstallManifest(t *testing.T) {
-	manifest := GetTestManifest()
+	manifest := Manifest{
+        Version: "3.1.202",
+        SDK:     "dotnet",
+        Variables: Variables{
+            {Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
+            {Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
+            {Key: "link-root", Value: "/Users/dev/temp/usr/local/share/dotnet"},
+        },
+        Instructions: Instructions{
+            Step{
+                Command: &DevEnvCommand{
+                    Command: "ls",
+                    Args:    []string{"-a", "/Users/dev/temp/usr/local/share/dotnet"},
+                },
+            },
+        },
+        Links:     []Link{
+            {Source: "[[install-root]]/host/fxr", Target: "[[link-root]]/host/fxr"},
+        },
+    }
 	executor := NewCommandExecutor(&manifest)
 
 	out, err := executor.Execute()
