@@ -1,16 +1,16 @@
 package manifest
 
 import (
-    "bufio"
-    "fmt"
-    "github.com/spf13/afero"
-    . "github.com/stretchr/testify/assert"
+	"bufio"
+	"fmt"
+	"github.com/spf13/afero"
+	. "github.com/stretchr/testify/assert"
 
-    "os"
-    "os/exec"
-    "strconv"
-    "strings"
-    "testing"
+	"os"
+	"os/exec"
+	"strconv"
+	"strings"
+	"testing"
 )
 
 var fs = afero.NewMemMapFs()
@@ -27,39 +27,39 @@ func (factory *factory) CreateDevEnv(command DevEnvCommand) (cmd *exec.Cmd) {
 }*/
 
 func NewTestCommandExecutor(t *testing.T, src Commandource) (ex *CommandExecutionManager, reader *bufio.Reader) {
-    fs := afero.NewMemMapFs()
-    executor := CommandExecutor{
-        FS:     &fs ,
-        Source:  src,
-        Writer:  strings.Builder{},
-        Options: *NewCommandExecutorOptions(),
-        Factory: NewTestCommandFactory(),
-        Testing: t,
-    }
+	fs := afero.NewMemMapFs()
+	executor := CommandExecutor{
+		FS:      &fs,
+		Source:  src,
+		Writer:  strings.Builder{},
+		Options: *NewCommandExecutorOptions(),
+		Factory: NewTestCommandFactory(),
+		Testing: t,
+	}
 
-    var manager CommandExecutionManager = executor
+	var manager CommandExecutionManager = executor
 
-    return &manager, bufio.NewReader(strings.NewReader(""))
+	return &manager, bufio.NewReader(strings.NewReader(""))
 }
 
 func TestDevEnvCommandWithFactory(t *testing.T) {
-    source := GetTestManifest()
-    manager, _ := NewTestCommandExecutor(t, source)
+	source := GetTestManifest()
+	manager, _ := NewTestCommandExecutor(t, source)
 
-    out, err := (*manager).Execute()
+	out, err := (*manager).Execute()
 
-    NoError(t, err)
-    Equal(t, "ALEX", out)
+	NoError(t, err)
+	Equal(t, "ALEX", out)
 }
 
 func CreateCommand(command DevEnvCommand) (cmd *exec.Cmd) {
-    s := []string{command.Command}
-    s = append(s, command.Args...)
-    cs := []string{"-test.run=TestHelperProcess", "--"}
-    cs = append(cs, s...)
-    cmd = exec.Command(os.Args[0], cs...)
-    cmd.Env = []string{"GO_WANT_HELPER_PROCESS=1"}
-    return cmd
+	s := []string{command.Command}
+	s = append(s, command.Args...)
+	cs := []string{"-test.run=TestHelperProcess", "--"}
+	cs = append(cs, s...)
+	cmd = exec.Command(os.Args[0], cs...)
+	cmd.Env = []string{"GO_WANT_HELPER_PROCESS=1"}
+	return cmd
 }
 
 /*
@@ -110,92 +110,92 @@ func TestHelperProcess(t *testing.T) {
 }
 */
 func PrintTestEnvironment(t *testing.T) {
-    fmt.Printf("\n[TEST ENVIRONMENT]\n\n")
-    text := "Discovering File System"
-    line := strings.Repeat("-", len(text)+3)
-    fmt.Printf(">> %s\n%s\n", text, line)
-    err := afero.Walk(fs, "/", func(path string, info os.FileInfo, err error) error {
-        fmt.Printf("Found '%s'; IsDirectory '%v'\n", path, info.IsDir())
-        return err
-    })
-    if err != nil {
-        fmt.Printf("Error while walking FS\n%s\n", err.Error())
-        os.Exit(2)
-    }
-    fmt.Printf("\n")
+	fmt.Printf("\n[TEST ENVIRONMENT]\n\n")
+	text := "Discovering File System"
+	line := strings.Repeat("-", len(text)+3)
+	fmt.Printf(">> %s\n%s\n", text, line)
+	err := afero.Walk(fs, "/", func(path string, info os.FileInfo, err error) error {
+		fmt.Printf("Found '%s'; IsDirectory '%v'\n", path, info.IsDir())
+		return err
+	})
+	if err != nil {
+		fmt.Printf("Error while walking FS\n%s\n", err.Error())
+		os.Exit(2)
+	}
+	fmt.Printf("\n")
 }
 
 //TestHelperProcess
 func TestHelperProcess(t *testing.T) {
-    if os.Getenv("GO_WANT_HELPER_PROCESS") != "1" {
-        return
-    }
-    defer os.Exit(0)
-    args := os.Args
+	if os.Getenv("GO_WANT_HELPER_PROCESS") != "1" {
+		return
+	}
+	defer os.Exit(0)
+	args := os.Args
 
-    for len(args) > 0 {
-        if args[0] == "--" {
-            args = args[1:]
-            break
-        }
-        args = args[1:]
-    }
+	for len(args) > 0 {
+		if args[0] == "--" {
+			args = args[1:]
+			break
+		}
+		args = args[1:]
+	}
 
-    if len(args) == 0 {
-        _, _ = fmt.Fprintf(os.Stderr, "No command\n")
-        os.Exit(2)
-    }
+	if len(args) == 0 {
+		_, _ = fmt.Fprintf(os.Stderr, "No command\n")
+		os.Exit(2)
+	}
 
-    cmd, args := args[0], args[1:]
+	cmd, args := args[0], args[1:]
 
-    switch cmd {
-    case "mkdir":
-        switch len(args) {
-        case 0:
-            os.Exit(2)
-        case 1:
-            err := fs.Mkdir(args[0], 0644)
-            if err != nil {
-                _ = fmt.Errorf("Error when creating directory '%s'\n%s\n", args[0], err.Error())
-                os.Exit(2)
-            }
-        case 2:
-            err := fs.MkdirAll(args[0], 0644)
-            if err != nil {
-                _ = fmt.Errorf("Error when creating directory recurivly '%s'\n%s\n", args[0], err.Error())
-                os.Exit(2)
-            }
-        }
-    case "echo":
-        fmt.Print(strings.ToUpper(args[0]))
-    case "ln":
-        switch len(args) {
-        case 0:
-        case 1:
-            _ = fmt.Errorf("Not enough arguments. Expecting: 'ln  [-sf] <source> <target>'\n")
-            os.Exit(2)
-        case 2:
-            err := os.Link(args[0], args[1])
-            if err != nil {
-                _ = fmt.Errorf("Error when creating symlink.\nSource %s ''\n;Target: %s\n", args[0], args[1])
-                os.Exit(2)
-            }
-        case 3:
-            err := os.Symlink(args[1], args[2])
-            if err != nil {
-                _ = fmt.Errorf("Error when creating symlink.\nSource %s ''\n;Target: %s\n", args[0], args[1])
-                os.Exit(2)
-            }
-        }
-    case "exit":
-        n, _ := strconv.Atoi(args[0])
-        os.Exit(n)
-    default:
-        _, _ = fmt.Fprintf(os.Stderr, "Unknown command %q\n", cmd)
-        os.Exit(2)
-    }
+	switch cmd {
+	case "mkdir":
+		switch len(args) {
+		case 0:
+			os.Exit(2)
+		case 1:
+			err := fs.Mkdir(args[0], 0644)
+			if err != nil {
+				_ = fmt.Errorf("Error when creating directory '%s'\n%s\n", args[0], err.Error())
+				os.Exit(2)
+			}
+		case 2:
+			err := fs.MkdirAll(args[0], 0644)
+			if err != nil {
+				_ = fmt.Errorf("Error when creating directory recurivly '%s'\n%s\n", args[0], err.Error())
+				os.Exit(2)
+			}
+		}
+	case "echo":
+		fmt.Print(strings.ToUpper(args[0]))
+	case "ln":
+		switch len(args) {
+		case 0:
+		case 1:
+			_ = fmt.Errorf("Not enough arguments. Expecting: 'ln  [-sf] <source> <target>'\n")
+			os.Exit(2)
+		case 2:
+			err := os.Link(args[0], args[1])
+			if err != nil {
+				_ = fmt.Errorf("Error when creating symlink.\nSource %s ''\n;Target: %s\n", args[0], args[1])
+				os.Exit(2)
+			}
+		case 3:
+			err := os.Symlink(args[1], args[2])
+			if err != nil {
+				_ = fmt.Errorf("Error when creating symlink.\nSource %s ''\n;Target: %s\n", args[0], args[1])
+				os.Exit(2)
+			}
+		}
+	case "exit":
+		n, _ := strconv.Atoi(args[0])
+		os.Exit(n)
+	default:
+		_, _ = fmt.Fprintf(os.Stderr, "Unknown command %q\n", cmd)
+		os.Exit(2)
+	}
 
-    os.Exit(0)
+	os.Exit(0)
 }
 
 /*

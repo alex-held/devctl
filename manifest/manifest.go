@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/alex-held/dev-env/config"
-    scriptish "github.com/ganbarodigital/go_scriptish"
-    "github.com/spf13/afero"
+	scriptish "github.com/ganbarodigital/go_scriptish"
+	"github.com/spf13/afero"
 	"gopkg.in/yaml.v2"
 	. "path"
 	"sort"
@@ -199,31 +199,29 @@ func (m *Manifest) ResolveVariables() StringMap {
 	return variables
 }
 
-
 func (cmd Manifest) GetInstructions() []Command {
-    var result []Command
-    for _, step := range cmd.resolveInstallationInstructions() {
-        if step.Command != nil {
-            cmd := step.Command
-            result = append(result, PipelineCommand{
-                Commands:    scriptish.NewSequence(scriptish.Exec(append([]string{cmd.Command}, cmd.Args...)...)),
-                CommandType: Single,
-            })
-        } else if step.Pipe != nil {
-            for _, step := range step.Pipe {
-                cmd := step
-                result = append(result, PipelineCommand{
-                    Commands:    scriptish.NewSequence(scriptish.Exec(append([]string{cmd.Command}, cmd.Args...)...)),
-                    CommandType: Single,
-                })
-            }
-        } else {
-            panic("Only  step.Command step.Pipe supported yet")
-        }
-    }
-    return result
+	var result []Command
+	for _, step := range cmd.resolveInstallationInstructions() {
+		if step.Command != nil {
+			cmd := step.Command
+			result = append(result, PipelineCommand{
+				Commands:    scriptish.NewSequence(scriptish.Exec(append([]string{cmd.Command}, cmd.Args...)...)),
+				CommandType: Single,
+			})
+		} else if step.Pipe != nil {
+			for _, step := range step.Pipe {
+				cmd := step
+				result = append(result, PipelineCommand{
+					Commands:    scriptish.NewSequence(scriptish.Exec(append([]string{cmd.Command}, cmd.Args...)...)),
+					CommandType: Single,
+				})
+			}
+		} else {
+			panic("Only  step.Command step.Pipe supported yet")
+		}
+	}
+	return result
 }
-
 
 func (m *Manifest) VariableMap() map[string]string {
 	return m.Variables.ToMap()

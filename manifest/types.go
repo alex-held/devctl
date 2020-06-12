@@ -6,8 +6,8 @@ type Variables []Variable
 type Instructions []Step
 
 type Step struct {
-    Command *DevEnvCommand  `json:"command,omitempty"`
-    Pipe    []DevEnvCommand `json:"pipe,omitempty"`
+	Command *DevEnvCommand  `json:"command,omitempty"`
+	Pipe    []DevEnvCommand `json:"pipe,omitempty"`
 }
 
 func (v *Variables) ToMap() StringMap {

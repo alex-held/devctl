@@ -1,56 +1,56 @@
 package manifest
 
 import (
-    "fmt"
-    "github.com/stretchr/testify/assert"
-    "io/ioutil"
-    "testing"
+	"fmt"
+	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"testing"
 )
 
 type FormatTest struct {
-    t        *testing.T
-    Actual   string
-    Expected string
+	t        *testing.T
+	Actual   string
+	Expected string
 }
 
 var manifest = Manifest{
-    Version: "3.2.202",
-    SDK:     "dotnet",
-    Variables: Variables{
-        {Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
-        {Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
-        {Key: "link-root", Value: "/usr/local/share/dotnet"},
-    },
-    Instructions: Instructions{
-        {Command: &DevEnvCommand{Command: "mkdir", Args: []string{"-p", "[[install-root]]"}}},
-        {
-            Pipe: []DevEnvCommand{
-                {
-                    Command: "curl",
-                    Args:    []string{"[[url]]"},
-                },
-                {
-                    Command: "tar",
-                    Args:    []string{"-C", "[[install-root]]", "-x"},
-                },
-            },
-        },
-    },
-    Links: []Link{
-        {Source: "[[install-root]]/host/fxr", Target: "[[link-root]]/host/fxr"},
-        {Source: "[[install-root]]/sdk/[[version]]", Target: "[[link-root]]/sdk/[[version]]"},
-        {Source: "[[install-root]]/shared/Microsoft.NETCore.App", Target: "[[link-root]]/shared/Microsoft.NETCore.App/[[version]]"},
-        {Source: "[[install-root]]/shared/Microsoft.AspNetCore.All", Target: "[[link-root]]/shared/Microsoft.AspNetCore.All/[[version]]"},
-        {Source: "[[install-root]]/shared/Microsoft.AspNetCore.App", Target: "[[link-root]]/shared/Microsoft.AspNetCore.App/[[version]]"},
-    },
+	Version: "3.2.202",
+	SDK:     "dotnet",
+	Variables: Variables{
+		{Key: "url", Value: "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"},
+		{Key: "install-root", Value: "[[_sdks]]/[[sdk]]/[[version]]"},
+		{Key: "link-root", Value: "/usr/local/share/dotnet"},
+	},
+	Instructions: Instructions{
+		{Command: &DevEnvCommand{Command: "mkdir", Args: []string{"-p", "[[install-root]]"}}},
+		{
+			Pipe: []DevEnvCommand{
+				{
+					Command: "curl",
+					Args:    []string{"[[url]]"},
+				},
+				{
+					Command: "tar",
+					Args:    []string{"-C", "[[install-root]]", "-x"},
+				},
+			},
+		},
+	},
+	Links: []Link{
+		{Source: "[[install-root]]/host/fxr", Target: "[[link-root]]/host/fxr"},
+		{Source: "[[install-root]]/sdk/[[version]]", Target: "[[link-root]]/sdk/[[version]]"},
+		{Source: "[[install-root]]/shared/Microsoft.NETCore.App", Target: "[[link-root]]/shared/Microsoft.NETCore.App/[[version]]"},
+		{Source: "[[install-root]]/shared/Microsoft.AspNetCore.All", Target: "[[link-root]]/shared/Microsoft.AspNetCore.All/[[version]]"},
+		{Source: "[[install-root]]/shared/Microsoft.AspNetCore.App", Target: "[[link-root]]/shared/Microsoft.AspNetCore.App/[[version]]"},
+	},
 }
 
 func TestFormatAsTree(t *testing.T) {
 
-    test := FormatTest{
-        t:      t,
-        Actual: manifest.Format(Tree),
-        Expected: `dotnet-3.2.202
+	test := FormatTest{
+		t:      t,
+		Actual: manifest.Format(Tree),
+		Expected: `dotnet-3.2.202
 └── variables
 │   ├── {Key:[[_home]] Value:/Users/dev/.dev-env}
 │   ├── {Key:[[_manifests]] Value:/Users/dev/.dev-env/manifests}
@@ -74,20 +74,20 @@ func TestFormatAsTree(t *testing.T) {
         └── curl https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz
         └── tar -C /Users/dev/.dev-env/sdk/dotnet/3.2.202 -x
 `,
-    }
+	}
 
-    test.Run()
+	test.Run()
 
-    _ = ioutil.WriteFile("/Users/dev/temp/table-manifest-expected", []byte(test.Expected), 0644)
-    _ = ioutil.WriteFile("/Users/dev/temp/table-manifest-actual", []byte(test.Actual), 0644)
+	_ = ioutil.WriteFile("/Users/dev/temp/table-manifest-expected", []byte(test.Expected), 0644)
+	_ = ioutil.WriteFile("/Users/dev/temp/table-manifest-actual", []byte(test.Actual), 0644)
 }
 
 func TestFormatWithFormatTypeTable(t *testing.T) {
 
-    test := FormatTest{
-        t:      t,
-        Actual: manifest.Format(Table),
-        Expected: `
+	test := FormatTest{
+		t:      t,
+		Actual: manifest.Format(Table),
+		Expected: `
 Properties
   Property | Value    
 ----------- ----------
@@ -123,24 +123,24 @@ Instructions
       1 | curl https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz  
         | tar -C /Users/dev/.dev-env/sdk/dotnet/3.2.202 -x                                                                                                                      
 `,
-    }
+	}
 
-    test.Run()
+	test.Run()
 
-    _ = ioutil.WriteFile("/Users/dev/temp/table-manifest-expected", []byte(test.Expected), 0644)
-    _ = ioutil.WriteFile("/Users/dev/temp/table-manifest-actual", []byte(test.Actual), 0644)
+	_ = ioutil.WriteFile("/Users/dev/temp/table-manifest-expected", []byte(test.Expected), 0644)
+	_ = ioutil.WriteFile("/Users/dev/temp/table-manifest-actual", []byte(test.Actual), 0644)
 }
 
 func (test *FormatTest) Run() {
-    actual := test.Actual
-    expected := test.Expected
+	actual := test.Actual
+	expected := test.Expected
 
-    fmt.Printf("<EXPECTED> %d\n", len(expected))
-    fmt.Println(expected)
-    fmt.Println()
+	fmt.Printf("<EXPECTED> %d\n", len(expected))
+	fmt.Println(expected)
+	fmt.Println()
 
-    fmt.Printf("<ACTUAL> %d\n", len(actual))
-    fmt.Println(actual)
-    fmt.Println()
-    assert.Equal(test.t, expected, actual)
+	fmt.Printf("<ACTUAL> %d\n", len(actual))
+	fmt.Println(actual)
+	fmt.Println()
+	assert.Equal(test.t, expected, actual)
 }

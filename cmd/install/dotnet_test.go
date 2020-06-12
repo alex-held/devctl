@@ -38,7 +38,7 @@ type MockCommand struct {
 	UnixCommand
 }
 
-func (cmd *MockCommand)execute() string {
+func (cmd *MockCommand) execute() string {
 	command := cmd.Render()
 	return command
 }

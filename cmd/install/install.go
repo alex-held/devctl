@@ -47,7 +47,7 @@ func (provider *SDKProvider) GetLatestVersion(sdk string) string {
 
 //Install
 func Install(manifest Manifest) error {
-    var cmdSrc Commandource = manifest
+	var cmdSrc Commandource = manifest
 	executor := NewCommandExecutor(cmdSrc)
 
 	out, err := executor.Execute()
