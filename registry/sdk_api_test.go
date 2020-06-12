@@ -1,68 +1,97 @@
 package registry
 
 import (
-    "fmt"
-    "io"
-    "net/http"
-    "net/http/httptest"
-    "testing"
+	. "fmt"
+	"reflect"
+	"testing"
 
-    "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
 )
 
-
-type SDKAPITest struct {
-    body string
-    expectedSDKs []string
+type Test struct {
+	RegistryAPI
+	ApiTestBase
+	Client   TestRegistryApiClient
+	Args     []interface{}
+	Expected interface{}
 }
-type SDKAPITests []SDKAPITest
+type Tests = []Test
 
-func TestGetSDK(t *testing.T) {
-    tests := SDKAPITests{
-        {
-            body:             "[{\"name\":\"dotnet\",\"path\":\"sdk/dotnet\",\"sha\":\"859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"size\":0,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"download_url\":null,\"type\":\"dir\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"html\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\"}},{\"name\":\"java\",\"path\":\"sdk/java\",\"sha\":\"859e4a060e287c06f777da09fbf8fe51dc4afc92\",\"size\":0,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/java?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/java\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc92\",\"download_url\":null,\"type\":\"dir\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/java?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc92\",\"html\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/java\"}}]",
-            expectedSDKs: []string{"dotnet", "java"},
-        },
-        {
-            body:             "[{\"name\":\"dotnet\",\"path\":\"sdk/dotnet\",\"sha\":\"859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"size\":0,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"download_url\":null,\"type\":\"dir\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"html\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\"}}]",
-            expectedSDKs: []string{"dotnet"},
-        },
-    }
-    tests.Run(t,  SDKApi.GetSDKs)
+type TestSuite struct {
+	Tests
+	Testing    *testing.T
+	resultType reflect.Type
+	receiver   reflect.Type
+	assert     func(t *testing.T, expected interface{}, actual interface{})
 }
 
+func NewTest(t *testing.T, expected interface{}, path string, body string, args ...interface{}) Test {
+	testBase := ApiTestBase{
+		Body:         body,
+		ExpectedPath: path,
+	}
 
+	client := CreateTestRegistry(testBase, t)
+	r := Test{
+		RegistryAPI: client.client,
+		ApiTestBase: ApiTestBase{
+			Body:         body,
+			ExpectedPath: path,
+		},
+		Args:     args,
+		Expected: expected,
+		Client:   client,
+	}
+	return r
+}
 
+func TestSuiteWorks(t *testing.T) {
 
-func (test SDKAPITests) Run(t *testing.T, sut interface{}) {
-    createTestRegistry := func (test SDKAPITest, t *testing.T, ) ( RegistryAPI,  *httptest.Server)  {
-        handler := func(w http.ResponseWriter, r *http.Request) {
-            expectedPath := fmt.Sprintf("/content/sdk")
-            assert.Equal(t, expectedPath, r.URL.Path)
-            w.Header().Set("Content-Type", "application/json")
-            _, _ = io.WriteString(w, test.body)
-        }
-        server := httptest.NewServer(http.HandlerFunc(handler))
-        return GithubRegistryApiClient{
-            baseUrl: server.URL + "repos/alex-held/dev-env-registry",
-        }, server
-    }
-    action := func(apiTest SDKAPITest) {
-        api, ts := createTestRegistry(apiTest, t)
-        defer ts.Close()
-        switch actualSut := sut.(type) {
-        case func(api SDKApi) ([]string, error):
-            actual, err := actualSut(api)
-            assert.NoError(t, err)
-            for _, sdk := range apiTest.expectedSDKs {
-                assert.Contains(t, actual, sdk)
-            }
-        default:
-            t.FailNow()
-        }
-    }
+	tests := TestSuite{
+		Tests: Tests{
+			NewTest(t, []string{"dotnet"}, "/repos/alex-held/dev-env-registry/contents/sdk", "[{\"name\":\"dotnet\",\"path\":\"sdk/dotnet\",\"sha\":\"859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"size\":0,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"download_url\":null,\"type\":\"dir\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"html\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\"}}]"),
+			NewTest(t, []string{"dotnet", "java"}, "/repos/alex-held/dev-env-registry/contents/sdk", "[{\"name\":\"dotnet\",\"path\":\"sdk/dotnet\",\"sha\":\"859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"size\":0,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"download_url\":null,\"type\":\"dir\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/dotnet?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc91\",\"html\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/dotnet\"}},{\"name\":\"java\",\"path\":\"sdk/java\",\"sha\":\"859e4a060e287c06f777da09fbf8fe51dc4afc92\",\"size\":0,\"url\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/java?ref=master\",\"html_url\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/java\",\"git_url\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc92\",\"download_url\":null,\"type\":\"dir\",\"_links\":{\"self\":\"https://api.github.com/repos/alex-held/dev-env-registry/contents/sdk/java?ref=master\",\"git\":\"https://api.github.com/repos/alex-held/dev-env-registry/git/trees/859e4a060e287c06f777da09fbf8fe51dc4afc92\",\"html\":\"https://github.com/alex-held/dev-env-registry/tree/master/sdk/java\"}}]"),
+		},
+		assert: func(t *testing.T, expected interface{}, actual interface{}) {
+			e := expected.([]string)
+			a := actual.([]string)
+			Printf("[Expected]\t\t%v\n", e)
+			Printf("[Actual]\t\t%v\n", a)
+			assert.Subset(t, a, e)
+			assert.Subset(t, e, a)
+			assert.Equal(t, a, e)
+		},
+		Testing: t,
+	}
 
-    for _, test := range test {
-        action(test)
-    }
+	tests.Run(RegistryAPI.GetSDKs)
+}
+
+func createInArgs(test Test) []reflect.Value {
+	var inArgs []reflect.Value
+	inArgs = append(inArgs, reflect.ValueOf(test.RegistryAPI))
+
+	for i := 0; i < len(test.Args); i++ {
+		v := test.Args[i]
+		value := reflect.ValueOf(v)
+		inArgs = append(inArgs, value)
+	}
+
+	return inArgs
+}
+
+func (t TestSuite) Run(f interface{}) {
+	for i, test := range t.Tests {
+		i += 1
+		Printf("-------- Run #%d --------\n", i)
+		inArgs := createInArgs(test)
+
+		callResult := reflect.ValueOf(f).Call(inArgs)
+		result := callResult[0]
+
+		expectedValue := reflect.ValueOf(test.Expected)
+		converted := result.Convert(expectedValue.Type()).Interface()
+		t.assert(t.Testing, test.Expected, converted)
+		Printf("--------\n\n")
+	}
 }
