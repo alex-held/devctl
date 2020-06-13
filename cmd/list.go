@@ -17,11 +17,12 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
-
+	
+	"github.com/davecgh/go-spew/spew"
+	
+	"github.com/alex-held/dev-env/api"
 	. "github.com/alex-held/dev-env/config"
-	"github.com/alex-held/dev-env/registry"
-
+	
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
@@ -37,18 +38,12 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		client := registry.NewRegistryAPI()
-		sdks, err := client.GetSDKs()
+		client := api.NewGithubAPI(nil)
+		sdks, err := client.GetPackages("sdk")
 		if err != nil {
 			panic(err)
 		}
-		sb := strings.Builder{}
-		sb.WriteString(fmt.Sprintf("\n|%10s|\n", "sdk"))
-		for _, sdk := range sdks {
-			sb.WriteString(fmt.Sprintf("|%10s|\n", sdk))
-		}
-		table := sb.String()
-		fmt.Println(table)
+		spew.Dump(sdks)
 	},
 }
 
@@ -79,40 +74,4 @@ func readOrCreateConfig() *Config {
 	config := NewConfig(fs, filepath)
 	err = config.Save()
 	return ensureNoError(config, err)
-}
-
-func executeList(cfg Config, args []string) []SDK {
-	if len(args) == 0 {
-		result := cfg.ListSdks()
-		prettyPrintSdkTable(result)
-		return result
-	}
-
-	var result []SDK
-
-	for _, arg := range args {
-
-		for _, sdk := range cfg.ListMatchingSdks(func(sdk SDK) bool {
-			return sdk.Name == arg
-		}) {
-			result = append(result, sdk)
-		}
-	}
-
-	prettyPrintSdkTable(result)
-	return result
-
-}
-
-func prettyPrintSdkTable(sdks []SDK) {
-	println(formatSdkTable(sdks))
-}
-
-func formatSdkTable(sdks []SDK) string {
-	sb := strings.Builder{}
-	sb.WriteString(fmt.Sprintf("\n|%10s|%10s|%20s|\n", "sdk", "version", "path"))
-	for _, sdk := range sdks {
-		sb.WriteString(fmt.Sprintf("|%10s|%10s|%20s|\n", sdk.Name, sdk.Version, sdk.Path))
-	}
-	return sb.String()
 }
