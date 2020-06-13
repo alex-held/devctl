@@ -45,6 +45,7 @@ func NewTest(t *testing.T, expected interface{}, path string, body string, args 
 	return r
 }
 
+//noinspection ALL
 func TestSuiteWorks(t *testing.T) {
 
 	tests := TestSuite{

@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	DEVENV_HOME = "DEVENV_HOME"
+	DEVENV_HOME            = "DEVENV_HOME"
+	DEVENV_DEFAULT_PATHFIX = ".devenv"
 )
 
 type Source struct {
@@ -69,11 +70,10 @@ func (u Meta) TryGetDevEnvHome() *string {
 
 func (u Meta) Home(paths []string) (home string) {
 	home = *u.TryGetDevEnvHome()
-	if &home == nil {
+	if home == "" {
 		home = u.GetUserHome(paths...)
-		return home
 	}
-	segments := append([]string{home}, paths...)
+	segments := append([]string{home, DEVENV_DEFAULT_PATHFIX}, paths...)
 	subDirectory := path2.Join(segments...)
 	return subDirectory
 }

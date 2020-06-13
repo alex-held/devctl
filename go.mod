@@ -10,6 +10,7 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/magiconair/properties v1.8.0
 	github.com/olekukonko/tablewriter v0.0.4
+	github.com/rs/zerolog v1.19.0
 	github.com/spf13/afero v1.2.2
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.6.1

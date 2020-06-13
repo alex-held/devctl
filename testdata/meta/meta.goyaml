@@ -12,15 +12,11 @@ sources:
       folder: {{ $install_root }}
       sha256: e67b13b4d6aaf6198188efc2f2c09531555ddbe1
 
-install:
-        {{ range .Install }}
-    - {{ . }}
-            {{ end }}
+install:  {{ range .Install }}
+- {{ . }}{{ end }}
 
-link:
-        {{ range .Links }}
-    - {{ . }}
-            {{ end }}
+link:  {{ range .Links }}
+- {{ . }}{{ end }}
 
 about:
     homepage: https://github.com/microsoft/dotnet
