@@ -56,4 +56,3 @@ func NewDotnetMeta() Meta {
 	}
 	return meta
 }
-

@@ -2,9 +2,9 @@ package install
 
 import (
 	"fmt"
-	
+
 	"github.com/spf13/cobra"
-	
+
 	"github.com/alex-held/dev-env/config"
 )
 
@@ -43,4 +43,3 @@ func (provider *SDKProvider) GetLatestVersion(sdk string) string {
 		return "1.0"
 	}
 }
-
