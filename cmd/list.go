@@ -17,10 +17,13 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
 	. "github.com/alex-held/dev-env/config"
+	"github.com/alex-held/dev-env/registry"
+
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 // listCmd represents the list command
@@ -34,8 +37,18 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config := readOrCreateConfig()
-		executeList(*config, args)
+		client := registry.NewRegistryAPI()
+		sdks, err := client.GetSDKs()
+		if err != nil {
+			panic(err)
+		}
+		sb := strings.Builder{}
+		sb.WriteString(fmt.Sprintf("\n|%10s|\n", "sdk"))
+		for _, sdk := range sdks {
+			sb.WriteString(fmt.Sprintf("|%10s|\n", sdk))
+		}
+		table := sb.String()
+		fmt.Println(table)
 	},
 }
 

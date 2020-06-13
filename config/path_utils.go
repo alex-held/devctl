@@ -43,6 +43,7 @@ func (fac *DefaultPathFactory) GetDevEnvHome() string {
 }
 
 func (fac *DefaultPathFactory) GetSdks() string { return path.Join(fac.GetDevEnvHome(), "sdk") }
+
 func (fac *DefaultPathFactory) GetManifests() string {
 	return path.Join(fac.GetDevEnvHome(), "manifests")
 }
