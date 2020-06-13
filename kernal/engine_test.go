@@ -2,25 +2,18 @@ package kernal_test
 
 import (
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
-	"os"
+
 	"testing"
 
+	"github.com/alex-held/dev-env/api"
 	"github.com/alex-held/dev-env/kernal"
-	"github.com/alex-held/dev-env/registry"
+	"github.com/alex-held/dev-env/shared"
 	meta2 "github.com/alex-held/dev-env/testdata/meta"
 )
 
 func init() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{
-		Out:        os.Stderr,
-		TimeFormat: zerolog.TimeFormatUnix,
-	})
-
-	zerolog.SetGlobalLevel(zerolog.TraceLevel)
-	lvl := zerolog.GlobalLevel()
-	println(lvl.String())
+	shared.BootstrapLogger(zerolog.TraceLevel)
 }
 
 func TestPrettyPrint(t *testing.T) {
@@ -50,7 +43,7 @@ func TestExecuteCommands(t *testing.T) {
 
 func NewTestEngine(dry bool) kernal.Engine {
 	engine := kernal.EngineCore{
-		API:    registry.NewRegistryAPI(),
+		API:    api.NewGithubAPI(nil),
 		DryRun: dry,
 	}
 	return &engine

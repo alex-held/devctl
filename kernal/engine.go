@@ -7,12 +7,12 @@ import (
 	pipes "github.com/ebuchman/go-shell-pipes"
 	"github.com/rs/zerolog/log"
 
+	"github.com/alex-held/dev-env/api"
 	"github.com/alex-held/dev-env/meta"
-	"github.com/alex-held/dev-env/registry"
 )
 
 type EngineCore struct {
-	API    registry.RegistryAPI
+	API    api.GithubAPI
 	DryRun bool
 }
 
@@ -61,7 +61,7 @@ func (engine *EngineCore) Execute(executable interface{}) error {
 
 func NewEngine() Engine {
 	engine := EngineCore{
-		API: registry.NewRegistryAPI(),
+		API: api.NewGithubAPI(nil),
 	}
 	return &engine
 }
