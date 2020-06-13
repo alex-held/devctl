@@ -17,12 +17,12 @@ package cmd
 
 import (
 	"fmt"
-	
+
 	"github.com/davecgh/go-spew/spew"
-	
+
 	"github.com/alex-held/dev-env/api"
 	. "github.com/alex-held/dev-env/config"
-	
+
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )

@@ -5,7 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"testing"
-	
+
 	"github.com/alex-held/dev-env/api"
 	"github.com/alex-held/dev-env/kernal"
 	"github.com/alex-held/dev-env/shared"
