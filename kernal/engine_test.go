@@ -5,7 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"testing"
-	
+
 	"github.com/alex-held/dev-env/api"
 	"github.com/alex-held/dev-env/kernal"
 	"github.com/alex-held/dev-env/shared"
@@ -43,7 +43,7 @@ func TestExecuteCommands(t *testing.T) {
 
 func NewTestEngine(dry bool) kernal.Engine {
 	engine := kernal.EngineCore{
-		API:   api.NewGithubAPI(nil),
+		API:    api.NewGithubAPI(nil),
 		DryRun: dry,
 	}
 	return &engine

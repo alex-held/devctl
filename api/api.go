@@ -8,7 +8,6 @@ import (
 	"github.com/ahmetb/go-linq"
 	"github.com/google/go-github/github"
 	"github.com/rs/zerolog/log"
-
 )
 
 type GithubContentResponse struct {

@@ -6,7 +6,7 @@ import (
 
 	pipes "github.com/ebuchman/go-shell-pipes"
 	"github.com/rs/zerolog/log"
-	
+
 	"github.com/alex-held/dev-env/api"
 	"github.com/alex-held/dev-env/meta"
 )
