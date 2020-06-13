@@ -36,7 +36,7 @@ func TestPrettyPrint(t *testing.T) {
 
 func TestExecuteCommands(t *testing.T) {
 	commands := []string{
-		"curl https://avatars2.githubusercontent.com/u/50153092?v=4 | grep d",
+		"curl https://api.github.com/users/alex-held/followers | grep wonderbird",
 		"ls -a",
 	}
 	engine := NewTestEngine(false)
