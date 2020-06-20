@@ -4,7 +4,6 @@ import (
 	. "github.com/alex-held/dev-env/meta"
 )
 
-
 const MetaGoyaml string = `
 {{ $package := "dotnet" }}
 {{ $version := "3.1.202" }}
@@ -32,7 +31,6 @@ about:
 	summary: {{.Summary}}
 `
 
-
 func NewDotnetMeta() Meta {
 	meta := Meta{
 		Name:        "dotnet",
@@ -42,7 +40,7 @@ func NewDotnetMeta() Meta {
 		Sources: []Source{
 			NewRemoteArchiveSource(
 				"e67b13b4d6aaf6198188efc2f2c09531555ddbe1",
-				"https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/{{$package}}-sdk-{{$version}}-osx-x64.tar.gz", //nolint:lll
+				"https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/{{ $package }}-sdk-{{ $version }}-osx-x64.tar.gz", //nolint:lll
 			),
 		},
 		Install: []string{

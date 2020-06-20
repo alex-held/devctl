@@ -18,7 +18,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/davecgh/go-spew/spew"
+	"github.com/rs/zerolog/log"
 
 	"github.com/alex-held/dev-env/api"
 	. "github.com/alex-held/dev-env/config"
@@ -43,7 +43,7 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			panic(err)
 		}
-		spew.Dump(sdks)
+		log.Info().Strs("sdks", sdks).Send()
 	},
 }
 

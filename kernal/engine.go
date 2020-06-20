@@ -8,12 +8,26 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/alex-held/dev-env/api"
+	"github.com/alex-held/dev-env/config"
 	"github.com/alex-held/dev-env/meta"
 )
 
 type EngineCore struct {
 	API    api.GithubAPI
 	DryRun bool
+	path   config.DefaultPathFactory
+}
+
+type Installer interface {
+	Runnable
+	Output() *chan string
+	Install(spec config.Spec)
+	Uninstall(spec config.Spec)
+}
+
+type Runnable interface {
+	Started() (finished bool)
+	Finished() (finished bool, err error)
 }
 
 type Engine interface {

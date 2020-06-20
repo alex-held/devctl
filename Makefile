@@ -6,6 +6,9 @@ build:
 # Standard go test
 test:
 	go test ./... -v
+# Benchmarks
+bench:
+	go test ./... -v -bench .
 
 # Make sure no unnecessary dependecies are present
 go-mod-tidy:

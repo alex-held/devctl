@@ -3,7 +3,6 @@ package meta
 import (
 	"os"
 	path2 "path"
-	"strings"
 )
 
 const (
@@ -27,13 +26,6 @@ type Meta struct {
 	Link        []string `yaml:"link"`
 	Homepage    string   `yaml:"homepage"`
 	Summary     string   `yaml:"summary"`
-}
-
-func normalize(content string) (result string) {
-	result = strings.Trim(content, "\n")
-	result = strings.Trim(content, "")
-	result = strings.Trim(content, "\n")
-	return result
 }
 
 func NewRemoteArchiveSource(sha string, url string) Source {
