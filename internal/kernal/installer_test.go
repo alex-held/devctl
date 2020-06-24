@@ -2,10 +2,10 @@ package kernal
 
 import (
 	"testing"
-
+	
 	"github.com/stretchr/testify/require"
-
-	"github.com/alex-held/dev-env/config"
+	
+	spec2 "github.com/alex-held/dev-env/internal/spec"
 	"github.com/alex-held/dev-env/shared"
 )
 
@@ -13,8 +13,8 @@ func TestInstaller_Install(t *testing.T) {
 	path := shared.NewTestPathFactory()
 	opt := InstallerOptions{dry: true}
 	var output []string
-	spec := config.Spec{
-		Package: config.SpecPackage{
+	spec := spec2.Spec{
+		Package: spec2.SpecPackage{
 			Name:        "dotnet",
 			Version:     "3.1.202",
 			Tags:        []string{"dotnet", "sdk", "core"},

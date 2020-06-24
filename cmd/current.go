@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	config2 "github.com/alex-held/dev-env/config"
+	
 	"github.com/spf13/cobra"
+	
+	config2 "github.com/alex-held/dev-env/internal/config"
 )
 
 // currentCmd represents the current command

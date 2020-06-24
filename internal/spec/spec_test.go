@@ -1,15 +1,15 @@
-package config_test
+package spec_test
 
 import (
 	"io/ioutil"
 	"testing"
-
+	
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
-
-	. "github.com/alex-held/dev-env/config"
+	
+	spec2 "github.com/alex-held/dev-env/internal/spec"
 	"github.com/alex-held/dev-env/shared"
 )
 
@@ -18,8 +18,8 @@ func init() {
 }
 
 func TestName(t *testing.T) {
-	spec := Spec{
-		Package: SpecPackage{
+	spec := spec2.Spec{
+		Package: spec2.SpecPackage{
 			Name:        "dotnet",
 			Version:     "3.1.202",
 			Tags:        []string{"dotnet", "sdk", "core"},
@@ -46,8 +46,8 @@ func TestName(t *testing.T) {
 }
 
 func TestSpec_GetInstallInstructions(t *testing.T) {
-	spec := Spec{
-		Package: SpecPackage{
+	spec := spec2.Spec{
+		Package: spec2.SpecPackage{
 			Name:        "dotnet",
 			Version:     "3.1.202",
 			Tags:        []string{"dotnet", "sdk", "core"},
@@ -80,8 +80,8 @@ func TestSpec_Serialze(t *testing.T) {
 	expectedBytes, err := ioutil.ReadFile("../testdata/spec/dotnet-3.1.202.yaml")
 	expected := string(expectedBytes)
 	require.NoError(t, err)
-	spec := Spec{
-		Package: SpecPackage{
+	spec := spec2.Spec{
+		Package: spec2.SpecPackage{
 			Name:        "dotnet",
 			Version:     "3.1.202",
 			Tags:        []string{"dotnet", "sdk", "core"},
@@ -104,9 +104,9 @@ func TestSpec_Serialze(t *testing.T) {
 	require.Equal(t, expected, serialized)
 }
 
-func NewTestPathFactory() PathFactory {
+func NewTestPathFactory() shared.PathFactory {
 	home := "/home"
-	path := DefaultPathFactory{
+	path := shared.DefaultPathFactory{
 		UserHomeOverride: &home,
 	}
 	return &path

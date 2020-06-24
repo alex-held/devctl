@@ -2,12 +2,17 @@ package api
 
 import (
 	"context"
+	"io/ioutil"
 	"net/http"
+	"path"
 	"strings"
 
 	"github.com/ahmetb/go-linq"
 	"github.com/google/go-github/github"
 	"github.com/rs/zerolog/log"
+	
+	"github.com/alex-held/dev-env/internal/spec"
+	"github.com/alex-held/dev-env/shared"
 )
 
 type GithubContentResponse struct {
@@ -21,6 +26,18 @@ type githubAPI struct {
 	Repository    string
 	UpdateChannel string
 }
+
+type Context struct {
+	shared.PathFactory
+}
+
+func (ctx *Context) GetSpecFiles() (specFiles []spec.SpecFile)  {
+	home := ctx.GetDevEnvHome()
+	specs := path.Join(home, "spec")
+	
+	
+}
+
 
 func (client *githubAPI) GetPackages(path string) (packages []string, err error) {
 	versionMap, err := client.GetPackagesMap(path)

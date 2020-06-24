@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-
-	"github.com/alex-held/dev-env/config"
+	
+	"github.com/alex-held/dev-env/internal/config"
 )
 
 // installCmd represents the install command

@@ -3,12 +3,12 @@ package kernal_test
 import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
-
+	
 	"testing"
-
-	"github.com/alex-held/dev-env/api"
-	"github.com/alex-held/dev-env/config"
-	"github.com/alex-held/dev-env/kernal"
+	
+	"github.com/alex-held/dev-env/internal/api"
+	"github.com/alex-held/dev-env/internal/kernal"
+	spec2 "github.com/alex-held/dev-env/internal/spec"
 	"github.com/alex-held/dev-env/shared"
 )
 
@@ -27,9 +27,9 @@ func TestPrettyPrint(t *testing.T) {
 	}
 }
 
-func NewDotnetSpec() config.Spec {
-	spec := config.Spec{
-		Package: config.SpecPackage{
+func NewDotnetSpec() spec2.Spec {
+	spec := spec2.Spec{
+		Package: spec2.SpecPackage{
 			Name:        "dotnet",
 			Version:     "3.1.202",
 			Tags:        []string{"dotnet", "sdk", "core"},

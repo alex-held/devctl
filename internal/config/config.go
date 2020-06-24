@@ -3,8 +3,9 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/afero"
 	"sort"
+	
+	"github.com/spf13/afero"
 )
 
 var _ = afero.NewOsFs()

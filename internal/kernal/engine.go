@@ -3,25 +3,26 @@ package kernal
 import (
 	"fmt"
 	"os"
-
+	
 	pipes "github.com/ebuchman/go-shell-pipes"
 	"github.com/rs/zerolog/log"
-
-	"github.com/alex-held/dev-env/api"
-	"github.com/alex-held/dev-env/config"
+	
+	"github.com/alex-held/dev-env/internal/api"
+	"github.com/alex-held/dev-env/internal/spec"
+	"github.com/alex-held/dev-env/shared"
 )
 
 type EngineCore struct {
 	API    api.GithubAPI
 	DryRun bool
-	path   config.DefaultPathFactory
+	path   shared.DefaultPathFactory
 }
 
 type Installer interface {
 	Runnable
 	Output() *chan string
-	Install(spec config.Spec)
-	Uninstall(spec config.Spec)
+	Install(spec spec.Spec)
+	Uninstall(spec spec.Spec)
 }
 
 type Runnable interface {
@@ -53,7 +54,7 @@ func (engine *EngineCore) Execute(executable interface{}) error {
 			}
 		}
 		return nil
-	case config.Spec:
+	case spec.Spec:
 		log.Info().Msg("> Installing Application")
 		installer := NewInstaller(&engine.path, InstallerOptions{dry: engine.DryRun})
 		go installer.Install(e)

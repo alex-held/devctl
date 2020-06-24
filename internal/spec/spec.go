@@ -1,4 +1,4 @@
-package config
+package spec
 
 import (
 	"fmt"
@@ -8,8 +8,10 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
-
+	
 	"gopkg.in/yaml.v3"
+	
+	"github.com/alex-held/dev-env/shared"
 )
 
 type SpecPackage struct {
@@ -34,7 +36,7 @@ type SpecFile struct {
 	Path string
 }
 
-func (spec *Spec) GetInstallInstructions(path PathFactory) (instructions []string, err error) {
+func (spec *Spec) GetInstallInstructions(path shared.PathFactory) (instructions []string, err error) {
 	vars := specVars{
 		DevEnvHome:      path.GetDevEnvHome(),
 		Package:         spec.Package.Name,

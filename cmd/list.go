@@ -19,9 +19,9 @@ import (
 	"fmt"
 
 	"github.com/rs/zerolog/log"
-
-	"github.com/alex-held/dev-env/api"
-	. "github.com/alex-held/dev-env/config"
+	
+	"github.com/alex-held/dev-env/internal/api"
+	. "github.com/alex-held/dev-env/internal/config"
 
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"

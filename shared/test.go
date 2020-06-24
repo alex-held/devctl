@@ -1,12 +1,8 @@
 package shared
 
-import (
-	"github.com/alex-held/dev-env/config"
-)
-
-func NewTestPathFactory() config.PathFactory {
+func NewTestPathFactory() PathFactory {
 	homeOverride := "/home"
-	return &config.DefaultPathFactory{
+	return &DefaultPathFactory{
 		UserHomeOverride: &homeOverride,
 		DevEnvDirectory:  ".devenv",
 	}

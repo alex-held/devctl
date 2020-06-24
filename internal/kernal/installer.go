@@ -2,14 +2,15 @@ package kernal
 
 import (
 	"fmt"
-
+	
 	pipes "github.com/ebuchman/go-shell-pipes"
-
-	"github.com/alex-held/dev-env/config"
+	
+	"github.com/alex-held/dev-env/internal/spec"
+	"github.com/alex-held/dev-env/shared"
 )
 
 type installer struct {
-	pathFactory config.PathFactory
+	pathFactory shared.PathFactory
 	started     bool
 	finished    bool
 	output      chan string
@@ -25,7 +26,7 @@ type InstallerOptions struct {
 	dry bool
 }
 
-func NewInstaller(pathFactory config.PathFactory, options InstallerOptions) Installer {
+func NewInstaller(pathFactory shared.PathFactory, options InstallerOptions) Installer {
 	return &installer{
 		pathFactory: pathFactory,
 		started:     false,
@@ -40,7 +41,7 @@ func (g *installer) finish() {
 	close(g.output)
 }
 
-func (g *installer) Install(spec config.Spec) {
+func (g *installer) Install(spec spec.Spec) {
 	defer g.finish()
 	g.started = true
 
@@ -68,7 +69,7 @@ func (g *installer) Install(spec config.Spec) {
 
 }
 
-func (g *installer) Uninstall(spec config.Spec) {
+func (g *installer) Uninstall(spec spec.Spec) {
 	defer g.finish()
 	g.started = true
 	directory := g.pathFactory.GetPkgDir(spec.Package.Name, spec.Package.Version)
