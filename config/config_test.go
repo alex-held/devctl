@@ -2,14 +2,15 @@ package config
 
 import (
 	"encoding/json"
+	"testing"
+
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 var (
-	filepath = "config.json"
-	jdk      = SDK{
+	configFilePath = "config.json"
+	jdk            = SDK{
 		Name:    "java",
 		Version: "1.8",
 		Path:    "/some/path",
@@ -19,7 +20,7 @@ var (
 
 func setup(t *testing.T, json string) (*assert.Assertions, afero.Fs) {
 	fs := afero.NewMemMapFs()
-	_ = afero.WriteFile(fs, filepath, []byte(json), 0644)
+	_ = afero.WriteFile(fs, configFilePath, []byte(json), 0644)
 	return assert.New(t), fs
 }
 
@@ -33,7 +34,7 @@ func TestReadConfigFromFile(t *testing.T) {
   }
  ]
 }`)
-	config, _ := ReadConfigFromFile(fs, filepath)
+	config, _ := ReadConfigFromFile(fs, configFilePath)
 
 	sdk := config.Sdks[0]
 
@@ -45,12 +46,12 @@ func TestReadConfigFromFile(t *testing.T) {
 func TestWriteFile(t *testing.T) {
 	a, fs := setup(t, "")
 	config := defaultConfig
-	err := config.WriteToFile(fs, filepath)
+	err := config.WriteToFile(fs, configFilePath)
 	if err != nil {
 		t.Error(err)
 	}
 
-	result, _ := afero.ReadFile(fs, filepath)
+	result, _ := afero.ReadFile(fs, configFilePath)
 	a.JSONEq(`{
  "Sdks": [
   {
@@ -64,21 +65,21 @@ func TestWriteFile(t *testing.T) {
 
 func TestNewConfig(t *testing.T) {
 	a, fs := setup(t, "")
-	config := NewConfig(fs, filepath)
+	config := NewConfig(fs, configFilePath)
 	a.Empty(config.Sdks)
 }
 
 func TestAddSDKAddsASDK(t *testing.T) {
 	a, fs := setup(t, "")
-	config := NewConfig(fs, filepath)
+	config := NewConfig(fs, configFilePath)
 	config.AddSDK("java", "1.8")
 
-	file, err := afero.ReadFile(fs, filepath)
+	file, err := afero.ReadFile(fs, configFilePath)
 	if err != nil {
 		t.Error(err)
 	}
 
-	newConfig := NewConfig(fs, filepath)
+	newConfig := NewConfig(fs, configFilePath)
 	json.Unmarshal(file, &newConfig)
 	a.Equal("java", newConfig.Sdks[0].Name)
 	a.Equal("1.8", newConfig.Sdks[0].Version)
