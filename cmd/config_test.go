@@ -6,13 +6,11 @@ import (
 
 	"github.com/gosuri/uitable"
 	"github.com/stretchr/testify/require"
-
-	"github.com/alex-held/dev-env/meta"
 )
 
 func TestReadConfig(t *testing.T) {
 	config, err := readConfig("config", map[string]interface{}{
-		meta.DEVENV_HOME: "$HOME/.devenv",
+		"DEVENV_HOME": "$HOME/.devenv",
 	})
 	require.NoError(t, err)
 

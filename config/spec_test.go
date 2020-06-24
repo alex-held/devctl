@@ -3,11 +3,18 @@ package config_test
 import (
 	"testing"
 
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
 
 	. "github.com/alex-held/dev-env/config"
+	"github.com/alex-held/dev-env/shared"
 )
+
+func init() {
+	shared.BootstrapLogger(zerolog.TraceLevel)
+}
 
 func TestName(t *testing.T) {
 	spec := Spec{
@@ -57,6 +64,9 @@ func TestSpec_GetInstallInstructions(t *testing.T) {
 	}
 	path := NewTestPathFactory()
 	instructions, err := spec.GetInstallInstructions(path)
+	log.Trace().
+		Interface("Instructions", instructions).
+		Msg("Replaced template variables in Spec-Instructions")
 	require.NoError(t, err)
 	require.Len(t, instructions, 2)
 	require.Equal(t, "curl https://download.visualstudio.microsoft."+

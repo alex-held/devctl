@@ -9,7 +9,6 @@ import (
 
 	"github.com/alex-held/dev-env/api"
 	"github.com/alex-held/dev-env/config"
-	"github.com/alex-held/dev-env/meta"
 )
 
 type EngineCore struct {
@@ -54,18 +53,12 @@ func (engine *EngineCore) Execute(executable interface{}) error {
 			}
 		}
 		return nil
-	case meta.Meta:
+	case config.Spec:
 		log.Info().Msg("> Installing Application")
-		for i, cmd := range e.Install {
-			log.Trace().
-				Str("Command", cmd).
-				Int("Step", i).
-				Msg("")
-		}
-
-		log.Info().Msg("> Linking Application")
-		for i, ln := range e.Link {
-			log.Trace().Int("Step", i).Msg(ln)
+		installer := NewInstaller(&engine.path, InstallerOptions{dry: engine.DryRun})
+		go installer.Install(e)
+		for o := range *installer.Output() {
+			println(o)
 		}
 		return nil
 	default:
