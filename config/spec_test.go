@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"io/ioutil"
 	"testing"
 
 	"github.com/rs/zerolog"
@@ -73,6 +74,34 @@ func TestSpec_GetInstallInstructions(t *testing.T) {
 		"com | tar -x -C /home/sdk/dotnet/3.1.202", instructions[0])
 	require.Equal(t, "ln -s /home/sdk/dotnet/3.1."+
 		"202/host/fxr /usr/local/share/dotnet/host/fxr'", instructions[1])
+}
+
+func TestSpec_Serialze(t *testing.T) {
+	expectedBytes, err := ioutil.ReadFile("../testdata/spec/dotnet-3.1.202.yaml")
+	expected := string(expectedBytes)
+	require.NoError(t, err)
+	spec := Spec{
+		Package: SpecPackage{
+			Name:        "dotnet",
+			Version:     "3.1.202",
+			Tags:        []string{"dotnet", "sdk", "core"},
+			Repo:        "https://github.com/dotnet/sdk",
+			Description: "dotnet sdk",
+		}, Variables: map[string]string{
+			"link_root": "/usr/local/share/dotnet",
+		},
+		Install: struct{ Instructions []string }{
+			Instructions: []string{
+				"curl https://download.visualstudio.microsoft.com | tar -x -C {{ .InstallLocation }}",
+				"ln -s {{ .InstallLocation }}/host/fxr {{ $link_root }}/host/fxr'",
+			}},
+		UninstallCmds: nil,
+	}
+	bytes, err := yaml.Marshal(spec)
+	serialized := string(bytes)
+	println(serialized)
+	require.NoError(t, err)
+	require.Equal(t, expected, serialized)
 }
 
 func NewTestPathFactory() PathFactory {

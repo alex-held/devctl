@@ -10,7 +10,5 @@ install:
   instructions:
     - curl https://download.visualstudio.microsoft.com | tar -x -C {{ .InstallLocation
       }}
-    - ln -s {{ .InstallLocation }}/host/fxr /usr/local/share/dotnet/host/fxr'
-uninstall:
-  - rm /usr/local/share/dotnet
-  - rm {{ .InstallLocation }}
+    - ln -s {{ .InstallLocation }}/host/fxr {{ $link_root }}/host/fxr'
+uninstall: []
