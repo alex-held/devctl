@@ -6,24 +6,64 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
+	"text/template"
 
 	"gopkg.in/yaml.v3"
 )
 
+type SpecPackage struct {
+	Name        string
+	Version     string
+	Tags        []string `yaml:"tags,flow"`
+	Repo        string
+	Description string
+}
+
 type Spec struct {
-	Name          string
-	Version       string
-	Type          string
-	Tags          []string
-	Repo          string
-	Desc          string
-	InstallCmds   []string `yaml:"install"`
+	Package   SpecPackage       `yaml:"package"`
+	Variables map[string]string `yaml:"variables,omitempty"`
+	Install   struct {
+		Instructions []string
+	} `yaml:"install,omitempty"`
 	UninstallCmds []string `yaml:"uninstall"`
 }
 
 type SpecFile struct {
 	Spec
 	Path string
+}
+
+func (spec *Spec) GetInstallInstructions(path PathFactory) (instructions []string, err error) {
+	vars := specVars{
+		DevEnvHome:      path.GetDevEnvHome(),
+		Package:         spec.Package.Name,
+		Version:         spec.Package.Version,
+		InstallLocation: path.GetPkgDir(spec.Package.Name, spec.Package.Version),
+	}
+	for _, cmd := range spec.Install.Instructions {
+		for key, value := range spec.Variables {
+			cmd = strings.ReplaceAll(cmd, "{{ $"+key+" }}", value)
+		}
+		tmp, err := template.New("cmd").Parse(cmd)
+		if err != nil {
+			return nil, err
+		}
+		sb := new(strings.Builder)
+		err = tmp.Execute(sb, vars)
+		if err != nil {
+			return nil, err
+		}
+		instructions = append(instructions, sb.String())
+	}
+	return instructions, nil
+}
+
+type specVars struct {
+	DevEnvHome      string
+	Package         string
+	Version         string
+	InstallLocation string
 }
 
 func FromFile(path string) (specFile SpecFile, err error) {

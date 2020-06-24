@@ -6,67 +6,41 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/alex-held/dev-env/config"
+	"github.com/alex-held/dev-env/shared"
 )
 
-func NewTestPathFactory() config.PathFactory {
-	homeOverride := "/home"
-	return &config.DefaultPathFactory{
-		UserHomeOverride: &homeOverride,
-		DevEnvDirectory:  ".devenv",
-	}
-}
-
-func TestGitInstaller_Install(t *testing.T) {
-	mockPathFactory := NewTestPathFactory()
+func TestInstaller_Install(t *testing.T) {
+	path := shared.NewTestPathFactory()
+	opt := InstallerOptions{dry: true}
 	var output []string
-	gitInstaller := NewGitInstaller(mockPathFactory)
 	spec := config.Spec{
-		Name:          "dotnet",
-		Version:       "3.1.202",
-		Type:          "git",
-		Tags:          []string{"sdk", "dotnet"},
-		Repo:          "https://github.com/dotnet/sdk",
-		Desc:          "the dotnet sdk",
-		InstallCmds:   []string{"echo Installing dotnet sdk"},
-		UninstallCmds: []string{"echo Uninstalling dotnet sdk"},
+		Package: config.SpecPackage{
+			Name:        "dotnet",
+			Version:     "3.1.202",
+			Tags:        []string{"dotnet", "sdk", "core"},
+			Repo:        "https://github.com/dotnet/sdk",
+			Description: "dotnet sdk",
+		},
+		Install: struct{ Instructions []string }{
+			Instructions: []string{
+				"curl https://download.visualstudio.microsoft.com | tar -x -C {{ .InstallLocation }}",
+				"ln -s {{ .InstallLocation }}/host/fxr /usr/local/share/dotnet/host/fxr'",
+			}},
+		UninstallCmds: nil,
 	}
-
-	go gitInstaller.Install(spec)
-	for o := range *gitInstaller.Output() {
+	installer := NewInstaller(path, opt)
+	go installer.Install(spec)
+	for o := range *installer.Output() {
 		println(o)
 		output = append(output, o)
 	}
-	finished, err := gitInstaller.Finished()
+	finished, err := installer.Finished()
 	require.True(t, finished)
 	require.NoError(t, err)
-	require.Equal(t, output[0], "Cloning https://github.com/dotnet/sdk into /home/.devenv/sdk/dotnet/3.1.202")
-	require.Equal(t, output[1], "Installing dotnet")
-	require.Equal(t, len(output), 2)
-}
-
-func TestGitInstaller_Install_HasError_For_Not_GitType_Spec(t *testing.T) {
-	mockPathFactory := NewTestPathFactory()
-	var output []string
-	gitInstaller := NewGitInstaller(mockPathFactory)
-
-	spec := config.Spec{
-		Name:          "dotnet",
-		Version:       "3.1.202",
-		Type:          "tar",
-		Tags:          []string{"sdk", "dotnet"},
-		Repo:          "https://github.com/dotnet/sdk",
-		Desc:          "the dotnet sdk",
-		InstallCmds:   []string{"echo Installing dotnet sdk"},
-		UninstallCmds: []string{"echo Uninstalling dotnet sdk"},
-	}
-	go gitInstaller.Install(spec)
-	for o := range *gitInstaller.Output() {
-		println(o)
-		output = append(output, o)
-	}
-	finished, err := gitInstaller.Finished()
-	require.Equal(t, output[0], "Cloning https://github.com/dotnet/sdk into /home/.devenv/sdk/dotnet/3.1.202")
-	require.Equal(t, len(output), 1)
-	require.True(t, finished)
-	require.Error(t, err)
+	require.Equal(t, "Installing dotnet into directory /home/.devenv/sdk/dotnet/3.1.202", output[0])
+	require.Equal(t, "[STEP 1/2]curl https://download.visualstudio.microsoft."+
+		"com | tar -x -C /home/.devenv/sdk/dotnet/3.1.202", output[1])
+	require.Equal(t, "[STEP 2/2]ln -s /home/.devenv/sdk/dotnet/3.1."+
+		"202/host/fxr /usr/local/share/dotnet/host/fxr'", output[2])
+	require.Equal(t, len(output), 3)
 }

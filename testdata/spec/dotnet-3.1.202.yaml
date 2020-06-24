@@ -1,0 +1,16 @@
+package:
+  name:        dotnet
+  version:     3.1.202
+  tags: [dotnet, sdk, core]
+  repo:        https://github.com/dotnet/sdk
+  description: dotnet sdk
+variables:
+  link_root: /usr/local/share/dotnet
+install:
+  instructions:
+    - curl https://download.visualstudio.microsoft.com | tar -x -C {{ .InstallLocation
+      }}
+    - ln -s {{ .InstallLocation }}/host/fxr /usr/local/share/dotnet/host/fxr'
+uninstall:
+  - rm /usr/local/share/dotnet
+  - rm {{ .InstallLocation }}
