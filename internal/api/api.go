@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/ahmetb/go-linq"
+	"github.com/ghodss/yaml"
 	"github.com/google/go-github/github"
 	"github.com/rs/zerolog/log"
 	
@@ -31,11 +32,34 @@ type Context struct {
 	shared.PathFactory
 }
 
+func NewContext(path shared.PathFactory)  *Context {
+	return &Context{path}
+}
+
 func (ctx *Context) GetSpecFiles() (specFiles []spec.SpecFile)  {
 	home := ctx.GetDevEnvHome()
-	specs := path.Join(home, "spec")
-	
-	
+	specRoot := path.Join(home, "spec")
+	files:= getFilePaths(specRoot)
+	for _, file := range files {
+		fileBytes,_ := ioutil.ReadFile(file)
+		s := spec.Spec{}
+		_ = yaml.Unmarshal(fileBytes, &s)
+		specFile := spec.SpecFile{Path: file, Spec: s}
+		specFiles = append(specFiles, specFile)
+	}
+	return specFiles
+}
+
+func getFilePaths(root string) (files []string ) {
+	fi,_ := ioutil.ReadDir(root)
+	for _, info := range fi {
+		if !info.IsDir() {
+			files = append(files, info.Name())
+		}
+		subdirFiles := getFilePaths(info.Name())
+		files = append(files, subdirFiles...)
+	}
+	return files
 }
 
 

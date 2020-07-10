@@ -65,6 +65,15 @@ func TestGetPKGs(t *testing.T) {
 	}
 }
 
+func TestContext_GetSpecFiles(t *testing.T) {
+	path := shared.NewTestPathFactory()
+	ctx := NewContext(path)
+	specFiles := ctx.GetSpecFiles()
+	for _, specFile := range specFiles {
+		println(specFile.Path)
+	}
+}
+
 func TestGetVersions(t *testing.T) {
 	test := Test{
 		"sdk/dotnet", []interface{}{"3.1.202"}, "/repos/alex-held/dev-env-registry/contents/sdk/dotnet",
