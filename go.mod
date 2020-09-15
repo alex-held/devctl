@@ -8,7 +8,7 @@ require (
 	github.com/ebuchman/go-shell-pipes v0.0.0-20150412091402-83e132480862
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-querystring v1.0.0 // indirect
-	github.com/rs/zerolog v1.19.0
+	github.com/rs/zerolog v1.20.0
 	github.com/spf13/afero v1.3.5
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.6.1
