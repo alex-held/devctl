@@ -5,7 +5,7 @@ build:
 	go build
 # Standard go test
 test:
-	go test ./... -v
+	go test ./...
 
 # Make sure no unnecessary dependecies are present
 go-mod-tidy:
