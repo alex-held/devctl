@@ -5,16 +5,9 @@ on: [pull_request]
 jobs:
   go:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        go-version: [1.12.x, 1.14.x]
-
     steps:
       - name: Install Go
-        uses: actions/setup-go@v1
-        with:
-          go-version: ${{ matrix.go-version }}
+        uses: actions/setup-go@v2.1.3
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
