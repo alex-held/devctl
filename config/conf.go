@@ -1,9 +1,11 @@
 package config
 
 import (
+	"bytes"
 	"fmt"
 	"path"
 	
+	"github.com/ghodss/yaml"
 	"github.com/spf13/viper"
 )
 
@@ -12,8 +14,8 @@ type DevEnvGlobalConfig struct {
 }
 
 type DevEnvSDKConfig struct {
-	SDK          string                         `yaml:"sdk" json:"sdk,omitempty" mapstructure:"sdk,omitempty"`
-	Current      string                         `yaml:"current,omitempty" mapstructure:"current,omitempty"`
+	SDK          string                        `yaml:"sdk" json:"sdk,omitempty" mapstructure:"sdk,omitempty"`
+	Current      string                        `yaml:"current,omitempty" mapstructure:"current,omitempty"`
 	Intallations []DevEnvSDKInstallationConfig `yaml:"installations,omitempty" mapstructure:"installations,omitempty"`
 }
 
@@ -65,4 +67,18 @@ func LoadViperConfig() *DevEnvConfig {
 		_ = fmt.Errorf("unable to decode into struct, %v\n", err)
 	}
 	return configuration
+}
+
+func UpdateDevEnvConfig(config DevEnvConfig) error {
+	err := viper.ReadInConfig()
+	if err != nil {
+		return err
+	}
+	b, err := yaml.Marshal(config)
+	err = viper.MergeConfig(bytes.NewReader(b))
+	if err != nil {
+		return err
+	}
+	
+	return viper.WriteConfig()
 }

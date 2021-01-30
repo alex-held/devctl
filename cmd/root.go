@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	
+	"github.com/coreos/etcd/client"
 	"github.com/spf13/cobra"
 	
 	"github.com/mitchellh/go-homedir"
@@ -23,6 +24,14 @@ const (
 	
 	envPrefix = "DEVENV"
 )
+
+func ExitWithError(code int, err error) {
+	_, _ = fmt.Fprintln(os.Stderr, "Error:", err)
+	if cerr, ok := err.(*client.ClusterError); ok {
+		_, _ = fmt.Fprintln(os.Stderr, cerr.Detail())
+	}
+	os.Exit(code)
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -65,6 +74,7 @@ func init() {
 	
 	rootCmd.AddCommand(
 		NewConfigCommand(),
+		NewSdkCommand(),
 	)
 	
 	// Here you will define your flags and configuration settings.
