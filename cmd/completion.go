@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"os"
-	
+
 	"github.com/spf13/cobra"
 )
 
 var completionCmd = &cobra.Command{
-	Use:                   "completion [bash|zsh|powershell]",
-	Short:                 "Generate completion script",
+	Use:   "completion [bash|zsh|powershell]",
+	Short: "Generate completion script",
 	Long: `To load completions:
 
 Bash:
@@ -55,7 +55,6 @@ PS> yourprogram completion powershell > yourprogram.ps1
 		}
 	},
 }
-
 
 func init() {
 	rootCmd.AddCommand(completionCmd)

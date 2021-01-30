@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path"
-	
+
 	"github.com/coreos/etcd/client"
 	"github.com/spf13/cobra"
-	
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
@@ -17,11 +17,11 @@ var cfgFile string
 const (
 	cliName        = "devenv"
 	cliDescription = "A lightweight dev-environment manager / bootstrapper "
-	
+
 	// The name of our config file, without the file extension because viper supports many different config file languages.
 	defaultConfigFilename = "devenv"
 	defaultConfigFileType = "yaml"
-	
+
 	envPrefix = "DEVENV"
 )
 
@@ -71,18 +71,18 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	
+
 	rootCmd.AddCommand(
 		NewConfigCommand(),
 		NewSdkCommand(),
 	)
-	
+
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	
+
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.devenv/viper/devenv.yaml)")
-	
+
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -97,26 +97,26 @@ func initializeConfig() error {
 		// Find home directory.
 		home, err := homedir.Dir()
 		devenv := path.Join(home, ".devenv", "debug")
-		
+
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		
+
 		// Search config in $HOME/.devenv/debug directory with name "devenv.yaml"
 		viper.AddConfigPath(devenv)
 		viper.SetEnvPrefix(envPrefix)
 		viper.SetConfigName(defaultConfigFilename)
 		viper.SetConfigType(defaultConfigFileType)
 	}
-	
+
 	//	viper.AutomaticEnv() // read in environment variables that match
-	
+
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		return err
 	}
-	
+
 	return nil
 }
 

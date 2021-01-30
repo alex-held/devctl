@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 	"testing"
-	
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,11 +30,10 @@ var expectedConfig = &DevEnvConfig{
 	}},
 }
 
-
 func TestViperConfig(t *testing.T) {
 	InitViper("testdata/devenv.yaml")
 	cfg := LoadViperConfig()
-	
+
 	msg := fmt.Sprintf("Loaded 'testdata/devenv.yaml': \n%+v\n", *cfg)
 	fmt.Println(msg)
 	require.Equal(t, expectedConfig, cfg)

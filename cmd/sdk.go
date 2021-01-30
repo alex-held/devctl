@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	
+
 	"github.com/bndr/gotabulate"
 	"github.com/spf13/cobra"
-	
+
 	"github.com/alex-held/dev-env/config"
 )
 
@@ -16,7 +16,7 @@ func NewSdkCommand() *cobra.Command {
 		Short:     "Configure SDK's",
 		ValidArgs: []string{"list", "add", "remove"},
 	}
-	
+
 	cmd.AddCommand(newSdkListCommand())
 	cmd.AddCommand(newSdkAddCommand())
 	cmd.AddCommand(newSdkRemoveCommand())
@@ -32,7 +32,7 @@ func newSdkListCommand() *cobra.Command {
 		Short:   "Lists all available SDK's",
 		Run:     sdkListCommandfunc,
 	}
-	
+
 }
 
 func newSdkVersionsCommand() *cobra.Command {
@@ -42,7 +42,7 @@ func newSdkVersionsCommand() *cobra.Command {
 		ValidArgs: []string{"list"},
 		Run: func(cmd *cobra.Command, args []string) {
 			cfg := config.LoadViperConfig()
-			
+
 			var tVals [][]interface{}
 			for _, sdk := range cfg.SDKConfig.SDKS {
 				currentVal := sdk.Current
@@ -64,16 +64,16 @@ func newSdkVersionsCommand() *cobra.Command {
 			t := gotabulate.Create(tVals)
 			t.SetHeaders([]string{"sdk", "current", "version", "path"})
 			t.SetEmptyString(" ")
-			
+
 			fmt.Println(t.Render("simple"))
-			
+
 		},
 	}
-	
+
 	cmd.AddCommand(
 		newSdkVersionsListCommand(),
 	)
-	
+
 	return cmd
 }
 
@@ -93,7 +93,7 @@ func newSdkVersionsListCommand() *cobra.Command {
 
 func sdkVersionsListCommandfunc(cmd *cobra.Command, args []string) {
 	sdkArg := args[0]
-	
+
 	versions := listSdkVersions(sdkArg)
 	for _, version := range versions {
 		fmt.Println(version)
@@ -102,7 +102,7 @@ func sdkVersionsListCommandfunc(cmd *cobra.Command, args []string) {
 
 func listSdkVersions(sdk string) (versions []string) {
 	cfg := config.LoadViperConfig()
-	
+
 	for _, sdkConfig := range cfg.SDKConfig.SDKS {
 		if sdkConfig.SDK == sdk {
 			for _, sdkInstallation := range sdkConfig.Installations {
@@ -110,7 +110,7 @@ func listSdkVersions(sdk string) (versions []string) {
 			}
 		}
 	}
-	
+
 	return versions
 }
 
@@ -132,7 +132,7 @@ func newSdkRemoveCommand() *cobra.Command {
 		Short:   "Adds a local SDK",
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return listSdks(), 0
-			
+
 		},
 		Args: cobra.ExactArgs(1),
 		Run:  sdkRemoveCommandfunc,
@@ -144,10 +144,10 @@ func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 		ExitWithError(1, fmt.Errorf("Too many arguments for command '%s'.", cmd.UsageTemplate()))
 		return
 	}
-	
+
 	removeSDK := args[0]
 	devEnvConfig := config.LoadViperConfig()
-	
+
 	filteredSdks := devEnvConfig.SDKConfig.SDKS[:0]
 	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
 		if sdkConfig.SDK != removeSDK {
@@ -155,7 +155,7 @@ func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 		}
 	}
 	devEnvConfig.SDKConfig.SDKS = filteredSdks
-	
+
 	err := config.UpdateDevEnvConfig(*devEnvConfig)
 	if err != nil {
 		ExitWithError(1, err)
@@ -167,7 +167,7 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 		ExitWithError(1, fmt.Errorf("Too many arguments for command '%s'.", cmd.UsageTemplate()))
 		return
 	}
-	
+
 	addSDK := args[0]
 	devEnvConfig := config.LoadViperConfig()
 	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
@@ -176,11 +176,11 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 			return
 		}
 	}
-	
+
 	devEnvConfig.SDKConfig.SDKS = append(devEnvConfig.SDKConfig.SDKS, config.DevEnvSDKConfig{
 		SDK: addSDK,
 	})
-	
+
 	err := config.UpdateDevEnvConfig(*devEnvConfig)
 	if err != nil {
 		ExitWithError(1, err)
@@ -188,7 +188,7 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 }
 
 func sdkListCommandfunc(cmd *cobra.Command, args []string) {
-	
+
 	sdks := listSdks()
 	for _, sdk := range sdks {
 		fmt.Println(sdk)

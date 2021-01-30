@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	
+
 	"github.com/spf13/cobra"
-	
+
 	config2 "github.com/alex-held/dev-env/config"
 )
 
@@ -22,9 +22,9 @@ to quickly create a Cobra application.`,
 			fmt.Println("config called")
 		},
 	}
-	
+
 	cmd.AddCommand(newConfigViewCommand())
-	
+
 	return cmd
 }
 
