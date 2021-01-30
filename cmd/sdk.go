@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	
+	"github.com/bndr/gotabulate"
 	"github.com/spf13/cobra"
 	
 	"github.com/alex-held/dev-env/config"
@@ -39,6 +40,34 @@ func newSdkVersionsCommand() *cobra.Command {
 		Use:       "version",
 		Short:     "Configures sdk versions",
 		ValidArgs: []string{"list"},
+		Run: func(cmd *cobra.Command, args []string) {
+			cfg := config.LoadViperConfig()
+			
+			var tVals [][]interface{}
+			for _, sdk := range cfg.SDKConfig.SDKS {
+				currentVal := sdk.Current
+				if currentVal == "" {
+					currentVal = "<not installed>"
+				}
+				tRowHeader := []interface{}{sdk.SDK, currentVal, "", ""}
+				tVals = append(tVals, tRowHeader)
+				for _, sdkInstallationConfig := range sdk.Installations {
+					tRow := []interface{}{
+						"",
+						"",
+						sdkInstallationConfig.Version,
+						sdkInstallationConfig.Path,
+					}
+					tVals = append(tVals, tRow)
+				}
+			}
+			t := gotabulate.Create(tVals)
+			t.SetHeaders([]string{"sdk", "current", "version", "path"})
+			t.SetEmptyString(" ")
+			
+			fmt.Println(t.Render("simple"))
+			
+		},
 	}
 	
 	cmd.AddCommand(

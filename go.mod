@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/ahmetb/go-linq v3.0.0+incompatible
+	github.com/bndr/gotabulate v1.1.2
 	github.com/coreos/etcd v3.3.13+incompatible
 	github.com/davecgh/go-spew v1.1.1
 	github.com/ebuchman/go-shell-pipes v0.0.0-20150412091402-83e132480862
