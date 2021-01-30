@@ -13,6 +13,17 @@ import (
 
 var cfgFile string
 
+const (
+	cliName        = "devenv"
+	cliDescription = "A lightweight dev-environment manager / bootstrapper "
+	
+	// The name of our config file, without the file extension because viper supports many different config file languages.
+	defaultConfigFilename = "devenv"
+	defaultConfigFileType = "yaml"
+	
+	envPrefix = "DEVENV"
+)
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "dev-env",
@@ -32,6 +43,9 @@ dev-env list dotnet
 
 dev-env use go 1.15.x
 `,
+	// PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+	//	return initializeConfig()
+	// },
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -49,6 +63,10 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	
+	rootCmd.AddCommand(
+		NewConfigCommand(),
+	)
+	
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -61,7 +79,7 @@ func init() {
 }
 
 // initConfig reads in config file and ENV variables if set.
-func initConfig() {
+func initializeConfig() error {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -77,14 +95,21 @@ func initConfig() {
 		
 		// Search config in $HOME/.devenv/debug directory with name "devenv.yaml"
 		viper.AddConfigPath(devenv)
-		viper.SetConfigName("devenv")
-		viper.SetConfigType("yaml")
+		viper.SetEnvPrefix(envPrefix)
+		viper.SetConfigName(defaultConfigFilename)
+		viper.SetConfigType(defaultConfigFileType)
 	}
 	
-//	viper.AutomaticEnv() // read in environment variables that match
+	//	viper.AutomaticEnv() // read in environment variables that match
 	
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		return err
 	}
+	
+	return nil
+}
+
+func initConfig() {
+	_ = initializeConfig()
 }
