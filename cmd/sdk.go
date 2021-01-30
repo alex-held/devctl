@@ -11,8 +11,9 @@ import (
 // NewSdkCommand creates the `devenv sdk` commands
 func NewSdkCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "sdk",
-		Short: "Configure SDK's",
+		Use:       "sdk",
+		Short:     "Configure SDK's",
+		ValidArgs: []string{"list", "add", "remove"},
 	}
 	
 	cmd.AddCommand(newSdkListCommand())
@@ -72,19 +73,6 @@ func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 		}
 	}
 	devEnvConfig.SDKConfig.SDKS = filteredSdks
-	
-	/*
-			var removeSdkIdx int
-			for i, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
-				if sdkConfig.SDK == removeSDK {
-					removeSdkIdx = &i
-				}
-			}
-			if removeSdkIdx != nil {
-				devEnvConfig.SDKConfig.SDKS = append(devEnvConfig.SDKConfig.SDKS[:removeSdkIdx], devEnvConfig.SDKConfig.SDKS[*removeSdkIdx+1:]...)
-			}
-		    devEnvConfig.SDKConfig.SDKS = append(devEnvConfig.SDKConfig.SDKS[:i], devEnvConfig.SDKConfig.SDKS[i+1:]...)
-	*/
 	
 	err := config.UpdateDevEnvConfig(*devEnvConfig)
 	if err != nil {

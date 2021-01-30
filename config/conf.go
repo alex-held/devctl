@@ -6,6 +6,7 @@ import (
 	"path"
 	
 	"github.com/ghodss/yaml"
+	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 )
 
@@ -69,12 +70,19 @@ func LoadViperConfig() *DevEnvConfig {
 	return configuration
 }
 
-func UpdateDevEnvConfig(config DevEnvConfig) error {
+func UpdateDevEnvConfig(cfg DevEnvConfig) error {
 	err := viper.ReadInConfig()
 	if err != nil {
 		return err
 	}
-	b, err := yaml.Marshal(config)
+	
+	devEnvConfigMap := &map[string]interface{}{}
+	err = mapstructure.Decode(&cfg, devEnvConfigMap)
+	if err != nil {
+		return err
+	}
+	
+	b, err := yaml.Marshal(devEnvConfigMap)
 	err = viper.MergeConfig(bytes.NewReader(b))
 	if err != nil {
 		return err
