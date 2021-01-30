@@ -17,6 +17,7 @@ func NewSdkCommand() *cobra.Command {
 	
 	cmd.AddCommand(newSdkListCommand())
 	cmd.AddCommand(newSdkAddCommand())
+	cmd.AddCommand(newSdkRemoveCommand())
 	return cmd
 }
 
@@ -37,6 +38,57 @@ func newSdkAddCommand() *cobra.Command {
 		Short: "Adds a local SDK",
 		Args:  cobra.ExactArgs(1),
 		Run:   sdkAddCommandfunc,
+	}
+}
+
+// newSdkRemoveCommand creates the `devenv sdk remove` command
+func newSdkRemoveCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:     "remove [sdk]",
+		Aliases: []string{"rm"},
+		Short:   "Adds a local SDK",
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return listSdks(), 0
+			
+		},
+		Args: cobra.ExactArgs(1),
+		Run:  sdkRemoveCommandfunc,
+	}
+}
+
+func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
+	if len(args) > 1 {
+		ExitWithError(1, fmt.Errorf("Too many arguments for command '%s'.", cmd.UsageTemplate()))
+		return
+	}
+	
+	removeSDK := args[0]
+	devEnvConfig := config.LoadViperConfig()
+	
+	filteredSdks := devEnvConfig.SDKConfig.SDKS[:0]
+	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
+		if sdkConfig.SDK != removeSDK {
+			filteredSdks = append(filteredSdks, sdkConfig)
+		}
+	}
+	devEnvConfig.SDKConfig.SDKS = filteredSdks
+	
+	/*
+			var removeSdkIdx int
+			for i, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
+				if sdkConfig.SDK == removeSDK {
+					removeSdkIdx = &i
+				}
+			}
+			if removeSdkIdx != nil {
+				devEnvConfig.SDKConfig.SDKS = append(devEnvConfig.SDKConfig.SDKS[:removeSdkIdx], devEnvConfig.SDKConfig.SDKS[*removeSdkIdx+1:]...)
+			}
+		    devEnvConfig.SDKConfig.SDKS = append(devEnvConfig.SDKConfig.SDKS[:i], devEnvConfig.SDKConfig.SDKS[i+1:]...)
+	*/
+	
+	err := config.UpdateDevEnvConfig(*devEnvConfig)
+	if err != nil {
+		ExitWithError(1, err)
 	}
 }
 
@@ -65,16 +117,18 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	}
 }
 
-
-
 func sdkListCommandfunc(cmd *cobra.Command, args []string) {
-	devenv := config.LoadViperConfig()
-	var sdks []string
-	for _, sdk := range devenv.SDKConfig.SDKS {
-		sdks = append(sdks, sdk.SDK)
-	}
 	
+	sdks := listSdks()
 	for _, sdk := range sdks {
 		fmt.Println(sdk)
 	}
+}
+
+func listSdks() (sdks []string) {
+	devenv := config.LoadViperConfig()
+	for _, sdk := range devenv.SDKConfig.SDKS {
+		sdks = append(sdks, sdk.SDK)
+	}
+	return sdks
 }
