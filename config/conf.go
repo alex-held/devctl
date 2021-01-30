@@ -15,9 +15,9 @@ type DevEnvGlobalConfig struct {
 }
 
 type DevEnvSDKConfig struct {
-	SDK          string                        `yaml:"sdk" json:"sdk,omitempty" mapstructure:"sdk,omitempty"`
-	Current      string                        `yaml:"current,omitempty" mapstructure:"current,omitempty"`
-	Intallations []DevEnvSDKInstallationConfig `yaml:"installations,omitempty" mapstructure:"installations,omitempty"`
+	SDK           string                        `yaml:"sdk" json:"sdk" mapstructure:"sdk"`
+	Current       string                        `yaml:"current,omitempty" mapstructure:"current,omitempty"`
+	Installations []DevEnvSDKInstallationConfig `yaml:"installations,omitempty" mapstructure:"installations,omitempty"`
 }
 
 type DevEnvSDKInstallationConfig struct {

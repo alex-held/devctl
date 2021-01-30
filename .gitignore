@@ -2,6 +2,7 @@
 !.idea/runConfigurations/*
 !.idea/dictionaries/*
 
+testdata/devenv.yaml
 
 *.iml
 .DS_Store
