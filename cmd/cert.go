@@ -1,51 +1,84 @@
-/*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 package cmd
 
 import (
-	"fmt"
+	"os"
+	"path/filepath"
 
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
+
+	"github.com/alex-held/dev-env/pkg/cli"
 )
 
-// certCmd represents the cert command
-var certCmd = &cobra.Command{
-	Use:   "cert",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+// NewCertCommand represents the cert command
+func NewCertCommand() (cmd *cobra.Command) {
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("cert called")
-	},
+	cmd = &cobra.Command{
+		Use:   "cert",
+		Short: "Manage Certificates",
+		RunE: func(c *cobra.Command, args []string) error {
+			return c.Usage()
+		},
+	}
+
+	cmd.AddCommand(NewCACommand())
+	return cmd
+}
+
+func NewCACommand() (caCommand *cobra.Command) {
+
+	caCommand = &cobra.Command{
+		Use:              "ca",
+		Short:            "Manages local Certificate Authorities",
+		Example:          "dev-env cert ca install --key=ca.key --cert=ca.cer",
+		Args:             cobra.RangeArgs(0, 11),
+		TraverseChildren: true,
+	}
+
+	keyFlag := caCommand.PersistentFlags().String("key", "", "the CA's private key ")
+	certFlag := caCommand.PersistentFlags().String("cert", "", "the CA's private key ")
+	_, _ = keyFlag, certFlag
+
+	caCommand.AddCommand(
+		NewCAInstallCommand(),
+	)
+	return caCommand
+}
+
+func NewCAInstallCommand() *cobra.Command {
+
+	return &cobra.Command{
+		Use:         "install",
+		Short:       "Manages local Certificate Authorities",
+		Example:     "dev-env cert ca install --key=ca.key --cert=ca.cer",
+		Args:        cobra.ExactArgs(0),
+		Annotations: nil,
+		Run: func(c *cobra.Command, args []string) {
+
+			const caPath = "/var/ca"
+			key := c.Flag("key").Value.String()
+			cert := c.Flag("cert").Value.String()
+
+			osFs := afero.NewOsFs()
+			keyBytes, err := afero.ReadFile(osFs, key)
+			err = afero.WriteFile(osFs, filepath.Join(caPath, filepath.Base(key)), keyBytes, os.ModePerm)
+			if err != nil {
+				cli.ExitWithError(1, err)
+				return
+			}
+
+			certBytes, err := afero.ReadFile(osFs, cert)
+			err = afero.WriteFile(osFs, filepath.Join(caPath, filepath.Base(cert)), certBytes, os.ModePerm)
+			if err != nil {
+				cli.ExitWithError(1, err)
+				return
+			}
+
+		},
+		TraverseChildren: true,
+	}
 }
 
 func init() {
-	rootCmd.AddCommand(certCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// certCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// certCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.AddCommand(NewCertCommand())
 }

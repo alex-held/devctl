@@ -3,9 +3,11 @@ package cli
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/coreos/etcd/client"
+	"github.com/spf13/viper"
 )
 
 // ExitWithError  prints an error message and exits the application with ErrorCode: code
@@ -61,4 +63,27 @@ type staticConfig struct {
 	configFileName string
 	configFileType string
 	envPrefix      string
+}
+
+func ConfiureStorage(option ...StaticOption) {
+	c := NewStaticConfig(option...)
+
+	viper.SetEnvPrefix(c.envPrefix)
+	viper.AddConfigPath(filepath.Dir(c.configFileName))
+	viper.SetConfigName(c.configFileName)
+	viper.SetConfigType(c.configFileType)
+
+	// If a config file is found, read it in.
+	if err := viper.ReadInConfig(); err == nil {
+		ExitWithError(1, err)
+	}
+
+}
+
+func NewStaticConfig(option ...StaticOption) (c *staticConfig) {
+	c = &staticConfig{}
+	for _, o := range option {
+		c = o(c)
+	}
+	return c
 }

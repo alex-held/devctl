@@ -10,7 +10,7 @@ require (
 	github.com/mitchellh/go-testing-interface v1.0.0
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/rs/zerolog v1.20.0
-	github.com/spf13/afero v1.5.1 // indirect
+	github.com/spf13/afero v1.5.1
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1

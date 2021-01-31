@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/alex-held/dev-env/config"
+	"github.com/alex-held/dev-env/pkg/cli"
 )
 
 // NewSdkCommand creates the `devenv sdk` commands
@@ -141,7 +142,7 @@ func newSdkRemoveCommand() *cobra.Command {
 
 func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 	if len(args) > 1 {
-		ExitWithError(1, fmt.Errorf("Too many arguments for command '%s'.", cmd.UsageTemplate()))
+		cli.ExitWithError(1, fmt.Errorf("Too many arguments for command '%s'.", cmd.UsageTemplate()))
 		return
 	}
 
@@ -158,13 +159,13 @@ func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 
 	err := config.UpdateDevEnvConfig(*devEnvConfig)
 	if err != nil {
-		ExitWithError(1, err)
+		cli.ExitWithError(1, err)
 	}
 }
 
 func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	if len(args) > 1 {
-		ExitWithError(1, fmt.Errorf("Too many arguments for command '%s'.", cmd.UsageTemplate()))
+		cli.ExitWithError(1, fmt.Errorf("Too many arguments for command '%s'.", cmd.UsageTemplate()))
 		return
 	}
 
@@ -172,7 +173,7 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	devEnvConfig := config.LoadViperConfig()
 	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
 		if sdkConfig.SDK == addSDK {
-			ExitWithError(1, fmt.Errorf("SDK'%s' already configured.", addSDK))
+			cli.ExitWithError(1, fmt.Errorf("SDK'%s' already configured.", addSDK))
 			return
 		}
 	}
@@ -183,7 +184,7 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 
 	err := config.UpdateDevEnvConfig(*devEnvConfig)
 	if err != nil {
-		ExitWithError(1, err)
+		cli.ExitWithError(1, err)
 	}
 }
 
