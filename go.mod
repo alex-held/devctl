@@ -7,7 +7,6 @@ require (
 	github.com/coreos/etcd v3.3.13+incompatible
 	github.com/ghodss/yaml v1.0.0
 	github.com/mitchellh/go-homedir v1.1.0
-	github.com/mitchellh/go-testing-interface v1.0.0
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/rs/zerolog v1.20.0
 	github.com/spf13/afero v1.5.1
