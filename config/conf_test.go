@@ -13,7 +13,7 @@ var expectedConfig = &DevEnvConfig{
 		{
 			SDK:     "java",
 			Current: "openjdk-11",
-			Intallations: []DevEnvSDKInstallationConfig{
+			Installations: []DevEnvSDKInstallationConfig{
 				{
 					Path:    "/Library/Java/VirtualMachines/OpenJDK15/Contents/Home",
 					Version: "openjdk-15",
