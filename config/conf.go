@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"path"
-	"path/filepath"
 
 	"github.com/ghodss/yaml"
-	"github.com/mitchellh/go-homedir"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 )
@@ -45,20 +43,6 @@ var (
 		Version: "v1",
 	}
 )
-
-// ResolveDevEnvConfigPath Resolves the current dev-env config file.
-func ResolveDevEnvConfigPath() (err error, dir string) {
-	if err, dir = ResolveDevEnvConfigDir(); err == nil {
-		return nil, filepath.Join(dir, "config", "yaml")
-	}
-	return err, ""
-}
-
-// ResolveDevEnvConfigDir Resolves the current dev-env root directory.
-func ResolveDevEnvConfigDir() (err error, dir string) {
-	home, err := homedir.Dir()
-	return err, path.Join(home, ".devctl")
-}
 
 func InitViper(filename string) {
 	dir := path.Dir(filename)
