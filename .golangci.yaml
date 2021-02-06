@@ -55,7 +55,7 @@ run:
 
     # Allow multiple parallel golangci-lint instances running.
     # If false (default) - golangci-lint acquires file lock on start.
-    allow-parallel-runners: false
+    allow-parallel-runners: true
 
 
 # output configuration options
@@ -83,18 +83,12 @@ linters-settings:
     depguard:
         list-type: blacklist
         packages:
-            # logging is allowed only by logutils.Log, logrus
-            # is allowed to use only in logutils package
             - github.com/sirupsen/logrus
-        packages-with-error-message:
-            -   github.com/sirupsen/logrus: "logging is allowed only by logutils.Log"
     dupl:
         threshold: 100
     funlen:
-        lines: 100
-        statements: 50
-    gci:
-        local-prefixes: github.com/golangci/golangci-lint
+        lines: 60
+        statements: 40
     goconst:
         min-len: 2
         min-occurrences: 2
@@ -105,23 +99,36 @@ linters-settings:
             - opinionated
             - performance
             - style
+
         disabled-checks:
-            - dupImport # https://github.com/go-critic/go-critic/issues/845
             - ifElseChain
             - octalLiteral
             - whyNoLint
             - wrapperFunc
     gocyclo:
-        min-complexity: 15
+        min-complexity: 10
+    gocognit:
+        min-complexity: 10
+    nestif:
+        min-complexity: 4
+
     goimports:
-        local-prefixes: github.com/golangci/golangci-lint
+        local-prefixes: github.com/alex-held/dev-env
+    godox:
+        keywords:
+            - NOTE
+            - TODO
+            - BUG
+            - BUG
+            - OPTIMIZE
+            - HACK
+
     golint:
-        min-confidence: 0
+        min-confidence: 0.8
     gomnd:
         settings:
             mnd:
-                # don't include the "operation" and "assign"
-                checks: argument,case,condition,return
+                checks: argument,case,condition,operation,return,assign
     govet:
         check-shadowing: true
         settings:
@@ -131,12 +138,20 @@ linters-settings:
                     - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
                     - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
                     - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+    gofmt:
+        simplify: true
+    nakedret:
+        max-func-lines: 30
     lll:
-        line-length: 140
+        line-length: 120
+    whitespace:
+        auto-fix: true
     maligned:
         suggest-new: true
     misspell:
         locale: US
+    godot:
+        scope: declarations
     nolintlint:
         allow-leading-space: true # don't require machine-readable nolint directives (i.e. with no leading space)
         allow-unused: false # report any unused nolint directives
@@ -185,15 +200,16 @@ linters:
         - unused
         - varcheck
         - whitespace
+        - gocognit
+        - godox
+        - maligned
+        - nestif
+        - asciicheck
+
         # don't enable:
-        # - asciicheck
         # - gochecknoglobals
-        # - gocognit
         # - godot
-        # - godox
         # - goerr113
-        # - maligned
-        # - nestif
         # - prealloc
         # - testpackage
         # - wsl
