@@ -2,7 +2,7 @@
 name: Create Pull Request
 about: Please describe the feature/bugfix in a short sentence
 title: ''
-labels: open
+labels: merge when passing, auto-merge
 assignees: alex-held
 
 ---
