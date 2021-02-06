@@ -2,21 +2,25 @@
 name: Create Pull Request
 about: Please describe the feature/bugfix in a short sentence
 title: ''
-labels: merge when passing
+labels: ''
 assignees: alex-held
 
 ---
+
+<!-- Please refer to our contributing documentation for any questions on submitting a pull request, or let us know here if you need any help: https://ionicframework.com/docs/building/contributing -->
 
 ## Pull request checklist
 
 Please check if your PR fulfills the following requirements:
 - [ ] Tests for the changes have been added (for bug fixes / features)
 - [ ] Docs have been reviewed and added / updated if needed (for bug fixes / features)
-- [ ] Build (`task build`) was run locally and any changes were pushed
-- [ ] Lint (`task check`) has passed locally and any fixes were made for failures
+- [ ] Build (`npm run build`) was run locally and any changes were pushed
+- [ ] Lint (`npm run lint`) has passed locally and any fixes were made for failures
 
 
 ## Pull request type
+
+<!-- Please do not submit updates to dependencies unless it fixes an issue. --> 
 
 <!-- Please try to limit your pull request to one type, submit multiple pull requests if needed. --> 
 
@@ -35,8 +39,12 @@ Please check the type of change your PR introduces:
 
 Issue Number: N/A
 
+
 ## What is the new behavior?
 <!-- Please describe the behavior or changes that are being added by this PR. -->
+
+-
+-
 -
 
 ## Does this introduce a breaking change?
