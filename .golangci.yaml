@@ -113,7 +113,7 @@ linters-settings:
         min-complexity: 4
 
     goimports:
-        local-prefixes: github.com/alex-held/dev-env
+        local-prefixes: github.com/alex-held/devctl
     godox:
         keywords:
             - NOTE
