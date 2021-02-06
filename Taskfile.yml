@@ -68,7 +68,7 @@ tasks:
     cmds:
       - golangci-lint run ./... --fix
   
-  check:
+  lint:
     desc: Lints & Fixes {{.PROJECT}}
     cmds:
       - golangci-lint -v --color=always run ./...  --fix
