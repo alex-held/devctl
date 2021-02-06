@@ -1,0 +1,50 @@
+# https://taskfile.dev
+
+version: '3'
+output: prefixed
+
+vars:
+  PROJECT: devctl
+  GIT_COMMIT:
+    sh: git log -n 1 --format=%h
+
+tasks:
+  
+  install:
+    desc: Installs {{.PROJECT}} into GOBIN
+    cmds:
+      - task: build
+      - cp {{.PROJECT}} {{.GOPATH}}/bin/{{.PROJECT}}
+  
+  run:
+    desc: Runs {{.PROJECT}}
+    cmds:
+      - task: build
+      - ./{{.PROJECT}} {{.ARGS}}
+    env:
+      ARGS:
+  
+  build:
+    desc: Builds {{.PROJECT}}
+    cmds:
+      - go build -v -o {{.PROJECT}}
+      
+  test-quiet:
+    desc: Tests {{.PROJECT}} quietly
+    cmds:
+      - go test --short ./...
+  
+  cover:
+    desc: Tests & Covers {{.PROJECT}}
+    summary: |
+      Tests & Covers {{.PROJECT}}
+      
+      It will test your project and collects the coverage.
+      The coverage gets saved to coverage.out
+    cmds:
+      - go test -v -cover -covermode=atomic -coverpkg=./...  -coverprofile=coverage.out  ./...
+  
+  check:
+    desc: Lints & Fixes {{.PROJECT}}
+    cmds:
+      - golangci-lint -v run ./...  --fix
