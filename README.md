@@ -14,15 +14,11 @@
 ![Changelog CI Status](https://github.com/alex-held/devctl/workflows/auto-changelog/badge.svg)
 ![GitHub](https://img.shields.io/github/license/alex-held/devctl?style=flat-square)
 
-[![Run on Repl.it](https://repl.it/badge/github/alex-held/devctl)](https://repl.it/github/alex-held/devctl)
-
-> CLI-Toolchain to create a consistent development environment across platforms (Package Manager, Installer, SDK's, PathVars, EnvVars, Secrets, Configs, dotfiles, Terminal Customizations and more
 
 ### 🏠 [Homepage](https://github.com/alex-held/devctl/wiki)
 
 > CLI-Toolchain to create a consistent development environment across platforms (Package Manager, Installer, SDK's, PathVars, EnvVars, Secrets, Configs, dotfiles, Terminal Customizations and more
 
-### 🏠 [Homepage](https://github.com/alex-held/dev-env/wiki)
 
 ## Install
 
