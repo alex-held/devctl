@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/alex-held/dev-env/pkg/cli"
+	"github.com/alex-held/devctl/pkg/cli"
 )
 
 // NewCompletionCommand Creates new Completion cobra.Command

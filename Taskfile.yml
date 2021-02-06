@@ -10,6 +10,24 @@ vars:
 
 tasks:
   
+  tidy:
+    desc: Tidies go.mod and go.sum
+    summary: |
+      Cleans up dependencies inside go.mod and go.sum.
+      Make sure no unnecessary dependecies are present
+    cmds:
+      - go mod tidy -v
+      - git diff-index --quiet HEAD
+  
+  
+  install-deps:
+    desc: Installs all required tooling and dependencies
+    cmds:
+      - go mod download
+      - go get -u
+      
+      
+      
   install:
     desc: Installs {{.PROJECT}} into GOBIN
     cmds:
@@ -27,8 +45,9 @@ tasks:
   build:
     desc: Builds {{.PROJECT}}
     cmds:
+      - task: install-deps
       - go build -v -o {{.PROJECT}}
-      
+  
   test-quiet:
     desc: Tests {{.PROJECT}} quietly
     cmds:
@@ -44,7 +63,12 @@ tasks:
     cmds:
       - go test -v -cover -covermode=atomic -coverpkg=./...  -coverprofile=coverage.out  ./...
   
-  check:
+  lint-silently:
     desc: Lints & Fixes {{.PROJECT}}
     cmds:
-      - golangci-lint -v run ./...  --fix
+      - golangci-lint run ./... --fix
+  
+  lint:
+    desc: Lints & Fixes {{.PROJECT}}
+    cmds:
+      - golangci-lint -v --color=always run ./...  --fix
