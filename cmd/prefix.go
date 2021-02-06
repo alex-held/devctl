@@ -24,19 +24,16 @@ func NewPrefixCommand() *cobra.Command {
 			homeDir, err := homedir.Dir()
 			if err != nil {
 				cli.ExitWithError(1, err)
-				return
 			}
 			rootDir := filepath.Dir(config)
 			sdkLinkDir := filepath.Join(homeDir, rootDir, "sdks", "current")
 
 			if len(args) == 0 {
 				println(sdkLinkDir)
-				return
 			}
 
 			sdkLink := filepath.Join(sdkLinkDir, args[0])
 			println(sdkLink)
-			return
 		},
 	}
 

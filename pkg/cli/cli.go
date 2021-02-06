@@ -1,3 +1,4 @@
+// Package cli
 package cli
 
 import (
@@ -10,6 +11,26 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
+
+// Once the Application starts, following values get configured exactly once.
+// Those values cannot be changed while the application is running
+// cliDescription string
+// configFileName string
+// configFileType string
+// envPrefix       string
+type staticConfig struct {
+	cliName        string
+	cliDescription string
+	configFileName string
+	configFileType string
+	envPrefix      string
+}
+
+type CLI interface {
+	Name() string
+	ConfigFileName() string
+	ConfigDir() string
+}
 
 var staticConfigAfterLoad *staticConfig
 
@@ -34,7 +55,7 @@ func (c *staticConfig) ConfigDir() string {
 // GetCLI e
 func GetCLI() CLI {
 	if staticConfigAfterLoad == nil {
-		ConfiureStorage(DefaultStaticCliConfigOption(), DefaultStaticConfigFileOption())
+		ConfigureStorage(DefaultStaticCliConfigOption(), DefaultStaticConfigFileOption())
 	}
 	return staticConfigAfterLoad
 }
@@ -80,28 +101,9 @@ func StaticCliConfigOption(cliName, cliDescription string) StaticOption {
 	}
 }
 
-// Once the Application starts, following values get configured exactly once.
-// Those values cannot be changed while the application is running
-// cliDescription string
-// configFileName string
-// configFileType string
-// envPrefix       string
-type staticConfig struct {
-	cliName        string
-	cliDescription string
-	configFileName string
-	configFileType string
-	envPrefix      string
-}
-
-type CLI interface {
-	Name() string
-	ConfigFileName() string
-	ConfigDir() string
-}
-
-func ConfiureStorage(option ...StaticOption) {
-	c := NewStaticConfig(option...)
+// ConfigureStorage configures the config storage using multiple StaticOption's
+func ConfigureStorage(option ...StaticOption) {
+	c := newStaticConfig(option...)
 	staticConfigAfterLoad = c
 
 	viper.SetEnvPrefix(c.envPrefix)
@@ -114,10 +116,9 @@ func ConfiureStorage(option ...StaticOption) {
 	if err := viper.ReadInConfig(); err != nil {
 		ExitWithError(1, err)
 	}
-
 }
 
-func NewStaticConfig(option ...StaticOption) (c *staticConfig) {
+func newStaticConfig(option ...StaticOption) (c *staticConfig) {
 	c = &staticConfig{}
 	for _, o := range option {
 		c = o(c)

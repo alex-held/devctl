@@ -8,7 +8,7 @@ import (
 
 // TestStaticCliConfigOption
 func TestStaticCliConfigOption(t *testing.T) {
-	tests := map[string]struct {
+	tCases := map[string]struct {
 		Input    StaticOption
 		Expected staticConfig
 	}{
@@ -42,11 +42,11 @@ func TestStaticCliConfigOption(t *testing.T) {
 		}},
 	}
 
-	for scenario, test := range tests {
+	for scenario, tc := range tCases {
 		t.Run(scenario, func(scenarioT *testing.T) {
 			staticCfg := &staticConfig{}
-			actual := test.Input(staticCfg)
-			assert.Equal(scenarioT, *actual, test.Expected)
+			actual := *tc.Input(staticCfg)
+			assert.Equal(scenarioT, actual, tc.Expected)
 		})
 	}
 }

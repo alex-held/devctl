@@ -33,7 +33,6 @@ func newSdkListCommand() *cobra.Command {
 		Short:   "Lists all available SDK's",
 		Run:     sdkListCommandfunc,
 	}
-
 }
 
 func newSdkVersionsCommand() *cobra.Command {
@@ -67,7 +66,6 @@ func newSdkVersionsCommand() *cobra.Command {
 			t.SetEmptyString(" ")
 
 			fmt.Println(t.Render("simple"))
-
 		},
 	}
 
@@ -133,7 +131,6 @@ func newSdkRemoveCommand() *cobra.Command {
 		Short:   "Adds a local SDK",
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return listSdks(), 0
-
 		},
 		Args: cobra.ExactArgs(1),
 		Run:  sdkRemoveCommandfunc,
@@ -142,7 +139,7 @@ func newSdkRemoveCommand() *cobra.Command {
 
 func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 	if len(args) > 1 {
-		cli.ExitWithError(1, fmt.Errorf("Too many arguments for command '%s'.", cmd.UsageTemplate()))
+		cli.ExitWithError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
 		return
 	}
 
@@ -165,7 +162,7 @@ func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 
 func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	if len(args) > 1 {
-		cli.ExitWithError(1, fmt.Errorf("Too many arguments for command '%s'.", cmd.UsageTemplate()))
+		cli.ExitWithError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
 		return
 	}
 
@@ -173,7 +170,7 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	devEnvConfig := config.LoadViperConfig()
 	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
 		if sdkConfig.SDK == addSDK {
-			cli.ExitWithError(1, fmt.Errorf("SDK'%s' already configured.", addSDK))
+			cli.ExitWithError(1, fmt.Errorf("SDK'%s' already configured. ", addSDK))
 			return
 		}
 	}

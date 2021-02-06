@@ -56,16 +56,15 @@ func InitViper(filename string) {
 }
 
 func LoadViperConfig() *DevEnvConfig {
-
 	configuration := &DevEnvConfig{}
 
 	if err := viper.ReadInConfig(); err != nil {
-		_ = fmt.Errorf("Error reading config file, %s\n", err)
+		_ = fmt.Errorf("error reading config file, %s\n ", err)
 	}
 
 	err := viper.Unmarshal(configuration)
 	if err != nil {
-		_ = fmt.Errorf("unable to decode into struct, %v\n", err)
+		_ = fmt.Errorf("unable to decode into struct, %v\n ", err)
 	}
 	return configuration
 }
@@ -82,7 +81,7 @@ func UpdateDevEnvConfig(cfg DevEnvConfig) error {
 		return err
 	}
 
-	b, err := yaml.Marshal(devEnvConfigMap)
+	b, _ := yaml.Marshal(devEnvConfigMap)
 	err = viper.MergeConfig(bytes.NewReader(b))
 	if err != nil {
 		return err

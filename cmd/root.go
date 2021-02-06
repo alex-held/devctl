@@ -30,7 +30,7 @@ dev-env list dotnet
 
 dev-env use go 1.15.x
 `,
-/*	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+	/*	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		initConfig()
 	},*/
 
@@ -48,10 +48,12 @@ func Execute() {
 	}
 }
 
+//nolint:gochecknoinits
 func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.AddCommand(
+		NewCompletionCommand(),
 		NewConfigCommand(),
 		NewSdkCommand(),
 		NewPrefixCommand(),
@@ -69,5 +71,5 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	cli.ConfiureStorage(cli.DefaultStaticCliConfigOption(), cli.DefaultStaticConfigFileOption())
+	cli.ConfigureStorage(cli.DefaultStaticCliConfigOption(), cli.DefaultStaticConfigFileOption())
 }
