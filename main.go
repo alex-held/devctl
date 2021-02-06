@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/alex-held/dev-env/cmd"
+import "github.com/alex-held/devctl/cmd"
 
 func main() {
 	cmd.Execute()

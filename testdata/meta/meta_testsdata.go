@@ -1,7 +1,7 @@
 package meta
 
 import (
-	. "github.com/alex-held/dev-env/meta"
+	. "github.com/alex-held/devctl/meta"
 )
 
 
