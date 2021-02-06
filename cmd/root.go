@@ -30,9 +30,10 @@ dev-env list dotnet
 
 dev-env use go 1.15.x
 `,
-	// PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-	//	return initializeConfig()
-	// },
+/*	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		initConfig()
+	},*/
+
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -53,7 +54,7 @@ func init() {
 	rootCmd.AddCommand(
 		NewConfigCommand(),
 		NewSdkCommand(),
-		NewCertCommand(),
+		NewPrefixCommand(),
 	)
 
 	// Here you will define your flags and configuration settings.

@@ -7,8 +7,37 @@ import (
 	"strings"
 
 	"github.com/coreos/etcd/client"
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
+
+var staticConfigAfterLoad *staticConfig
+
+func (c *staticConfig) Name() string {
+	return c.cliName
+}
+
+func (c *staticConfig) ConfigFileName() string {
+	filename := filepath.Join(c.ConfigDir(), fmt.Sprintf("%s.%s", c.configFileName, c.configFileType))
+	return filename
+}
+
+func (c *staticConfig) ConfigDir() string {
+	home, err := homedir.Dir()
+	if err != nil {
+		ExitWithError(1, err)
+	}
+	dir := filepath.Join(home, fmt.Sprintf(".%s", c.Name()))
+	return dir
+}
+
+// GetCLI e
+func GetCLI() CLI {
+	if staticConfigAfterLoad == nil {
+		ConfiureStorage(DefaultStaticCliConfigOption(), DefaultStaticConfigFileOption())
+	}
+	return staticConfigAfterLoad
+}
 
 // ExitWithError  prints an error message and exits the application with ErrorCode: code
 func ExitWithError(code int, err error) {
@@ -65,16 +94,24 @@ type staticConfig struct {
 	envPrefix      string
 }
 
+type CLI interface {
+	Name() string
+	ConfigFileName() string
+	ConfigDir() string
+}
+
 func ConfiureStorage(option ...StaticOption) {
 	c := NewStaticConfig(option...)
+	staticConfigAfterLoad = c
 
 	viper.SetEnvPrefix(c.envPrefix)
-	viper.AddConfigPath(filepath.Dir(c.configFileName))
+
+	viper.AddConfigPath(c.ConfigDir())
 	viper.SetConfigName(c.configFileName)
 	viper.SetConfigType(c.configFileType)
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
+	if err := viper.ReadInConfig(); err != nil {
 		ExitWithError(1, err)
 	}
 

@@ -189,7 +189,6 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 }
 
 func sdkListCommandfunc(cmd *cobra.Command, args []string) {
-
 	sdks := listSdks()
 	for _, sdk := range sdks {
 		fmt.Println(sdk)

@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	config2 "github.com/alex-held/dev-env/config"
+	"github.com/alex-held/dev-env/pkg/cli"
 )
 
 func NewConfigCommand() *cobra.Command {
@@ -19,7 +20,8 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("config called")
+			  c := cli.GetCLI()
+			  fmt.Println(c.ConfigFileName())
 		},
 	}
 
