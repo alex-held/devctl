@@ -5,12 +5,13 @@
 testdata/devenv.yaml
 
 *.iml
+**/.DS_Store
 .DS_Store
-
 
 # Binaries for programs and plugins
 main
 dev-env
+devctl
 *.exe
 *.exe~
 *.dll
