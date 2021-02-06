@@ -1,0 +1,35 @@
+{
+  "commit_changelog": true,
+  "comment_changelog": true,
+  "header_prefix": "Version:",
+  "group_config": [
+    {
+      "title": "🐞 Bug Fixes",
+      "labels": ["fix"]
+    },
+    {
+      "title": "⚒️ Chores",
+      "labels": ["chore"]
+    },
+    {
+      "title": "🎁 Features",
+      "labels": ["feat"]
+    },
+    {
+      "title": "🧪 Refactor",
+      "labels": ["refactor"]
+    },
+    {
+      "title": "💅🏻 Style",
+      "labels": ["style"]
+    },
+    {
+      "title": "🤖 CI",
+      "labels": ["ci"]
+    },
+    {
+      "title": "📃 Documentation",
+      "labels": ["docs"]
+    }
+  ]
+}
