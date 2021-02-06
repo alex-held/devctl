@@ -5,22 +5,19 @@
 
 version: 2
 updates:
-- package-ecosystem: gomod
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 5
-  target-branch: develop
-  rebase-strategy: "auto"
-  commit-message:
+  - package-ecosystem: gomod
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 5
+    target-branch: develop
+    rebase-strategy: "auto"
+    commit-message:
       prefix: "chore(deps): "
       include: "scope"
-  labels:
-    - "dependabot"
-    - "automerge"
-    - "deps"
-  reviewers:
-    - "alex-held"
-  assignees:
-    - "alex-held"
+    labels:
+      - "dependabot"
+      - "automerge"
+      - "merge when passing"
+      - "deps"

@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="537px" preserveAspectRatio="none" style="width:399px;height:537px;background:#777777;" version="1.1" viewBox="0 0 399 537" width="399px" zoomAndPan="magnify"><defs><filter height="300%" id="f13zau7vvplw62" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacing" textLength="178" x="104" y="17.4023">DevEnvConfig Model</text><!--MD5=[77140a42179fe8241cde5d77dd05aadc]
+cluster config--><polygon fill="#777777" filter="url(#f13zau7vvplw62)" points="16,27.1992,67,27.1992,74,49.6875,382,49.6875,382,530.1992,16,530.1992,16,27.1992" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="74" y1="49.6875" y2="49.6875"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="45" x="20" y="42.7344">config</text><!--MD5=[b044596c5546900b97d71a31e35c03ac]
+class config.DevEnvConfig--><rect codeLine="3" fill="#2E2E2E" filter="url(#f13zau7vvplw62)" height="67.9102" id="config.DevEnvConfig" style="stroke:#1B1B1B;stroke-width:1.5;" width="205" x="96.5" y="62.1992"/><ellipse cx="156" cy="75.1992" fill="#7FFFD4" rx="8" ry="8" style="stroke:#1B1B1B;stroke-width:1.0;"/><path d="M159.6729,76.9355 Q159.6729,78.1172 158.6711,78.8557 Q157.6694,79.5942 155.9507,79.5942 Q154.957,79.5942 154.2185,79.4197 Q153.48,79.2451 152.8354,78.9766 L152.8354,77.0591 L153.061,77.0591 Q153.7002,77.5693 154.4924,77.8433 Q155.2847,78.1172 156.0151,78.1172 Q156.2031,78.1172 156.5093,78.085 Q156.8154,78.0527 157.0088,77.9775 Q157.2451,77.8809 157.3982,77.7358 Q157.5513,77.5908 157.5513,77.3062 Q157.5513,77.043 157.3284,76.8523 Q157.1055,76.6616 156.6758,76.5596 Q156.2246,76.4521 155.7224,76.3582 Q155.2202,76.2642 154.7798,76.1191 Q153.77,75.7915 153.3269,75.2302 Q152.8838,74.6689 152.8838,73.8364 Q152.8838,72.7192 153.8855,72.0129 Q154.8872,71.3066 156.4609,71.3066 Q157.2505,71.3066 158.0212,71.4597 Q158.792,71.6128 159.356,71.8438 L159.356,73.686 L159.1357,73.686 Q158.6523,73.2993 157.9514,73.0388 Q157.2505,72.7783 156.52,72.7783 Q156.2622,72.7783 156.0071,72.8132 Q155.752,72.8481 155.5156,72.9448 Q155.3062,73.0254 155.1558,73.1892 Q155.0054,73.353 155.0054,73.5625 Q155.0054,73.8794 155.2471,74.0486 Q155.4888,74.2178 156.1602,74.3574 Q156.6006,74.4487 157.0061,74.5347 Q157.4116,74.6206 157.8789,74.771 Q158.7974,75.0718 159.2351,75.5901 Q159.6729,76.1084 159.6729,76.9355 Z " fill="#000000"/><text fill="#FFFFFF" font-family="Verdana" font-size="11" lengthAdjust="spacing" textLength="79" x="172" y="79.574">DevEnvConfig</text><line style="stroke:#1B1B1B;stroke-width:1.5;" x1="97.5" x2="300.5" y1="88.1992" y2="88.1992"/><ellipse cx="107.5" cy="99.1992" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#AAAAAA" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="182" x="113.5" y="102.834">GlobalConfig DevEnvGlobalConfig</text><ellipse cx="107.5" cy="112.1543" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#AAAAAA" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="162" x="113.5" y="115.7891">SDKConfig DevEnvSDKSConfig</text><line style="stroke:#1B1B1B;stroke-width:1.5;" x1="97.5" x2="300.5" y1="122.1094" y2="122.1094"/><!--MD5=[df0da600b33825e9ea26287b4330aded]
+class config.DevEnvGlobalConfig--><rect codeLine="8" fill="#2E2E2E" filter="url(#f13zau7vvplw62)" height="54.9551" id="config.DevEnvGlobalConfig" style="stroke:#1B1B1B;stroke-width:1.5;" width="141" x="32.5" y="190.1992"/><ellipse cx="44.5" cy="203.1992" fill="#7FFFD4" rx="8" ry="8" style="stroke:#1B1B1B;stroke-width:1.0;"/><path d="M48.1729,204.9355 Q48.1729,206.1172 47.1711,206.8557 Q46.1694,207.5942 44.4507,207.5942 Q43.457,207.5942 42.7185,207.4197 Q41.98,207.2451 41.3354,206.9766 L41.3354,205.0591 L41.561,205.0591 Q42.2002,205.5693 42.9924,205.8433 Q43.7847,206.1172 44.5151,206.1172 Q44.7031,206.1172 45.0093,206.085 Q45.3154,206.0527 45.5088,205.9775 Q45.7451,205.8809 45.8982,205.7358 Q46.0513,205.5908 46.0513,205.3062 Q46.0513,205.043 45.8284,204.8523 Q45.6055,204.6616 45.1758,204.5596 Q44.7246,204.4521 44.2224,204.3582 Q43.7202,204.2642 43.2798,204.1191 Q42.27,203.7915 41.8269,203.2302 Q41.3838,202.6689 41.3838,201.8364 Q41.3838,200.7192 42.3855,200.0129 Q43.3872,199.3066 44.9609,199.3066 Q45.7505,199.3066 46.5212,199.4597 Q47.292,199.6128 47.856,199.8438 L47.856,201.686 L47.6357,201.686 Q47.1523,201.2993 46.4514,201.0388 Q45.7505,200.7783 45.02,200.7783 Q44.7622,200.7783 44.5071,200.8132 Q44.252,200.8481 44.0156,200.9448 Q43.8062,201.0254 43.6558,201.1892 Q43.5054,201.353 43.5054,201.5625 Q43.5054,201.8794 43.7471,202.0486 Q43.9888,202.2178 44.6602,202.3574 Q45.1006,202.4487 45.5061,202.5347 Q45.9116,202.6206 46.3789,202.771 Q47.2974,203.0718 47.7351,203.5901 Q48.1729,204.1084 48.1729,204.9355 Z " fill="#000000"/><text fill="#FFFFFF" font-family="Verdana" font-size="11" lengthAdjust="spacing" textLength="115" x="55.5" y="207.574">DevEnvGlobalConfig</text><line style="stroke:#1B1B1B;stroke-width:1.5;" x1="33.5" x2="172.5" y1="216.1992" y2="216.1992"/><ellipse cx="43.5" cy="227.1992" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#AAAAAA" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="76" x="49.5" y="230.834">Version string</text><line style="stroke:#1B1B1B;stroke-width:1.5;" x1="33.5" x2="172.5" y1="237.1543" y2="237.1543"/><!--MD5=[abbeb9f529f14a17daafa5186c0c9b95]
+class config.DevEnvSDKConfig--><rect codeLine="12" fill="#2E2E2E" filter="url(#f13zau7vvplw62)" height="80.8652" id="config.DevEnvSDKConfig" style="stroke:#1B1B1B;stroke-width:1.5;" width="254" x="112" y="305.1992"/><ellipse cx="184" cy="318.1992" fill="#7FFFD4" rx="8" ry="8" style="stroke:#1B1B1B;stroke-width:1.0;"/><path d="M187.6729,319.9355 Q187.6729,321.1172 186.6711,321.8557 Q185.6694,322.5942 183.9507,322.5942 Q182.957,322.5942 182.2185,322.4197 Q181.48,322.2451 180.8354,321.9766 L180.8354,320.0591 L181.061,320.0591 Q181.7002,320.5693 182.4924,320.8433 Q183.2847,321.1172 184.0151,321.1172 Q184.2031,321.1172 184.5093,321.085 Q184.8154,321.0527 185.0088,320.9775 Q185.2451,320.8809 185.3982,320.7358 Q185.5513,320.5908 185.5513,320.3062 Q185.5513,320.043 185.3284,319.8523 Q185.1055,319.6616 184.6758,319.5596 Q184.2246,319.4521 183.7224,319.3582 Q183.2202,319.2642 182.7798,319.1191 Q181.77,318.7915 181.3269,318.2302 Q180.8838,317.6689 180.8838,316.8364 Q180.8838,315.7192 181.8855,315.0129 Q182.8872,314.3066 184.4609,314.3066 Q185.2505,314.3066 186.0212,314.4597 Q186.792,314.6128 187.356,314.8438 L187.356,316.686 L187.1357,316.686 Q186.6523,316.2993 185.9514,316.0388 Q185.2505,315.7783 184.52,315.7783 Q184.2622,315.7783 184.0071,315.8132 Q183.752,315.8481 183.5156,315.9448 Q183.3062,316.0254 183.1558,316.1892 Q183.0054,316.353 183.0054,316.5625 Q183.0054,316.8794 183.2471,317.0486 Q183.4888,317.2178 184.1602,317.3574 Q184.6006,317.4487 185.0061,317.5347 Q185.4116,317.6206 185.8789,317.771 Q186.7974,318.0718 187.2351,318.5901 Q187.6729,319.1084 187.6729,319.9355 Z " fill="#000000"/><text fill="#FFFFFF" font-family="Verdana" font-size="11" lengthAdjust="spacing" textLength="103" x="200" y="322.574">DevEnvSDKConfig</text><line style="stroke:#1B1B1B;stroke-width:1.5;" x1="113" x2="365" y1="331.1992" y2="331.1992"/><ellipse cx="123" cy="342.1992" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#AAAAAA" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="56" x="129" y="345.834">SDK string</text><ellipse cx="123" cy="355.1543" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#AAAAAA" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="77" x="129" y="358.7891">Current string</text><ellipse cx="123" cy="368.1094" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#AAAAAA" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="231" x="129" y="371.7441">Installations []DevEnvSDKInstallationConfig</text><line style="stroke:#1B1B1B;stroke-width:1.5;" x1="113" x2="365" y1="378.0645" y2="378.0645"/><!--MD5=[a8d256d64cfbb86c903a23ec6d6b9fe6]
+class config.DevEnvSDKInstallationConfig--><rect codeLine="18" fill="#2E2E2E" filter="url(#f13zau7vvplw62)" height="67.9102" id="config.DevEnvSDKInstallationConfig" style="stroke:#1B1B1B;stroke-width:1.5;" width="192" x="143" y="446.1992"/><ellipse cx="155" cy="459.1992" fill="#7FFFD4" rx="8" ry="8" style="stroke:#1B1B1B;stroke-width:1.0;"/><path d="M158.6729,460.9355 Q158.6729,462.1172 157.6711,462.8557 Q156.6694,463.5942 154.9507,463.5942 Q153.957,463.5942 153.2185,463.4197 Q152.48,463.2451 151.8354,462.9766 L151.8354,461.0591 L152.061,461.0591 Q152.7002,461.5693 153.4924,461.8433 Q154.2847,462.1172 155.0151,462.1172 Q155.2031,462.1172 155.5093,462.085 Q155.8154,462.0527 156.0088,461.9775 Q156.2451,461.8809 156.3982,461.7358 Q156.5513,461.5908 156.5513,461.3062 Q156.5513,461.043 156.3284,460.8523 Q156.1055,460.6616 155.6758,460.5596 Q155.2246,460.4521 154.7224,460.3582 Q154.2202,460.2642 153.7798,460.1191 Q152.77,459.7915 152.3269,459.2302 Q151.8838,458.6689 151.8838,457.8364 Q151.8838,456.7192 152.8855,456.0129 Q153.8872,455.3066 155.4609,455.3066 Q156.2505,455.3066 157.0212,455.4597 Q157.792,455.6128 158.356,455.8438 L158.356,457.686 L158.1357,457.686 Q157.6523,457.2993 156.9514,457.0388 Q156.2505,456.7783 155.52,456.7783 Q155.2622,456.7783 155.0071,456.8132 Q154.752,456.8481 154.5156,456.9448 Q154.3062,457.0254 154.1558,457.1892 Q154.0054,457.353 154.0054,457.5625 Q154.0054,457.8794 154.2471,458.0486 Q154.4888,458.2178 155.1602,458.3574 Q155.6006,458.4487 156.0061,458.5347 Q156.4116,458.6206 156.8789,458.771 Q157.7974,459.0718 158.2351,459.5901 Q158.6729,460.1084 158.6729,460.9355 Z " fill="#000000"/><text fill="#FFFFFF" font-family="Verdana" font-size="11" lengthAdjust="spacing" textLength="166" x="166" y="463.574">DevEnvSDKInstallationConfig</text><line style="stroke:#1B1B1B;stroke-width:1.5;" x1="144" x2="334" y1="472.1992" y2="472.1992"/><ellipse cx="154" cy="483.1992" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#AAAAAA" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="58" x="160" y="486.834">Path string</text><ellipse cx="154" cy="496.1543" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#AAAAAA" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="76" x="160" y="499.7891">Version string</text><line style="stroke:#1B1B1B;stroke-width:1.5;" x1="144" x2="334" y1="506.1094" y2="506.1094"/><!--MD5=[c6f43fedd62500215267b40f927cde7d]
+class config.DevEnvSDKSConfig--><rect codeLine="23" fill="#2E2E2E" filter="url(#f13zau7vvplw62)" height="54.9551" id="config.DevEnvSDKSConfig" style="stroke:#1B1B1B;stroke-width:1.5;" width="157" x="208.5" y="190.1992"/><ellipse cx="229.5" cy="203.1992" fill="#7FFFD4" rx="8" ry="8" style="stroke:#1B1B1B;stroke-width:1.0;"/><path d="M233.1729,204.9355 Q233.1729,206.1172 232.1711,206.8557 Q231.1694,207.5942 229.4507,207.5942 Q228.457,207.5942 227.7185,207.4197 Q226.98,207.2451 226.3354,206.9766 L226.3354,205.0591 L226.561,205.0591 Q227.2002,205.5693 227.9924,205.8433 Q228.7847,206.1172 229.5151,206.1172 Q229.7031,206.1172 230.0093,206.085 Q230.3154,206.0527 230.5088,205.9775 Q230.7451,205.8809 230.8982,205.7358 Q231.0513,205.5908 231.0513,205.3062 Q231.0513,205.043 230.8284,204.8523 Q230.6055,204.6616 230.1758,204.5596 Q229.7246,204.4521 229.2224,204.3582 Q228.7202,204.2642 228.2798,204.1191 Q227.27,203.7915 226.8269,203.2302 Q226.3838,202.6689 226.3838,201.8364 Q226.3838,200.7192 227.3855,200.0129 Q228.3872,199.3066 229.9609,199.3066 Q230.7505,199.3066 231.5212,199.4597 Q232.292,199.6128 232.856,199.8438 L232.856,201.686 L232.6357,201.686 Q232.1523,201.2993 231.4514,201.0388 Q230.7505,200.7783 230.02,200.7783 Q229.7622,200.7783 229.5071,200.8132 Q229.252,200.8481 229.0156,200.9448 Q228.8062,201.0254 228.6558,201.1892 Q228.5054,201.353 228.5054,201.5625 Q228.5054,201.8794 228.7471,202.0486 Q228.9888,202.2178 229.6602,202.3574 Q230.1006,202.4487 230.5061,202.5347 Q230.9116,202.6206 231.3789,202.771 Q232.2974,203.0718 232.7351,203.5901 Q233.1729,204.1084 233.1729,204.9355 Z " fill="#000000"/><text fill="#FFFFFF" font-family="Verdana" font-size="11" lengthAdjust="spacing" textLength="111" x="242.5" y="207.574">DevEnvSDKSConfig</text><line style="stroke:#1B1B1B;stroke-width:1.5;" x1="209.5" x2="364.5" y1="216.1992" y2="216.1992"/><ellipse cx="219.5" cy="227.1992" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#AAAAAA" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="134" x="225.5" y="230.834">SDKS []DevEnvSDKConfig</text><line style="stroke:#1B1B1B;stroke-width:1.5;" x1="209.5" x2="364.5" y1="237.1543" y2="237.1543"/><!--MD5=[c13bfda42caf3b0ea9c8635a1f1fade2]
+reverse link config.DevEnvConfig to config.DevEnvGlobalConfig--><path codeLine="30" d="M163.83,140.9792 C150.63,157.4092 136.03,175.5892 124.44,190.0092 " fill="none" id="config.DevEnvConfig-backto-config.DevEnvGlobalConfig" style="stroke:#FFFFFF;stroke-width:1.0;"/><polygon fill="#777777" points="172.26,130.4892,165.3831,132.6591,164.7412,139.8416,171.618,137.6717,172.26,130.4892" style="stroke:#FFFFFF;stroke-width:1.0;"/><!--MD5=[209722da94dd13c203894728c1c8ae95]
+reverse link config.DevEnvConfig to config.DevEnvSDKSConfig--><path codeLine="31" d="M231.24,140.9792 C243.34,157.4092 256.73,175.5892 267.35,190.0092 " fill="none" id="config.DevEnvConfig-backto-config.DevEnvSDKSConfig" style="stroke:#FFFFFF;stroke-width:1.0;"/><polygon fill="#777777" points="223.51,130.4892,223.8419,137.6927,230.6189,140.1568,230.287,132.9534,223.51,130.4892" style="stroke:#FFFFFF;stroke-width:1.0;"/><!--MD5=[3e5691618e681a7e3ba45e5366417c40]
+reverse link config.DevEnvSDKConfig to config.DevEnvSDKInstallationConfig--><path codeLine="32" d="M239,399.8492 C239,415.4992 239,432.1692 239,446.1692 " fill="none" id="config.DevEnvSDKConfig-backto-config.DevEnvSDKInstallationConfig" style="stroke:#FFFFFF;stroke-width:1.0;"/><polygon fill="#777777" points="239,386.4492,235,392.4492,239,398.4492,243,392.4492,239,386.4492" style="stroke:#FFFFFF;stroke-width:1.0;"/><!--MD5=[6a90f60247e3005b1c83cda613b078a1]
+reverse link config.DevEnvSDKSConfig to config.DevEnvSDKConfig--><path codeLine="33" d="M272.05,257.9592 C266.33,272.9592 259.82,290.0592 254.09,305.0892 " fill="none" id="config.DevEnvSDKSConfig-backto-config.DevEnvSDKConfig" style="stroke:#FFFFFF;stroke-width:1.0;"/><polygon fill="#777777" points="276.82,245.4192,270.9453,249.601,272.5459,256.6322,278.4206,252.4504,276.82,245.4192" style="stroke:#FFFFFF;stroke-width:1.0;"/><!--MD5=[1fc9125866fdbb8bdc7a0b94157838b5]
+@startuml
+!define DARKBLUE
+!include https://raw.githubusercontent.com/Drakemor/RedDress-PlantUML/master/style.puml
+title DevEnvConfig Model
+namespace config {
+    class DevEnvConfig << (S,Aquamarine) >> {
+        + GlobalConfig DevEnvGlobalConfig
+        + SDKConfig DevEnvSDKSConfig
+
+    }
+    class DevEnvGlobalConfig << (S,Aquamarine) >> {
+        + Version string
+
+    }
+    class DevEnvSDKConfig << (S,Aquamarine) >> {
+        + SDK string
+        + Current string
+        + Installations []DevEnvSDKInstallationConfig
+
+    }
+    class DevEnvSDKInstallationConfig << (S,Aquamarine) >> {
+        + Path string
+        + Version string
+
+    }
+    class DevEnvSDKSConfig << (S,Aquamarine) >> {
+        + SDKS []DevEnvSDKConfig
+
+    }
+}
+
+
+"config.DevEnvConfig" o- - "config.DevEnvGlobalConfig"
+"config.DevEnvConfig" o- - "config.DevEnvSDKSConfig"
+"config.DevEnvSDKConfig" o- - "config.DevEnvSDKInstallationConfig"
+"config.DevEnvSDKSConfig" o- - "config.DevEnvSDKConfig"
+
+@enduml
+
+@startuml
+
+
+
+skinparam backgroundColor 777
+skinparam stereotypeCBackgroundColor 1a66c2
+
+
+
+
+
+
+
+
+
+skinparam backgroundColor 777
+
+
+
+
+
+
+
+skinparam circledCharacter {
+  radius 8
+  fontSize 11
+  fontName Verdana
+}
+
+skinparam class {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+    arrowColor fff
+  arrowFontName Verdana
+  arrowFontColor bbb
+  arrowFontSize 11
+
+  attributeFontColor aaa
+  attributeFontSize 11
+  attributeIconSize 11
+}
+
+
+skinparam actor {
+    backgroundColor 1a66c2
+  borderColor 002642
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam participant {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam collections {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam SequenceBox{
+    backgroundColor 575757
+  borderColor 767676
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+
+skinparam interface {
+    backgroundColor 1a66c2
+  borderColor 002642
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam component {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam node {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam database {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam queue {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+
+skinparam usecase {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+    arrowColor fff
+  arrowFontName Verdana
+  arrowFontColor bbb
+  arrowFontSize 11
+}
+
+skinparam activity {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+    arrowColor fff
+  arrowFontName Verdana
+  arrowFontColor bbb
+  arrowFontSize 11
+}
+
+skinparam sequence {
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+    arrowColor fff
+  arrowFontName Verdana
+  arrowFontColor bbb
+  arrowFontSize 11
+
+  lifeLineBorderColor 1a66c2
+  lifeLineBackgroundColor 575757
+}
+
+skinparam boundary {
+    backgroundColor 1a66c2
+  borderColor 002642
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam control {
+    backgroundColor 1a66c2
+  borderColor 002642
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam entity {
+    backgroundColor 1a66c2
+  borderColor 002642
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+
+skinparam state {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+    arrowColor fff
+  arrowFontName Verdana
+  arrowFontColor bbb
+  arrowFontSize 11
+  startColor 1a66c2
+  endColor 002642
+}
+
+
+skinparam object {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+    arrowColor fff
+  arrowFontName Verdana
+  arrowFontColor bbb
+  arrowFontSize 11
+}
+
+
+skinparam note {
+    backgroundColor 1a66c2
+  borderColor 002642
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam cloud {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+    arrowColor fff
+  arrowFontName Verdana
+  arrowFontColor bbb
+  arrowFontSize 11
+}
+
+skinparam rectangle {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+skinparam storage {
+    backgroundColor 2e2e2e
+  borderColor 1b1b1b
+    fontColor fff
+  fontName Verdana
+  fontSize 11
+  stereotypeFontColor aaa
+  stereotypeFontSize 11
+}
+
+title DevEnvConfig Model
+namespace config {
+    class DevEnvConfig << (S,Aquamarine) >> {
+        + GlobalConfig DevEnvGlobalConfig
+        + SDKConfig DevEnvSDKSConfig
+
+    }
+    class DevEnvGlobalConfig << (S,Aquamarine) >> {
+        + Version string
+
+    }
+    class DevEnvSDKConfig << (S,Aquamarine) >> {
+        + SDK string
+        + Current string
+        + Installations []DevEnvSDKInstallationConfig
+
+    }
+    class DevEnvSDKInstallationConfig << (S,Aquamarine) >> {
+        + Path string
+        + Version string
+
+    }
+    class DevEnvSDKSConfig << (S,Aquamarine) >> {
+        + SDKS []DevEnvSDKConfig
+
+    }
+}
+
+
+"config.DevEnvConfig" o- - "config.DevEnvGlobalConfig"
+"config.DevEnvConfig" o- - "config.DevEnvSDKSConfig"
+"config.DevEnvSDKConfig" o- - "config.DevEnvSDKInstallationConfig"
+"config.DevEnvSDKSConfig" o- - "config.DevEnvSDKConfig"
+
+@enduml
+
+PlantUML version 1.2021.00(Sun Jan 10 11:25:05 CET 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: Dynamic Code Evolution 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: GB
+--></g></svg>
