@@ -9,6 +9,7 @@ import (
 	"github.com/alex-held/dev-env/pkg/cli"
 )
 
+// NewCompletionCommand Creates new Completion cobra.Command
 func NewCompletionCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "completion [bash|zsh|powershell]",
