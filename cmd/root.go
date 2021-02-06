@@ -56,6 +56,7 @@ func init() {
 		NewCompletionCommand(),
 		NewConfigCommand(),
 		NewSdkCommand(),
+		NewSdkManCommand(),
 		NewPrefixCommand(),
 	)
 
