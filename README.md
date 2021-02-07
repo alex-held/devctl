@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <h1 align="center">Welcome to devctl 👋</h1>
 <p>
   <a href="https://github.com/alex-held/devctl/wiki" target="_blank">
@@ -14,7 +15,13 @@
 ![Changelog CI Status](https://github.com/alex-held/devctl/workflows/auto-changelog/badge.svg)
 ![GitHub](https://img.shields.io/github/license/alex-held/devctl?style=flat-square)
 
+<br /> 
 
+[![CodeScene Code Health](https://codescene.io/projects/12756/status-badges/code-health)](https://codescene.io/projects/12756)
+[![CodeScene System Mastery](https://codescene.io/projects/12756/status-badges/system-mastery)](https://codescene.io/projects/12756)
+
+
+      
 ### 🏠 [Homepage](https://github.com/alex-held/devctl/wiki)
 
 > CLI-Toolchain to create a consistent development environment across platforms (Package Manager, Installer, SDK's, PathVars, EnvVars, Secrets, Configs, dotfiles, Terminal Customizations and more
