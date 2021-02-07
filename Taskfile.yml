@@ -25,9 +25,9 @@ tasks:
     cmds:
       - go mod download
       - go get -u
-      
-      
-      
+  
+  
+  
   install:
     desc: Installs {{.PROJECT}} into GOBIN
     cmds:
