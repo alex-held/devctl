@@ -6,9 +6,9 @@ import (
 	"html"
 	"net/http"
 	"strings"
-	
+
 	"github.com/spf13/afero"
-	
+
 	"github.com/alex-held/devctl/pkg/aarch"
 )
 
@@ -26,37 +26,33 @@ func (u *uri) String() string {
 }
 
 func (u *uri) Append(segments ...string) (uri *uri) {
-	for _, s := range segments {
-		u.segments = append(u.segments, s)
-	}
+	u.segments = append(u.segments, segments...)
 	return u
 }
 
-func (u uri) Stringer() string {
+func (u *uri) Stringer() string {
 	path := func() string {
 		if len(u.segments) >= 1 {
 			return "/" + strings.Join(u.segments, "/")
 		}
 		return ""
 	}()
-	
+
 	query := func() string {
 		if len(u.queryString) >= 1 {
 			return "?" + strings.Join(u.segments, "&")
 		}
 		return ""
 	}()
-	
+
 	unsafeString := fmt.Sprintf("%s://%s%s%s", u.scheme, u.host, path, query)
 	escapedString := html.EscapeString(unsafeString)
 	return escapedString
 }
 
-type APIURLFactoryFunc func() (uri string, err error)
-
-type APIURLFactory interface {
-	DownloadSDK() APIURLFactoryFunc
-	ListAllSDKURI() APIURLFactoryFunc
+type uRLFactory struct {
+	hostname string
+	version  string
 }
 
 func (u *uRLFactory) createBaseURI() *uri {
@@ -69,30 +65,24 @@ func (u *uRLFactory) createBaseURI() *uri {
 	}
 }
 
-type uRLFactory struct {
-	hostname string
-	version  string
-}
-
 type sdkmanClient struct {
 	context    context.Context
 	urlFactory uRLFactory
 	httpClient HTTPClient
-	
+
 	// allocate a single struct instead of one for each service
-	common            service
-	
+	common service
+
 	// Services used for talking to different parts of the SDKMAN API.
 	download   *DownloadService
 	sdkService *ListAllSDKService
 	fs         afero.Fs
 }
 
-func (s *sdkmanClient) ListCandidates() (candidates []string, resp *http.Response, err error) {
-	return s.sdkService.ListAllSDK(s.context)
-}
-
-func (s *sdkmanClient) DownloadSDK(filepath, sdk, version string, arch aarch.Arch) (download *SDKDownload, resp *http.Response, err error) {
+// nolint: godox
+// TODO: think about if there is the need to make this api less verbose
+// TODO: right now I don't see the need
+func (s *sdkmanClient) DownloadSDK(filepath, sdk, version string, arch aarch.Arch) (download *SDKDownload, resp *http.Response, err error) { // nolint: lll
 	return s.download.DownloadSDK(s.context, filepath, sdk, version, arch)
 }
 

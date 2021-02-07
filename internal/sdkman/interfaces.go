@@ -2,7 +2,7 @@ package sdkman
 
 import (
 	"net/http"
-	
+
 	"github.com/alex-held/devctl/pkg/aarch"
 )
 
