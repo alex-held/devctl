@@ -1,0 +1,170 @@
+@startuml
+!define DARKBLUE
+!include https://raw.githubusercontent.com/Drakemor/RedDress-PlantUML/master/style.puml
+
+
+title SDKMAN API CLIENT
+legend
+<u><b>Legend</b></u>
+Render Aggregations: true
+Render Fields: true
+Render Methods: true
+Pritave Aggregations: false
+end legend
+namespace aarch {
+    class aarch.Arch << (T, #FF7700) >>  {
+    }
+}
+
+
+
+namespace cli {
+    interface CLI  {
+        + Name() string
+        + ConfigFileName() string
+        + ConfigDir() string
+
+    }
+    class cli.StaticOption << (T, #FF7700) >>  {
+    }
+    class staticConfig << (S,Aquamarine) >> {
+        - cliName string
+        - cliDescription string
+        - configFileName string
+        - configFileType string
+        - envPrefix string
+
+        + Name() string
+        + ConfigFileName() string
+        + ConfigDir() string
+
+    }
+}
+
+"cli.CLI" <|-- "implements""cli.staticConfig"
+
+
+namespace config {
+    class DevEnvConfig << (S,Aquamarine) >> {
+        + GlobalConfig DevEnvGlobalConfig
+        + SDKConfig DevEnvSDKSConfig
+
+    }
+    class DevEnvGlobalConfig << (S,Aquamarine) >> {
+        + Version string
+
+    }
+    class DevEnvSDKConfig << (S,Aquamarine) >> {
+        + SDK string
+        + Current string
+        + Installations []DevEnvSDKInstallationConfig
+
+    }
+    class DevEnvSDKInstallationConfig << (S,Aquamarine) >> {
+        + Path string
+        + Version string
+
+    }
+    class DevEnvSDKSConfig << (S,Aquamarine) >> {
+        + SDKS []DevEnvSDKConfig
+
+    }
+}
+
+
+"config.DevEnvConfig""uses" o-- "config.DevEnvGlobalConfig"
+"config.DevEnvConfig""uses" o-- "config.DevEnvSDKSConfig"
+"config.DevEnvSDKConfig""uses" o-- "config.DevEnvSDKInstallationConfig"
+"config.DevEnvSDKSConfig""uses" o-- "config.DevEnvSDKConfig"
+
+namespace sdkman {
+    interface Client  {
+        + ListCandidates() ([]string, *http.Response, error)
+        + DownloadSDK(filepath string, sdk string, version string, arch aarch.Arch) (*SDKDownload, *http.Response, error)
+
+    }
+    class DownloadService << (S,Aquamarine) >> {
+        - downloadSDK(ctx context.Context, filepath string, sdk string, version string, arch string) (*SDKDownload, *http.Response, error)
+
+        + DownloadSDK(ctx context.Context, filepath string, sdk string, version string, arch aarch.Arch) (*SDKDownload, *http.Response, error)
+
+    }
+    interface HTTPClient  {
+        + Do(req *http.Request) (*http.Response, error)
+
+    }
+    class ListAllSDKService << (S,Aquamarine) >> {
+        + ListAllSDK(ctx context.Context) ([]string, *http.Response, error)
+
+    }
+    class SDKDownload << (S,Aquamarine) >> {
+        + Path string
+        + Reader io.Reader
+
+    }
+    class sdkman.DownloadService << (T, #FF7700) >>  {
+    }
+    class sdkman.HTTPDoFunc << (T, #FF7700) >>  {
+    }
+    class sdkman.ListAllSDKService << (T, #FF7700) >>  {
+    }
+    class sdkman.URI << (T, #FF7700) >>  {
+    }
+    class sdkmanClient << (S,Aquamarine) >> {
+        - context context.Context
+        - urlFactory uRLFactory
+        - httpClient HTTPClient
+        - common service
+        - download *DownloadService
+        - sdkService *ListAllSDKService
+        - fs afero.Fs
+
+        + DownloadSDK(filepath string, sdk string, version string, arch aarch.Arch) (*SDKDownload, *http.Response, error)
+        + ListCandidates() ([]string, *http.Response, error)
+
+    }
+    class service << (S,Aquamarine) >> {
+        - client *sdkmanClient
+
+    }
+    class uRLFactory << (S,Aquamarine) >> {
+        - hostname string
+        - version string
+
+        - createBaseURI() *uri
+
+        + CreateDownloadSDK(sdk string, version string, arch string) URI
+        + CreateListAllAvailableSDKURI() URI
+
+    }
+    class uri << (S,Aquamarine) >> {
+        - scheme string
+        - host string
+        - segments []string
+        - queryString []string
+
+        + GoString() string
+        + String() string
+        + Append(segments ...string) *uri
+        + Stringer() string
+
+    }
+    class "fmt.Stringer" as fmtStringer {
+        'This class was created so that we can correctly have an alias pointing to this name. Since it contains dots that can break namespaces
+    }
+    class "<font color=blue>func</font>(*http.Request) (*http.Response, error)" as fontcolorbluefuncfonthttpRequesthttpResponseerror {
+        'This class was created so that we can correctly have an alias pointing to this name. Since it contains dots that can break namespaces
+    }
+}
+
+"sdkman.Client" <|-- "implements""sdkman.sdkmanClient"
+
+"sdkman.SDKDownload""uses" o-- "io.Reader"
+
+"__builtin__.string" #.. "alias of""aarch.Arch"
+"cli.<font color=blue>func</font>(*staticConfig) *staticConfig" #.. "alias of""cli.StaticOption"
+"sdkman.fontcolorbluefuncfonthttpRequesthttpResponseerror" #.. "alias of""sdkman.HTTPDoFunc"
+"sdkman.fmtStringer" #.. "alias of""sdkman.URI"
+"sdkman.service" #.. "alias of""sdkman.DownloadService"
+"sdkman.service" #.. "alias of""sdkman.ListAllSDKService"
+@enduml
