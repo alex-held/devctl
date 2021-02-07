@@ -60,181 +60,181 @@ run:
 
 # output configuration options
 output:
-    # colored-line-number|line-number|json|tab|checkstyle|code-climate, default is "colored-line-number"
-    format: colored-line-number
-
-    # print lines of code with issue, default is true
-    print-issued-lines: true
-
-    # print linter name in the end of issue text, default is true
-    print-linter-name: true
-
-    # make issues output unique by line, default is true
-    uniq-by-line: true
-
-    # add a prefix to the output file references; default is no prefix
-    path-prefix: ""
-
-    # sorts results by: filepath, line and column
-    sort-results: false
+  # colored-line-number|line-number|json|tab|checkstyle|code-climate, default is "colored-line-number"
+  format: colored-line-number
+  
+  # print lines of code with issue, default is true
+  print-issued-lines: true
+  
+  # print linter name in the end of issue text, default is true
+  print-linter-name: true
+  
+  # make issues output unique by line, default is true
+  uniq-by-line: true
+  
+  # add a prefix to the output file references; default is no prefix
+  path-prefix: ""
+  
+  # sorts results by: filepath, line and column
+  sort-results: false
 
 
 linters-settings:
-    depguard:
-        list-type: blacklist
-        packages:
-            - github.com/sirupsen/logrus
-    dupl:
-        threshold: 100
-    funlen:
-        lines: 60
-        statements: 40
-    goconst:
-        min-len: 2
-        min-occurrences: 2
-    gocritic:
-        enabled-tags:
-            - diagnostic
-            - experimental
-            - opinionated
-            - performance
-            - style
-
-        disabled-checks:
-            - ifElseChain
-            - octalLiteral
-            - whyNoLint
-            - wrapperFunc
-    gocyclo:
-        min-complexity: 10
-    gocognit:
-        min-complexity: 10
-    nestif:
-        min-complexity: 4
-
-    goimports:
-        local-prefixes: github.com/alex-held/devctl
-    godox:
-        keywords:
-            - NOTE
-            - TODO
-            - BUG
-            - BUG
-            - OPTIMIZE
-            - HACK
-
-    golint:
-        min-confidence: 0.8
-    gomnd:
-        settings:
-            mnd:
-                checks: argument,case,condition,operation,return,assign
-    govet:
-        check-shadowing: true
-        settings:
-            printf:
-                funcs:
-                    - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
-                    - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
-                    - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
-                    - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
-    gofmt:
-        simplify: true
-    nakedret:
-        max-func-lines: 30
-    lll:
-        line-length: 120
-    whitespace:
-        auto-fix: true
-    maligned:
-        suggest-new: true
-    misspell:
-        locale: US
-    godot:
-        scope: declarations
-    nolintlint:
-        allow-leading-space: true # don't require machine-readable nolint directives (i.e. with no leading space)
-        allow-unused: false # report any unused nolint directives
-        require-explanation: false # don't require an explanation for nolint directives
-        require-specific: false # don't require nolint directives to be specific about which linter is being skipped
+  depguard:
+    list-type: blacklist
+    packages:
+      - github.com/sirupsen/logrus
+  dupl:
+    threshold: 100
+  funlen:
+    lines: 60
+    statements: 40
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    
+    disabled-checks:
+      - ifElseChain
+      - octalLiteral
+      - whyNoLint
+      - wrapperFunc
+  gocyclo:
+    min-complexity: 10
+  gocognit:
+    min-complexity: 10
+  nestif:
+    min-complexity: 4
+  
+  goimports:
+    local-prefixes: github.com/alex-held/devctl
+  godox:
+    keywords:
+      - NOTE
+      - TODO
+      - BUG
+      - BUG
+      - OPTIMIZE
+      - HACK
+  
+  golint:
+    min-confidence: 0.8
+  gomnd:
+    settings:
+      mnd:
+        checks: [ argument,case,condition,operation,return,assign]
+  govet:
+    check-shadowing: true
+    settings:
+      printf:
+        funcs:
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+  gofmt:
+    simplify: true
+  nakedret:
+    max-func-lines: 30
+  lll:
+    line-length: 120
+  whitespace:
+    auto-fix: true
+  maligned:
+    suggest-new: true
+  misspell:
+    locale: US
+  godot:
+    scope: declarations
+  nolintlint:
+    allow-leading-space: true # don't require machine-readable nolint directives (i.e. with no leading space)
+    allow-unused: false # report any unused nolint directives
+    require-explanation: false # don't require an explanation for nolint directives
+    require-specific: false # don't require nolint directives to be specific about which linter is being skipped
 linters:
-    # please, do not use `enable-all`: it's deprecated and will be removed soon.
-    # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
-    disable-all: true
-    enable:
-        - bodyclose
-        - deadcode
-        - depguard
-        - dogsled
-        - dupl
-        - errcheck
-        - exhaustive
-        - funlen
-        - gochecknoinits
-        - goconst
-        - gocritic
-        - gocyclo
-        - gofmt
-        - goimports
-        - golint
-        - gomnd
-        - goprintffuncname
-        - gosec
-        - gosimple
-        - govet
-        - ineffassign
-        - interfacer
-        - lll
-        - misspell
-        - nakedret
-        - noctx
-        - nolintlint
-        - rowserrcheck
-        #- scopelint
-        - staticcheck
-        - structcheck
-        - stylecheck
-        - typecheck
-        - unconvert
-        - unparam
-        - unused
-        - varcheck
-        - whitespace
-        - gocognit
-        - godox
-        - maligned
-        - nestif
-        - asciicheck
-
-        # don't enable:
-        # - gochecknoglobals
-        # - godot
-        # - goerr113
-        # - prealloc
-        # - testpackage
-        # - wsl
-
-    #severity:
-    # Default value is empty string.
-    # Set the default severity for issues. If severity rules are defined and the issues
-    # do not match or no severity is provided to the rule this will be the default
-    # severity applied. Severities should match the supported severity names of the
-    # selected out format.
-    # - Code climate: https://docs.codeclimate.com/docs/issues#issue-severity
-    # -   Checkstyle: https://checkstyle.sourceforge.io/property_types.html#severity
-    # -       Github: https://help.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
-    # default-severity:
-
-    # The default value is false.
-    # If set to true severity-rules regular expressions become case sensitive.
-    # case-sensitive: false
-
-    # Default value is empty list.
-    # When a list of severity rules are provided, severity information will be added to lint
-    # issues. Severity rules have the same filtering capability as exclude rules except you
-    # are allowed to specify one matcher per severity rule.
-    # Only affects out formats that support setting severity information.
-    #rules:
-    #    -   linters:
-    #            - dupl
-    #        severity: info
+  # please, do not use `enable-all`: it's deprecated and will be removed soon.
+  # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - dupl
+    - errcheck
+    - exhaustive
+    - funlen
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - golint
+    - gomnd
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - interfacer
+    - lll
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - rowserrcheck
+    #- scopelint
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - whitespace
+    - gocognit
+    - godox
+    - maligned
+    - nestif
+    - asciicheck
+    
+    # don't enable:
+    # - gochecknoglobals
+    # - godot
+    # - goerr113
+    # - prealloc
+    # - testpackage
+    # - wsl
+  
+  #severity:
+  # Default value is empty string.
+  # Set the default severity for issues. If severity rules are defined and the issues
+  # do not match or no severity is provided to the rule this will be the default
+  # severity applied. Severities should match the supported severity names of the
+  # selected out format.
+  # - Code climate: https://docs.codeclimate.com/docs/issues#issue-severity
+  # -   Checkstyle: https://checkstyle.sourceforge.io/property_types.html#severity
+  # -       Github: https://help.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
+  # default-severity:
+  
+  # The default value is false.
+  # If set to true severity-rules regular expressions become case sensitive.
+  # case-sensitive: false
+  
+  # Default value is empty list.
+  # When a list of severity rules are provided, severity information will be added to lint
+  # issues. Severity rules have the same filtering capability as exclude rules except you
+  # are allowed to specify one matcher per severity rule.
+  # Only affects out formats that support setting severity information.
+  #rules:
+  #    -   linters:
+  #            - dupl
+  #        severity: info
