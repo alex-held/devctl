@@ -4,12 +4,12 @@ package aarch
 type Arch string
 
 const (
-	// MAC_OSX
-	MAC_OSX Arch = "darwinx64"
-	
-	// LINUX_64
-	LINUX_64 Arch = "linuxx64"
-	
-	// LINUX_ARM32
-	LINUX_ARM32 Arch = "linuxarm32"
+	// MacOsx
+	MacOsx Arch = "darwinx64"
+
+	// Linux64
+	Linux64 Arch = "linuxx64"
+
+	// LinuxArm32
+	LinuxArm32 Arch = "linuxarm32"
 )

@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"testing"
-	
+
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -31,10 +31,9 @@ func (h *httpClientStub) Do(req *http.Request) (response *http.Response, err err
 }
 
 func NewTestSdkManClient(doFunc HTTPDoFunc) (client Client, fs afero.Fs, ctx context.Context) {
-	
 	fs = afero.NewMemMapFs()
 	ctx = context.Background()
-	
+
 	c := &sdkmanClient{
 		context: ctx,
 		urlFactory: uRLFactory{
@@ -46,29 +45,32 @@ func NewTestSdkManClient(doFunc HTTPDoFunc) (client Client, fs afero.Fs, ctx con
 		},
 		fs: fs,
 	}
-	
+
 	c.common.client = c
 	c.download = (*DownloadService)(&c.common)
 	c.sdkService = (*ListAllSDKService)(&c.common)
-	
+
 	return c, fs, ctx
 }
 
 func TestSdkmanClient_ListCandidates(t *testing.T) {
 	client, _, _ := NewTestSdkManClient(func(req *http.Request) (*http.Response, error) {
 		responseWriter := &bytes.Buffer{}
-		
+
 		_, _ = responseWriter.WriteString("ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm") // nolint
-		
-		return &http.Response{
+
+		resp := &http.Response{
 			StatusCode:    200,
 			Body:          ioutil.NopCloser(responseWriter),
 			ContentLength: int64(responseWriter.Len()),
-		}, nil
+		}
+		resp.Body.Close()
+		return resp, nil
 	})
-	
-	candidates, _, err := client.ListCandidates()
+
+	candidates, resp, err := client.ListCandidates()
+	defer resp.Body.Close()
 	require.NoError(t, err)
-	
+
 	assert.GreaterOrEqual(t, len(candidates), 1)
 }
