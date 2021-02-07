@@ -30,13 +30,13 @@ dev-env list dotnet
 
 dev-env use go 1.15.x
 `,
-	/*	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+	/*	PersistentPreRun: funcutil(cmd *cobra.Command, args []string) {
 		initConfig()
 	},*/
 
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+	//	Run: funcutil(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
