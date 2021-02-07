@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="AUTOSCROLL_TO_SOURCE" value="true" />
+    <option name="SPLITTER_PROPORTION" value="0.5221296" />
+    <option name="GROUP_BY_SEVERITY" value="true" />
+    <option name="SCOPE_TYPE" value="3" />
+    <option name="SHOW_STRUCTURE" value="true" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="458271ca-abf2-4945-ad4e-671ead9c3b72" name="clipboardPatchFile" comment="clipboardPatchFile" />
+    <list id="dbcee935-2ead-494a-b0fc-a5f21f556515" name="Default Changelist" comment="!FIXUP refactor(packages): fix unit test">
+      <change afterPath="$PROJECT_DIR$/CODE_OF_CONDUCT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CONTRIBUTING.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README2.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SECURITY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SUPPORT.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+    </list>
+    <list id="6c68bf57-96e3-4f3d-8ebe-7e40c9d06db0" name="stash" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="true" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageOptionsProvider">
+    <option name="myAddOrReplace" value="1" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Go Application" />
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file://$USER_HOME$/.devenv/pkg/golang/go1.15.7" />
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="GoDepProject">
+    <exec-path>/usr/local/Cellar/dep/0.5.4/bin/dep</exec-path>
+  </component>
+  <component name="GoLibraries">
+    <option name="urls">
+      <list>
+        <option value="file://$PROJECT_DIR$/../../../.." />
+      </list>
+    </option>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/.idea/templateLanguages.xml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/.golangci.yaml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/go.mod" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/coverage.out" root0="FORCE_HIGHLIGHTING" />
+    <setting file="jar://$APPLICATION_HOME_DIR$/lib/intellij-xml.jar!/resources/html5-schema/svg11/svg-core-attrib.rnc" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/.idea/.gitignore" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/.idea/workspace.xml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/main.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="jar://$APPLICATION_HOME_DIR$/lib/intellij-xml.jar!/standardSchemas/xlink.dtd" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/.idea/jsonCatalog.xml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/.gitignore" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="KubernetesApiPersistence">
+    <option name="context" value="kubernetes-admin@kubernetes" />
+    <option name="namespace" value="kube-system" />
+  </component>
+  <component name="Make.Settings">
+    <option name="showHiddenInToolWindow" value="true" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="showPreview" value="true" />
+  </component>
+  <component name="ProjectId" id="1o8k4IWLym7CdipecC6fOMupPQC" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="compactDirectories" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+    <option name="sortByType" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ChangesTree.GroupingKeys" value="directory" />
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="FEATURE_fetchFromOrigin_active" value="true" />
+    <property name="FEATURE_keepLocal_active" value="true" />
+    <property name="FEATURE_pushOnFinish_active" value="true" />
+    <property name="GO_FMT" value="true" />
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
+    <property name="HOTFIX_customHotfixCommitMessage_text" value="Tagging hotfix %name%" />
+    <property name="HbShouldOpenHtmlAsHb" value="enabled" />
+    <property name="NewWatcherDialog.advanced.open" value="true" />
+    <property name="RELEASE_customTagCommitMessage_text" value="Tagging version %name%" />
+    <property name="RELEASE_fetchFromOrigin_active" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="TODO_SCOPE" value="All Places" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="auto.test.manager.delay" value="1000" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/Change Language" value="yaml&#10;GDScript&#10;snakeyaml&#10;TOML" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Shell Script&#10;HTML&#10;PUML&#10;go" />
+    <property name="com.intellij.openapi.externalSystem.service.settings.ExternalSystemGroupConfigurable" value="SELECTIVE" />
+    <property name="configurable..is.expanded" value="true" />
+    <property name="configurable.GoLibrariesConfigurable.is.expanded" value="false" />
+    <property name="editorconfig.notification" value="l" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="javascript.nodejs.core.library.configured.version" value="14.13.0" />
+    <property name="javascript.nodejs.core.library.typings.version" value="14.14.22" />
+    <property name="last.edited.regexp" value="w'kube-ps1'" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/config/testdata" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.detected.package.stylelint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
+    <property name="node.js.path.for.package.stylelint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.standard" value="" />
+    <property name="node.js.selected.package.stylelint" value="" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="service.view.auto.scroll.from.source" value="true" />
+    <property name="service.view.auto.scroll.to.source" value="true" />
+    <property name="settings.editor.selected.configurable" value="com.goide.configuration.GoLibrariesConfigurableProvider" />
+    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
+    <property name="two.files.diff.last.used.folder" value="$PROJECT_DIR$/execution" />
+    <property name="typescript.add.unambiguous.imports.on.the.fly" value="true" />
+    <property name="vcs.patch.path" value="$USER_HOME$/source" />
+  </component>
+  <component name="ReadonlyStatusHandler">
+    <option name="SHOW_DIALOG" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="GoMoveDeclarationDialog.RECENT_KEY">
+      <recent name="$PROJECT_DIR$/internal/sdkman" />
+      <recent name="$PROJECT_DIR$/pkg/cli" />
+      <recent name="$PROJECT_DIR$/pkg/cmd" />
+      <recent name="$PROJECT_DIR$/pkg/api" />
+      <recent name="$PROJECT_DIR$/internal/kernel" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/config/testdata" />
+      <recent name="$PROJECT_DIR$/pkg/config" />
+      <recent name="$PROJECT_DIR$/pkg/api" />
+      <recent name="$PROJECT_DIR$/pkg" />
+      <recent name="$PROJECT_DIR$/internal/config" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/pkg/cli" />
+      <recent name="$PROJECT_DIR$/docs/images" />
+      <recent name="$PROJECT_DIR$/internal" />
+      <recent name="$PROJECT_DIR$/pkg" />
+      <recent name="$PROJECT_DIR$/pkg/config" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="GoAppEngineRunConfiguration" />
+        <option value="GoApplicationRunConfiguration" />
+        <option value="GoRemoteDebugConfigurationType" />
+        <option value="GoTestRunConfiguration" />
+        <option value="ShConfigurationType" />
+        <option value="SwaggerCodegen" />
+        <option value="docker-deploy" />
+        <option value="js.build_tools.npm" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Go Build.sdk list">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/" />
+      <package value="github.com/alex-held/dev-env" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="config" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <parameters value="config" />
+      <envs>
+        <env name="CC" value="$CC$" />
+      </envs>
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/" />
+      <package value="github.com/alex-held/dev-env" />
+      <directory value="$PROJECT_DIR$/" />
+      <output_directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sdk add" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <parameters value="sdk add $Prompt$" />
+      <envs>
+        <env name="CC" value="$CC$" />
+      </envs>
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/" />
+      <package value="github.com/alex-held/dev-env" />
+      <directory value="$PROJECT_DIR$/" />
+      <output_directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sdk remove" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <parameters value="sdk remove $Prompt$" />
+      <envs>
+        <env name="CC" value="$CC$" />
+      </envs>
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/" />
+      <package value="github.com/alex-held/devctl" />
+      <directory value="$PROJECT_DIR$/" />
+      <output_directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sdk version list" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <parameters value="sdk version list $Prompt$" />
+      <envs>
+        <env name="CC" value="$CC$" />
+      </envs>
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/" />
+      <package value="github.com/alex-held/dev-env" />
+      <directory value="$PROJECT_DIR$/" />
+      <output_directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sdk version" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <parameters value="sdk version" />
+      <envs>
+        <env name="CC" value="$CC$" />
+      </envs>
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/" />
+      <package value="github.com/alex-held/dev-env" />
+      <directory value="$PROJECT_DIR$/" />
+      <output_directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestSdkmanClient_ListCandidates in github.com/alex-held/dev-env/internal/sdkman" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$/internal/sdkman" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/alex-held/dev-env/internal/sdkman" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^\QTestSdkmanClient_ListCandidates\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <framework value="gotest" />
+      <kind value="DIRECTORY" />
+      <package value="github.com/alex-held/dev-env" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="api_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$/internal/sdkman" />
+      <framework value="gotest" />
+      <kind value="FILE" />
+      <package value="github.com/alex-held/dev-env" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/internal/sdkman/api_test.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go check" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$" />
+      <framework value="gocheck" />
+      <kind value="DIRECTORY" />
+      <package value="github.com/alex-held/dev-env" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/" />
+      <output_directory value="$PROJECT_DIR$/c.out" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test devctl" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <kind value="DIRECTORY" />
+      <package value="github.com/alex-held/dev-env" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/" />
+      <output_directory value="$PROJECT_DIR$/c.out" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test github.com/alex-held/dev-env/pkg/cli" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="java-home" />
+      <working_directory value="$PROJECT_DIR$/pkg/cli" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/alex-held/dev-env/pkg/cli" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="bisect" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="bisect" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.config" />
+      <item itemvalue="Go Build.sdk add" />
+      <item itemvalue="Go Build.sdk list" />
+      <item itemvalue="Go Build.sdk remove" />
+      <item itemvalue="Go Build.sdk version list" />
+      <item itemvalue="Go Build.sdk version" />
+      <item itemvalue="Go Build.make" />
+      <item itemvalue="Go Test.go check" />
+      <item itemvalue="Go Test.go test devctl" />
+      <item itemvalue="Go Test.go test github.com/alex-held/dev-env/pkg/cli" />
+      <item itemvalue="Go Test.TestSdkmanClient_ListCandidates in github.com/alex-held/dev-env/internal/sdkman" />
+      <item itemvalue="Go Test.api_test.go" />
+      <item itemvalue="Makefile.bisect" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Makefile.bisect" />
+        <item itemvalue="Go Test.go test devctl" />
+        <item itemvalue="Go Test.TestSdkmanClient_ListCandidates in github.com/alex-held/dev-env/internal/sdkman" />
+        <item itemvalue="Go Test.api_test.go" />
+        <item itemvalue="Go Test.go test github.com/alex-held/dev-env/pkg/cli" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SshConsoleOptionsProvider">
+    <option name="myEncoding" value="UTF-8" />
+    <option name="myConnectionType" value="NONE" />
+    <option name="myConnectionId" value="" />
+  </component>
+  <component name="TerminalProjectNonSharedOptionsProvider">
+    <option name="shellPath" value="/usr/local/Cellar/zsh/5.8/bin/zsh" />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="1">
+          <value>
+            <State />
+          </value>
+        </entry>
+        <entry key="2">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="false" />
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="LONG_EDGES_VISIBLE" value="true" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="1" value="TOOL_WINDOW" />
+        <entry key="2" value="TOOL_WINDOW" />
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/develop" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myShow1" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
+    <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="true" />
+    <option name="CHANGED_ON_SERVER_INTERVAL" value="10" />
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <option name="SHOW_DIRTY_RECURSIVELY" value="true" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/../.." />
+      <path value="$PROJECT_DIR$/tmp/golang/src/42f688e2-50ed-4e61-acfb-5a395ec89af0" />
+      <path value="$PROJECT_DIR$/tmp/golang/src/github.com/alex-held/dev-env" />
+      <path value="$PROJECT_DIR$/tmp/golang/src/github.com/disiqueira/gotree" />
+      <path value="$PROJECT_DIR$/tmp/golang/src/github.com/ghodss/yaml" />
+      <path value="$PROJECT_DIR$/tmp/golang/src/github.com/olekukonko/tablewriter" />
+      <path value="$PROJECT_DIR$/tmp/golang/src/github.com/spf13/afero" />
+      <path value="$PROJECT_DIR$/tmp/golang/src/github.com/spf13/cobra" />
+      <path value="$PROJECT_DIR$/tmp/golang/src/github.com/spf13/pflag" />
+      <path value="$PROJECT_DIR$/tmp/golang/src/golang.org/x/text" />
+      <path value="$PROJECT_DIR$/tmp/golang/src/gopkg.in/yaml.v2" />
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+    <option name="FORCE_NON_EMPTY_COMMENT" value="true" />
+    <MESSAGE value="style(fmt): apply go fmt" />
+    <MESSAGE value="feat(install): add dummy git installer" />
+    <MESSAGE value="test(config): disable TestReadPrefixedEnvironmentVariables" />
+    <MESSAGE value="test(config): remove TestReadPrefixedEnvironmentVariables" />
+    <MESSAGE value="refactor(config): rename v" />
+    <MESSAGE value="refactor(config): rename test variable to not be same as import" />
+    <MESSAGE value="refactor(spec): update spec file format" />
+    <MESSAGE value="refactor(meta): consolidate meta into spec" />
+    <MESSAGE value="test(spec): add test if spec serializes correctly" />
+    <MESSAGE value="refactor(brew): use uiprogress package for progressbar" />
+    <MESSAGE value="refactor(brew): use yacspin package for progressbar" />
+    <MESSAGE value="refactor(brew): use github.com/schollz/progressbar/v3 package for progressbar" />
+    <MESSAGE value="style(gofmt): format code" />
+    <MESSAGE value="refactor(brew): clean up brew installer and it'S options" />
+    <MESSAGE value="refactor(brew): improve brew installer.go and tests ✅⚡️" />
+    <MESSAGE value="refactor(brew): move package into kernel ⏩" />
+    <MESSAGE value="refactor(brew): rewrite brewInstaller and associated test logic" />
+    <MESSAGE value="ci: remove golangci" />
+    <MESSAGE value="fix(cli): fix devenv cli" />
+    <MESSAGE value="ci(golangci): remove golangci" />
+    <MESSAGE value="chore: remove obsolete files" />
+    <MESSAGE value="feat(brew_view): add command to view the brew config file from the local file store " />
+    <MESSAGE value="refactor(internal): move config-binding implementation to struct methods to reduce import cycles" />
+    <MESSAGE value="refactor(packages): try out flat package hierarchy" />
+    <MESSAGE value="!FIXUP refactor(packages): fix unit test" />
+    <option name="LAST_COMMIT_MESSAGE" value="!FIXUP refactor(packages): fix unit test" />
+    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+    <environment>
+      <map>
+        <entry key="GOPROXY" value="https://proxy.golang.org" />
+      </map>
+    </environment>
+    <proxy>https://proxy.golang.org</proxy>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/config/installer_test.go</url>
+          <line>325</line>
+          <option name="timeStamp" value="2241" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/config/installer_test.go</url>
+          <line>107</line>
+          <option name="timeStamp" value="2255" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/config/installer_test.go</url>
+          <line>108</line>
+          <option name="timeStamp" value="2258" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/config/installer_test.go</url>
+          <line>110</line>
+          <option name="timeStamp" value="2259" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/config/installer_test.go</url>
+          <line>111</line>
+          <option name="timeStamp" value="2260" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/config/installer_test.go</url>
+          <line>116</line>
+          <option name="timeStamp" value="2265" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/config/installer_test.go</url>
+          <line>97</line>
+          <option name="timeStamp" value="2266" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/config/installer_test.go</url>
+          <line>84</line>
+          <option name="timeStamp" value="2267" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/config/installer_test.go</url>
+          <line>85</line>
+          <option name="timeStamp" value="2269" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/common/config/config.go</url>
+          <line>17</line>
+          <option name="timeStamp" value="2290" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/cli/cli_test.go</url>
+          <line>9</line>
+          <option name="timeStamp" value="2346" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/cli/cli.go</url>
+          <line>106</line>
+          <option name="timeStamp" value="2363" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/cli/cli.go</url>
+          <line>61</line>
+          <option name="timeStamp" value="2368" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/cli/cli.go</url>
+          <line>64</line>
+          <option name="timeStamp" value="2370" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/cli/cli.go</url>
+          <line>110</line>
+          <option name="timeStamp" value="2374" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/cli/cli.go</url>
+          <line>111</line>
+          <option name="timeStamp" value="2375" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/cli/cli.go</url>
+          <line>112</line>
+          <option name="timeStamp" value="2376" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/cli/cli_test.go</url>
+          <option name="timeStamp" value="2377" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/sdkman/api_test.go</url>
+          <line>21</line>
+          <option name="timeStamp" value="2385" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/sdkman/api_test.go</url>
+          <line>24</line>
+          <option name="timeStamp" value="2386" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/sdkman/api_test.go</url>
+          <line>26</line>
+          <option name="timeStamp" value="2387" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/sdkman/api_test.go</url>
+          <line>52</line>
+          <option name="timeStamp" value="2393" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" log-message="true" log-stack="true" type="DlvErrorBreakpoint" />
+        <breakpoint enabled="true" type="javascript-exception" />
+      </default-breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="GoTestRunConfiguration">
+        <watch expression="*(*&quot;github.com/spf13/afero/mem.FileData&quot;)(824633861728)" language="go" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/java_home$TestConfigWithContext_in_github_com_alex_held_io_alexheld_cli_java_home_api_config.out" NAME="TestConfigWithContext in github.com/alex-held/io.alexheld.cli.java-home/api/config Coverage Results" MODIFIED="1589012851488" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$gocheck_cmd.out" NAME="gocheck cmd Coverage Results" MODIFIED="1589814499169" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$gobench_internal.out" NAME="gobench internal Coverage Results" MODIFIED="1594499574974" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/java_home$go_test_java_home.out" NAME="go test java-home Coverage Results" MODIFIED="1589021999839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$go_test_github_com_alex_held_dev_env_cmd_install.out" NAME="go test github.com/alex-held/dev-env/cmd/install Coverage Results" MODIFIED="1590203126100" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$TestBrewManifest_SaveToFile_in_github_com_alex_held_dev_env_internal_kernel_brew.out" NAME="TestBrewManifest_SaveToFile in github.com/alex-held/dev-env/internal/kernel/brew Coverage Results" MODIFIED="1594496072777" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/java_home$gobench_github_com_alex_held_io_alexheld_cli_java_home_api_config.out" NAME="gobench github.com/alex-held/io.alexheld.cli.java-home/api/config Coverage Results" MODIFIED="1589011721312" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$TestBrewInstallerExecutesCommands_in_github_com_alex_held_dev_env_internal_kernel_brew.out" NAME="TestBrewInstallerExecutesCommands in github.com/alex-held/dev-env/internal/kernel/brew Coverage Results" MODIFIED="1594536696010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$gocheck_dev_env.out" NAME="gocheck dev-env Coverage Results" MODIFIED="1590284640922" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$go_test_dev_env__1_.out" NAME="go test dev-env Coverage Results" MODIFIED="1590265349074" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$gocheck_kernel.out" NAME="gocheck kernel Coverage Results" MODIFIED="1594500961253" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$go_test_dev_env.out" NAME="go test dev-env Coverage Results" MODIFIED="1597145403350" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$registry_test_go.out" NAME="registry_test.go Coverage Results" MODIFIED="1596900275672" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$go_test_internal.out" NAME="go test internal Coverage Results" MODIFIED="1596919286780" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$go_test_cmd.out" NAME="go test cmd Coverage Results" MODIFIED="1596936788504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/java_home$go_test_github_com_alex_held_io_alexheld_cli_java_home_api_config.out" NAME="go test github.com/alex-held/io.alexheld.cli.java-home/api/config Coverage Results" MODIFIED="1589012255372" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$go_test_brew.out" NAME="go test brew Coverage Results" MODIFIED="1595787842018" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$TestFormatAsTree_in_github_com_alex_held_dev_env_manifest.out" NAME="TestFormatAsTree in github.com/alex-held/dev-env/manifest Coverage Results" MODIFIED="1590221234548" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$go_cover.out" NAME="go cover Coverage Results" MODIFIED="1612626593459" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$TestManifest_ResolveCommands_in_github_com_alex_held_dev_env_manifest.out" NAME="TestManifest_ResolveCommands in github.com/alex-held/dev-env/manifest Coverage Results" MODIFIED="1589820890574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$go_test_config.out" NAME="go test config Coverage Results" MODIFIED="1596928295703" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$profile_render.out" NAME="profile render Coverage Results" MODIFIED="1592114840066" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$go_test_kernel.out" NAME="go test kernel Coverage Results" MODIFIED="1595157835987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$TestReadYaml_in_github_com_alex_held_dev_env_manifest.out" NAME="TestReadYaml in github.com/alex-held/dev-env/manifest Coverage Results" MODIFIED="1589812186772" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/dev_env$TestExecuteList_WithNoArguments_ListAllSDKs_in_github_com_alex_held_dev_env_cmd.out" NAME="TestExecuteList_WithNoArguments_ListAllSDKs in github.com/alex-held/dev-env/cmd Coverage Results" MODIFIED="1589743228658" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>

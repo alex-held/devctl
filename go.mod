@@ -1,6 +1,6 @@
 module github.com/alex-held/devctl
 
-go 1.15
+go 1.16
 
 require (
 	github.com/bndr/gotabulate v1.1.2
