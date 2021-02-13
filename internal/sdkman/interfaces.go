@@ -8,8 +8,8 @@ import (
 
 type HTTPDoFunc func(req *http.Request) (*http.Response, error)
 
-// Client provides the SDKMAN Api
-type Client interface {
+// ClientIn provides the SDKMAN Api
+type ClientIn interface {
 	ListCandidates() (candidates []string, resp *http.Response, err error)
 	DownloadSDK(filepath, sdk, version string, arch aarch.Arch) (download *SDKDownload, resp *http.Response, err error)
 }

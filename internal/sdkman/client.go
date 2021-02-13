@@ -1,101 +1,134 @@
 package sdkman
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
-	"html"
+	"io"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/spf13/afero"
-
-	"github.com/alex-held/devctl/pkg/aarch"
 )
 
-type URI fmt.Stringer
-
-type uri struct {
-	scheme      string
-	host        string
-	segments    []string
-	queryString []string
-}
-
-func (u *uri) String() string {
-	return u.Stringer()
-}
-
-func (u *uri) Append(segments ...string) (uri *uri) {
-	u.segments = append(u.segments, segments...)
-	return u
-}
-
-func (u *uri) Stringer() string {
-	path := func() string {
-		if len(u.segments) >= 1 {
-			return "/" + strings.Join(u.segments, "/")
-		}
-		return ""
-	}()
-
-	query := func() string {
-		if len(u.queryString) >= 1 {
-			return "?" + strings.Join(u.segments, "&")
-		}
-		return ""
-	}()
-
-	unsafeString := fmt.Sprintf("%s://%s%s%s", u.scheme, u.host, path, query)
-	escapedString := html.EscapeString(unsafeString)
-	return escapedString
-}
-
-type uRLFactory struct {
-	hostname string
-	version  string
-}
-
-func (u *uRLFactory) createBaseURI() *uri {
-	host := fmt.Sprintf("%s/%s", u.hostname, u.version)
-	return &uri{
-		scheme:      "https",
-		host:        host,
-		segments:    []string{},
-		queryString: []string{},
-	}
-}
-
-type sdkmanClient struct {
+// Client provides access to the sdkman api
+type Client struct {
 	context    context.Context
-	urlFactory uRLFactory
+	baseURL    *url.URL
+	client     *http.Client
 	httpClient HTTPClient
 
 	// allocate a single struct instead of one for each service
 	common service
 
 	// Services used for talking to different parts of the SDKMAN API.
-	download   *DownloadService
-	sdkService *ListAllSDKService
-	fs         afero.Fs
+	Download *DownloadService
+	ListSdks *ListAllSDKService
+	fs       afero.Fs
 }
 
-// nolint: godox
-// TODO: think about if there is the need to make this api less verbose
-// TODO: right now I don't see the need
-func (s *sdkmanClient) DownloadSDK(filepath, sdk, version string, arch aarch.Arch) (download *SDKDownload, resp *http.Response, err error) { // nolint: lll
-	return s.download.DownloadSDK(s.context, filepath, sdk, version, arch)
+// ClientConfig contains configurable values for the creation of the sdkman.Client
+type ClientConfig struct {
+	httpClient       *http.Client
+	context          context.Context
+	fs               afero.Fs
+	baseURL, version string
 }
 
-// NewSdkManClient creates the default sdkman.Client
-func NewSdkManClient() Client {
-	return &sdkmanClient{
-		urlFactory: uRLFactory{
-			hostname: "https://api.sdkman.io",
-			version:  "2",
-		},
-		httpClient: http.DefaultClient,
-		download:   nil,
-		sdkService: nil,
-		fs:         afero.NewOsFs(),
+// ClientOption is a function which configures ClientConfig
+type ClientOption func(config *ClientConfig) *ClientConfig
+
+// HttpClientOption configures the internal http.Client for the sdkman.Client
+func HTTPClientOption(client *http.Client) ClientOption {
+	return func(c *ClientConfig) *ClientConfig {
+		c.httpClient = client
+		return c
 	}
+}
+
+// FileSystemOption configures the afero.Fs used in the sdkman.Client
+func FileSystemOption(fs afero.Fs) ClientOption {
+	return func(c *ClientConfig) *ClientConfig {
+		c.fs = fs
+		return c
+	}
+}
+
+// DefaultSdkManOptions configures the sdkman.Client using defaults
+func DefaultSdkManOptions() []ClientOption {
+	return []ClientOption{
+		HTTPClientOption(&http.Client{}),
+		FileSystemOption(afero.NewOsFs()),
+		URLOptions(BaseURL),
+	}
+}
+
+// SdkManUrlOptions configures the api baseurl
+func URLOptions(baseURL string) ClientOption {
+	return func(c *ClientConfig) *ClientConfig {
+		c.baseURL = baseURL
+		return c
+	}
+}
+
+// BaseUrl BaseUrl of the remote sdkman api
+const BaseURL = "https://api.sdkman.io"
+
+// NewSdkManClient creates the default *Client using defaults and then the provided options
+func NewSdkManClient(options ...ClientOption) *Client {
+	config := &ClientConfig{}
+	for _, defaultOption := range DefaultSdkManOptions() {
+		config = defaultOption(config)
+	}
+	for _, option := range options {
+		config = option(config)
+	}
+
+	baseURL, _ := url.Parse(fmt.Sprintf("%s/%s", config.baseURL, config.version))
+
+	c := &Client{
+		baseURL:    baseURL,
+		context:    config.context,
+		client:     config.httpClient,
+		httpClient: http.DefaultClient,
+		fs:         config.fs,
+	}
+
+	c.common.client = c
+	c.Download = (*DownloadService)(&c.common)
+	c.ListSdks = (*ListAllSDKService)(&c.common)
+
+	return c
+}
+
+// NewRequest creates an API request. A relative URL can be provided in urlStr,
+// in which case it is resolved relative to the BaseURL of the ClientIn.
+// Relative URLs should always be specified without a preceding slash. If
+// specified, the value pointed to by body is JSON encoded and included as the
+// request body.
+func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body interface{}) (*http.Request, error) {
+	if !strings.HasSuffix(c.baseURL.Path, "/") {
+		return nil, fmt.Errorf("BaseURL must have a trailing slash, but %q does not", c.baseURL)
+	}
+	u, err := c.baseURL.Parse(urlStr)
+	if err != nil {
+		return nil, err
+	}
+
+	var buf io.ReadWriter
+	if body != nil {
+		buf = new(bytes.Buffer)
+		err = json.NewEncoder(buf).Encode(body)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	req, err := http.NewRequestWithContext(ctx, method, u.String(), buf)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
 }
