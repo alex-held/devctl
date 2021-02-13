@@ -159,7 +159,7 @@ func TestClient_Download(t *testing.T) {
 			})
 
 			g.It("WHEN no problems => THEN downloads SDK to local path", func() {
-				expectedDownloadContent, _ := ioutil.ReadFile(expectedTestDataPath)
+				expectedDownloadContent, _ := ioutil.ReadFile("testdata/scala-1.8")
 				logger.
 					WithField("path", expectedDownloadContent).
 					WithField("content", expectedDownloadContent).
