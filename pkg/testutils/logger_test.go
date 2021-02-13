@@ -1,13 +1,15 @@
 package testutils
 
 import (
-	"os"
+	"bytes"
+	"errors"
+	"regexp"
 	"testing"
 	
+	"github.com/franela/goblin"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zaptest"
-	"golang.org/x/exp/errors"
 )
 
 func TestTestLogger_Can_Spy_On_Infof_Messages(t *testing.T) {
@@ -30,10 +32,19 @@ func TestTestSpy_Captures_FailedState(t *testing.T) {
 }
 
 func TestDefaultLogger_Captures_FailedState(t *testing.T) {
-	logger := zaptest.NewLogger(t).WithOptions(zap.ErrorOutput(os.Stderr))
+	g := goblin.Goblin(t)
 	
-	defer logger.Sync()
-	logger.Error("error", zap.Error(errors.New("Fail this test")))
-	// logger.AssertLenErrorMessages(1)
-	// spy.AssertFailed()
+	g.Describe("Logger", func() {
+		g.It("captures error output", func() {
+			err := errors.New("fail this test")
+			buf := new(bytes.Buffer)
+			logger := logrus.New()
+			logger.SetOutput(buf)
+			
+			logger.WithError(err).Error()
+			
+			g.Assert(buf.String()).IsNotZero("there should be something in the stderr")
+			assert.Regexp(g, regexp.MustCompile("time=.*\\slevel=error error=.*fail this test\""), buf.String())
+		})
+	})
 }
