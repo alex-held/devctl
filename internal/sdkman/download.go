@@ -65,6 +65,7 @@ func (s *DownloadService) downloadSDK(ctx context.Context, filepath, sdk, versio
 	defer resp.Body.Close()
 
 	body := buf.Bytes()
+
 	err = afero.WriteFile(s.client.fs, filepath, body, fileutil.PrivateDirMode)
 	if err != nil {
 		return nil, resp, err
