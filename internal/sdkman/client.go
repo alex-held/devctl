@@ -16,7 +16,7 @@ import (
 // Client provides access to the sdkman api
 type Client struct {
 	context    context.Context
-	baseUrl    *url.URL
+	baseURL    *url.URL
 	client     *http.Client
 	httpClient HTTPClient
 
@@ -34,14 +34,14 @@ type ClientConfig struct {
 	httpClient       *http.Client
 	context          context.Context
 	fs               afero.Fs
-	baseUrl, version string
+	baseURL, version string
 }
 
 // ClientOption is a function which configures ClientConfig
 type ClientOption func(config *ClientConfig) *ClientConfig
 
 // HttpClientOption configures the internal http.Client for the sdkman.Client
-func HttpClientOption(client *http.Client) ClientOption {
+func HTTPClientOption(client *http.Client) ClientOption {
 	return func(c *ClientConfig) *ClientConfig {
 		c.httpClient = client
 		return c
@@ -59,22 +59,22 @@ func FileSystemOption(fs afero.Fs) ClientOption {
 // DefaultSdkManOptions configures the sdkman.Client using defaults
 func DefaultSdkManOptions() []ClientOption {
 	return []ClientOption{
-		HttpClientOption(&http.Client{}),
+		HTTPClientOption(&http.Client{}),
 		FileSystemOption(afero.NewOsFs()),
-		UrlOptions(BaseUrl),
+		URLOptions(BaseURL),
 	}
 }
 
 // SdkManUrlOptions configures the api baseurl
-func UrlOptions(baseUrl string) ClientOption {
+func URLOptions(baseURL string) ClientOption {
 	return func(c *ClientConfig) *ClientConfig {
-		c.baseUrl = baseUrl
+		c.baseURL = baseURL
 		return c
 	}
 }
 
 // BaseUrl BaseUrl of the remote sdkman api
-const BaseUrl = "https://api.sdkman.io"
+const BaseURL = "https://api.sdkman.io"
 
 // NewSdkManClient creates the default *Client using defaults and then the provided options
 func NewSdkManClient(options ...ClientOption) *Client {
@@ -86,10 +86,10 @@ func NewSdkManClient(options ...ClientOption) *Client {
 		config = option(config)
 	}
 
-	baseUrl, _ := url.Parse(fmt.Sprintf("%s/%s", config.baseUrl, config.version))
+	baseURL, _ := url.Parse(fmt.Sprintf("%s/%s", config.baseURL, config.version))
 
 	c := &Client{
-		baseUrl:    baseUrl,
+		baseURL:    baseURL,
 		context:    config.context,
 		client:     config.httpClient,
 		httpClient: http.DefaultClient,
@@ -108,11 +108,11 @@ func NewSdkManClient(options ...ClientOption) *Client {
 // Relative URLs should always be specified without a preceding slash. If
 // specified, the value pointed to by body is JSON encoded and included as the
 // request body.
-func (c *Client) NewRequest(method, urlStr string, ctx context.Context, body interface{}) (*http.Request, error) {
-	if !strings.HasSuffix(c.baseUrl.Path, "/") {
-		return nil, fmt.Errorf("BaseURL must have a trailing slash, but %q does not", c.baseUrl)
+func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body interface{}) (*http.Request, error) {
+	if !strings.HasSuffix(c.baseURL.Path, "/") {
+		return nil, fmt.Errorf("BaseURL must have a trailing slash, but %q does not", c.baseURL)
 	}
-	u, err := c.baseUrl.Parse(urlStr)
+	u, err := c.baseURL.Parse(urlStr)
 	if err != nil {
 		return nil, err
 	}

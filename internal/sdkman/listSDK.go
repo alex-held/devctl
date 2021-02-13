@@ -14,7 +14,7 @@ type ListAllSDKService service
 func (s *ListAllSDKService) ListAllSDK(ctx context.Context) (candidates []string, resp *http.Response, err error) {
 	// CreateListAllAvailableSDKURI creates the URI to list all available SDK
 	// https://api.sdkman.io/2/candidates/all
-	req, err := s.client.NewRequest("GET", "candidates/all", ctx, nil)
+	req, err := s.client.NewRequest(ctx, "GET", "candidates/all", nil)
 	if err != nil {
 		return nil, nil, err
 	}
