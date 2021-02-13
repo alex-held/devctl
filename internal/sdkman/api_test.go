@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -98,50 +99,17 @@ func TestSdkmanClient_ListCandidates(t *testing.T) {
 	})
 }
 
-func combine(handlers ...http.HandlerFunc) http.HandlerFunc {
-	if handlers == nil {
-		handlers = []http.HandlerFunc{}
-	}
-	return func(writer http.ResponseWriter, request *http.Request) {
-		for _, handlerFunc := range handlers {
-			handlerFunc(writer, request)
-		}
-	}
-}
-
-func handleTestdata(logger *logrus.Logger, testdataPath string) http.HandlerFunc {
-	testdataContent, err := ioutil.ReadFile(testdataPath)
-	if err != nil {
-		logger.
-			WithField("path", testdataPath).
-			Fatalln("Unable to read testdata.")
-	}
-
-	return func(responseWriter http.ResponseWriter, request *http.Request) {
-		length, err := responseWriter.Write(testdataContent)
-		if err != nil {
-			logger.
-				WithError(err).
-				Errorln("Unable to write testdata to http.Response.Body")
-		}
-		logger.
-			WithField("length", length).
-			WithField("content", testdataContent).
-			Infoln("testdata written to http.Response.Body")
-	}
-}
-
 func TestClient_Download(t *testing.T) {
 	g := goblin.Goblin(t)
 
 	g.Describe("Client", func() {
-		expectedTestDataPath := os.ExpandEnv("$HOME/go/src/github.com/alex-held/devctl/internal/sdkman/testdata/scala-1.8")
-		expectedDownloadPath := os.ExpandEnv("$HOME/.devctl/archives/scala/1.8/scala-1.8")
+		expectedTestDataPath := os.ExpandEnv("testdata/scala-1.8")
+		expectedDownloadPath := filepath.Join(t.TempDir(), "archives", "scala", "1.8", "scala-1.8")
 
 		var client *Client
 		var logger *logrus.Logger
 		var mux *http.ServeMux
-		var out bytes.Buffer
+		var _ bytes.Buffer
 		var teardown testutils.Teardown
 		var ctx context.Context
 
@@ -149,43 +117,55 @@ func TestClient_Download(t *testing.T) {
 
 		g.Describe("Download", func() {
 			g.JustBeforeEach(func() {
-				client, logger, mux, out, teardown = setup()
+				client, logger, mux, _, teardown = setup()
 				ctx = context.Background()
 			})
 
 			g.AfterEach(func() {
-				out.Reset()
 				teardown()
 			})
 
 			g.It("WHEN no problems => THEN downloads SDK to local path", func() {
-				expectedDownloadContent, _ := ioutil.ReadFile("testdata/scala-1.8")
-				logger.
-					WithField("path", expectedDownloadContent).
-					WithField("content", expectedDownloadContent).
-					Debugln("loading expected-download-content from ./testdata")
+				expectedDownloadContent, err := ioutil.ReadFile(expectedTestDataPath)
+				expectedContentBuffer := bytes.NewBuffer(expectedDownloadContent)
 
+				if err != nil {
+					//nolint:lll
+					errMessage := fmt.Sprintf("problem reading the testata. testdata-path: %s; error: %+v\n", expectedTestDataPath, err)
+					_, _ = os.Stderr.WriteString(errMessage)
+					t.Fatal(errMessage)
+				}
 				logger.
 					WithField("path", expectedTestDataPath).
-					Debugln("Expected Download Path")
+					WithField("content", expectedContentBuffer.String()).
+					Warnln("loading expected-download-content from testdata")
 
-				combinedHandler := combine(
-					handleTestdata(logger, expectedTestDataPath),
-					func(w http.ResponseWriter, r *http.Request) {
-						w.Header().Add("content-type", "application/zip")
-						w.Header().Add("accept-ranges", "actualDownloadContent")
-						w.Header().Add("content-length", "23015564")
-						testMethod(t, r, "GET")
-					},
-				)
+				logger.
+					WithField("path", expectedDownloadPath).
+					Warnln("Expected Download Path")
 
 				// https://api.sdkman.io/2/broker/download/scala/1.8/darwinx64
-				mux.HandleFunc("/broker/download/scala/1.8/darwinx64", combinedHandler)
+				mux.HandleFunc("/broker/download/scala/1.8/darwinx64", func(w http.ResponseWriter, r *http.Request) {
+					w.Header().Add("content-type", "application/zip")
+					w.Header().Add("accept-ranges", "actualDownloadContent")
+					w.Header().Add("content-length", fmt.Sprintf("%d", expectedContentBuffer.Len()))
+					n, e := io.Copy(w, expectedContentBuffer)
+					if e != nil {
+						logger.
+							WithError(e).
+							Fatalln("error writing testdata into http.Response")
+					}
+					logger.
+						WithField("length", n).
+						Warnln("written testdata into http.Response")
+
+					testMethod(t, r, "GET")
+				})
 
 				download, resp, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", aarch.MacOsx)
 				Expect(err).To(BeNil())
 				defer resp.Body.Close()
-				logger.WithField("path", download.Path).Infoln("Actual Download Path")
+				logger.WithField("path", download.Path).Warnln("Actual Download Path")
 
 				actualDownloadContent, err := ioutil.ReadAll(download.Reader)
 				Expect(err).To(BeNil())
