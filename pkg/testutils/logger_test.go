@@ -3,48 +3,136 @@ package testutils
 import (
 	"bytes"
 	"errors"
-	"regexp"
+	"flag"
+	"fmt"
+	"os"
 	"testing"
-	
+
 	"github.com/franela/goblin"
+	. "github.com/onsi/gomega"
 	"github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
-	"go.uber.org/zap"
 )
 
-func TestTestLogger_Can_Spy_On_Infof_Messages(t *testing.T) {
-	spy, teardown := SetupTestLogger(t)
-	z := zap.S()
-	defer teardown()
-	
-	z.Infof("This is a test, containging a map: %+v", map[string]interface{}{"value1": 1, "value2": 15})
-	
-	assert.Len(t, spy.Messages, 1)
+func TestLogger_Captures_LogMessages(t *testing.T) {
+	g := goblin.Goblin(t)
+
+	g.Describe("Logger", func() {
+
+		RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
+		var out *bytes.Buffer
+		var logger *logrus.Logger
+
+		g.Describe("GIVEN the go test -v (verbose) flag has not been set", func() {
+
+			g.JustBeforeEach(func() {
+				ToggleTestVerbose(false)
+				out = bytes.NewBuffer(nil)
+				logger = NewLogger(out)
+			})
+
+			g.It("WHEN loglevel is info --> THEN no log messages get captured", func() {
+				logger.
+					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
+					WithField("temp-dir-path", t.TempDir()).
+					Infof("To learn more about this cli visit our docs.")
+				Expect(out.String()).To(BeEmpty())
+				Expect(out.Len()).To(Equal(0))
+			})
+
+			g.It("WHEN loglevel is debug --> THEN no log messages get captured", func() {
+				logger.
+					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
+					WithField("temp-dir-path", t.TempDir()).
+					Debugf("To learn more about this cli visit our docs.")
+				Expect(out.String()).To(BeEmpty())
+				Expect(out.Len()).To(Equal(0))
+			})
+
+			g.It("WHEN loglevel is warn --> THEN captures log message", func() {
+				logger.
+					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
+					WithField("temp-dir-path", t.TempDir()).
+					Warnf("To learn more about this cli visit our docs.")
+				Expect(out.String()).To(ContainSubstring("To learn more about this cli visit our docs."))
+				Expect(out.Len()).To(Equal(out.Len()))
+			})
+		})
+
+		g.Describe("GIVEN the go test -v (verbose) flag has been set", func() {
+
+			g.JustBeforeEach(func() {
+				ToggleTestVerbose(true)
+				out = bytes.NewBuffer(nil)
+				logger = NewLogger(out)
+			})
+
+			g.It("WHEN loglevel is info --> THEN capture log messages", func() {
+				logger.
+					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
+					WithField("temp-dir-path", t.TempDir()).
+					Infof("To learn more about this cli visit our docs.")
+				str := out.String()
+				println(str)
+				Expect(out.String()).To(ContainSubstring("To learn more about this cli visit our docs."))
+				Expect(out.Len()).To(Equal(out.Len()))
+			})
+
+			g.It("WHEN loglevel is debug --> THEN capture log messages", func() {
+				logger.
+					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
+					WithField("temp-dir-path", t.TempDir()).
+					Debugf("To learn more about this cli visit our docs.")
+				Expect(out.String()).To(ContainSubstring("To learn more about this cli visit our docs."))
+				Expect(out.Len()).To(Equal(out.Len()))
+			})
+
+			g.It("WHEN loglevel is warn --> THEN captures log messages", func() {
+				logger.
+					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
+					WithField("temp-dir-path", t.TempDir()).
+					Warnf("To learn more about this cli visit our docs.")
+				Expect(out.String()).To(ContainSubstring("To learn more about this cli visit our docs."))
+				Expect(out.Len()).To(Equal(out.Len()))
+			})
+		})
+
+	})
 }
 
-func TestTestSpy_Captures_FailedState(t *testing.T) {
-	spy, teardown := SetupTestLogger(t)
-	z := zap.S()
-	defer teardown()
-	z.Errorw("error", errors.New("Fail this test"))
-	spy.AssertLenErrorMessages(1)
-	spy.AssertFailed()
+func ToggleTestVerbose(on bool) {
+	v := flag.CommandLine.Lookup("test.v")
+	err := v.Value.Set(fmt.Sprintf("%t", on))
+	if err != nil {
+		panic(err)
+	}
 }
 
 func TestDefaultLogger_Captures_FailedState(t *testing.T) {
 	g := goblin.Goblin(t)
-	
+
 	g.Describe("Logger", func() {
-		g.It("captures error output", func() {
-			err := errors.New("fail this test")
-			buf := new(bytes.Buffer)
-			logger := logrus.New()
-			logger.SetOutput(buf)
-			
-			logger.WithError(err).Error()
-			
-			g.Assert(buf.String()).IsNotZero("there should be something in the stderr")
-			assert.Regexp(g, regexp.MustCompile("time=.*\\slevel=error error=.*fail this test\""), buf.String())
+		RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
+		var buf *bytes.Buffer
+		var logger *logrus.Logger
+		err := errors.New("fail this test")
+
+		g.JustBeforeEach(func() {
+			buf = bytes.NewBuffer(nil)
+			logger = NewLogger(buf)
+			logger.ExitFunc = func(int) { /* ignore logger.Fatal exit codes for tests*/ }
 		})
+
+		g.It("WHEN loglevel is error --> THEN captures error output", func() {
+			logger.WithError(err).Error()
+			Expect(buf.String()).To(MatchRegexp("time=.*\\slevel=error error=.*fail this test\""))
+			Expect(buf.Len()).To(Equal(buf.Len()))
+		})
+
+		g.It("WHEN loglevel is fatal --> THEN captures error output", func() {
+			logger.WithError(err).Fatal()
+			Expect(buf.String()).To(MatchRegexp("time=.*\\slevel=fatal error=.*fail this test\""))
+			Expect(buf.Len()).To(Equal(buf.Len()))
+		})
+
 	})
 }

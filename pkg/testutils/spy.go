@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
-	
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -53,7 +53,6 @@ func (t *LogSpy) FailNow() {
 // We strip the first part of these messages because we can't really test
 // for the timestamp from these tests.
 func (t *LogSpy) Logf(format string, args ...interface{}) {
-	
 	m := fmt.Sprintf(format, args...)
 	if strings.Contains(m, "[test.error]") {
 		errorEntry := errorEntry{Error: fmt.Errorf(format, args...)}

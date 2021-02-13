@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	
+
 	"github.com/spf13/afero"
 )
 
@@ -19,10 +19,10 @@ type Client struct {
 	baseUrl    *url.URL
 	client     *http.Client
 	httpClient HTTPClient
-	
+
 	// allocate a single struct instead of one for each service
 	common service
-	
+
 	// Services used for talking to different parts of the SDKMAN API.
 	Download *DownloadService
 	ListSdks *ListAllSDKService
@@ -85,9 +85,9 @@ func NewSdkManClient(options ...ClientOption) *Client {
 	for _, option := range options {
 		config = option(config)
 	}
-	
+
 	baseUrl, _ := url.Parse(fmt.Sprintf("%s/%s", config.baseUrl, config.version))
-	
+
 	c := &Client{
 		baseUrl:    baseUrl,
 		context:    config.context,
@@ -95,11 +95,11 @@ func NewSdkManClient(options ...ClientOption) *Client {
 		httpClient: http.DefaultClient,
 		fs:         config.fs,
 	}
-	
+
 	c.common.client = c
 	c.Download = (*DownloadService)(&c.common)
 	c.ListSdks = (*ListAllSDKService)(&c.common)
-	
+
 	return c
 }
 
@@ -116,7 +116,7 @@ func (c *Client) NewRequest(method, urlStr string, ctx context.Context, body int
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var buf io.ReadWriter
 	if body != nil {
 		buf = new(bytes.Buffer)
@@ -125,7 +125,7 @@ func (c *Client) NewRequest(method, urlStr string, ctx context.Context, body int
 			return nil, err
 		}
 	}
-	
+
 	req, err := http.NewRequestWithContext(ctx, method, u.String(), buf)
 	if err != nil {
 		return nil, err

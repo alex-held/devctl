@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/alex-held/devctl/pkg/aarch"
-	"github.com/coreos/etcd/pkg/fileutil"
-	"github.com/spf13/afero"
 	"io"
 	"net/http"
+
+	"github.com/coreos/etcd/pkg/fileutil"
+	"github.com/spf13/afero"
+
+	"github.com/alex-held/devctl/pkg/aarch"
 )
 
 type SDKDownload struct {
