@@ -15,10 +15,9 @@ import (
 
 // Client provides access to the sdkman api
 type Client struct {
-	context    context.Context
-	baseURL    *url.URL
-	client     *http.Client
-	httpClient HTTPClient
+	context context.Context
+	baseURL *url.URL
+	client  *http.Client
 
 	// allocate a single struct instead of one for each service
 	common service
@@ -89,11 +88,10 @@ func NewSdkManClient(options ...ClientOption) *Client {
 	baseURL, _ := url.Parse(fmt.Sprintf("%s/%s", config.baseURL, config.version))
 
 	c := &Client{
-		baseURL:    baseURL,
-		context:    config.context,
-		client:     config.httpClient,
-		httpClient: http.DefaultClient,
-		fs:         config.fs,
+		baseURL: baseURL,
+		context: config.context,
+		client:  config.httpClient,
+		fs:      config.fs,
 	}
 
 	c.common.client = c
