@@ -1,71 +1,34 @@
 package sdkman
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
-
-	"github.com/alex-held/devctl/pkg/testutils"
-	"go.uber.org/zap"
-	"golang.org/x/exp/errors/fmt"
-
+	
 	"github.com/alex-held/devctl/pkg/aarch"
-	// "github.com/mitchellh/go-testing-interface"
+	"github.com/alex-held/devctl/pkg/testutils"
+	"github.com/franela/goblin"
+	. "github.com/onsi/gomega"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-type httpClientStub struct {
-	StubResponse   *http.Response
-	StubError      error
-	InvokedRequest *http.Request
-	DoFunc         HTTPDoFunc
-}
-
-func (h *httpClientStub) Do(req *http.Request) (response *http.Response, err error) {
-	if h.DoFunc != nil {
-		return h.DoFunc(req)
-	}
-
-	h.InvokedRequest = req
-	if h.StubError != nil {
-		return nil, h.StubError
-	}
-	return h.StubResponse, nil
-}
-
-func NewTestSdkManClient(doFunc HTTPDoFunc) (client *Client, fs afero.Fs, ctx context.Context) {
-	fs = afero.NewMemMapFs()
-	ctx = context.Background()
-
-	c := &Client{
-		context: ctx,
-		httpClient: &httpClientStub{
-			DoFunc: doFunc,
-		},
-		fs: fs,
-	}
-
-	c.common.client = c
-	c.Download = (*DownloadService)(&c.common)
-	c.ListSdks = (*ListAllSDKService)(&c.common)
-
-	return c, fs, ctx
-}
-
 const baseURLPath = "/2"
 
-func setup(t *testing.T) (client *Client, fs afero.Fs, mux *http.ServeMux, spy *testutils.LogSpy, teardown testutils.Teardown) {
-	spy, teardown = testutils.SetupTestLogger(t)
-
+func setup() (client *Client, logger *logrus.Logger, mux *http.ServeMux, out bytes.Buffer, teardown testutils.Teardown) {
+	logger = testutils.NewLogger(&out)
+	
 	mux = http.NewServeMux()
-	fs = afero.NewMemMapFs()
-
+	fs := afero.NewMemMapFs()
+	
 	apiHandler := http.NewServeMux()
 	apiHandler.Handle(baseURLPath+"/", http.StripPrefix(baseURLPath, mux))
 	apiHandler.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
@@ -73,18 +36,19 @@ func setup(t *testing.T) (client *Client, fs afero.Fs, mux *http.ServeMux, spy *
 		_, _ = fmt.Fprintln(os.Stderr, "\t"+req.URL.String())
 		http.Error(w, "ClientIn.BaseURL path prefix is not preserved in the request URL.", http.StatusInternalServerError)
 	})
-
+	
 	server := httptest.NewServer(apiHandler)
-
+	
 	client = NewSdkManClient(
 		UrlOptions(server.URL+"/2"),
 		FileSystemOption(fs),
 		HttpClientOption(&http.Client{}),
 	)
-
-	return client, fs, mux, spy, teardown.CombineInto(func() {
+	
+	teardown = func() {
 		server.Close()
-	})
+	}
+	return client, logger, mux, out, teardown
 }
 
 func testMethod(t testing.TB, r *http.Request, want string) {
@@ -95,17 +59,17 @@ func testMethod(t testing.TB, r *http.Request, want string) {
 }
 
 func TestSdkmanClient_ListCandidates(t *testing.T) {
-	client, _, mux, spy, teardown := setup(t)
+	client, _, mux, _, teardown := setup()
 	defer teardown()
-
+	
 	mux.HandleFunc("/candidates/all", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(spy, r, "GET")
+		testMethod(t, r, "GET")
 		_, _ = fmt.Fprint(w, "ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm")
 	})
-
+	
 	candidates, _, err := client.ListSdks.ListAllSDK(context.Background())
-	require.NoError(spy, err)
-	assert.Equal(spy, len(candidates), 43)
+	require.NoError(t, err)
+	assert.Equal(t, len(candidates), 43)
 }
 
 func combine(handlers ...http.HandlerFunc) http.HandlerFunc {
@@ -119,87 +83,93 @@ func combine(handlers ...http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func handleTestdata(t *testing.T, testdataPath string) http.HandlerFunc {
-	z := zap.S()
-
+func handleTestdata(logger *logrus.Logger, testdataPath string) http.HandlerFunc {
 	testdataContent, err := ioutil.ReadFile(testdataPath)
 	if err != nil {
-		z.With("path", testdataPath).
-			Fatalf("Unable to read testdata.")
+		logger.
+			WithField("path", testdataPath).
+			Fatalln("Unable to read testdata.")
 	}
-
+	
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
 		length, err := responseWriter.Write(testdataContent)
 		if err != nil {
-			z.With(zap.Error(err)).Errorf("Unable to write testdata to http.Response.Body")
+			logger.
+				WithError(err).
+				Errorln("Unable to write testdata to http.Response.Body")
 		}
-		z.With(zap.Int("length", length), zap.ByteString("content", testdataContent)).Info("testdata written to http.Response.Body")
+		logger.
+			WithField("length", length).
+			WithField("content", testdataContent).
+			Infoln("testdata written to http.Response.Body")
 	}
-
 }
 
-func TestSdkmanClient_Download(t *testing.T) {
-	client, fs, mux, spy, teardown := setup(t)
-	ctx := context.Background()
-	defer teardown()
-
-	const expectedTestDataPath = "/Users/dev/go/src/github.com/alex-held/devctl/internal/sdkman/testdata/scala-1.8"
-	expectedDownloadContent, _ := ioutil.ReadFile(expectedTestDataPath)
-	z := zap.S()
-	z.Infof("File contents: %s", expectedDownloadContent)
-
-	// https://api.sdkman.io/2/broker/download/java/1.8/darwinx64
-	//	mux.HandleFunc("/broker/download/scala/1.8/darwinx64", handleTestdata(t, "/Users/dev/go/src/github.com/alex-held/devctl/internal/sdkman/testdata/scala-1.8"))
-	mux.HandleFunc("/2/broker/download/scala/1.8/darwinx64", handleTestdata(t, "/Users/dev/go/src/github.com/alex-held/devctl/internal/sdkman/testdata/scala-1.8"))
-	mux.HandleFunc("broker/download/scala/1.8/darwinx64", handleTestdata(t, "/Users/dev/go/src/github.com/alex-held/devctl/internal/sdkman/testdata/scala-1.8"))
-
-	testdataHandlerFunc := handleTestdata(t, "/Users/dev/go/src/github.com/alex-held/devctl/internal/sdkman/testdata/scala-1.8")
-	combinedHandler := combine(
-		testdataHandlerFunc,
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Add("content-type", "application/zip")
-			w.Header().Add("accept-ranges", "bytes")
-			w.Header().Add("content-length", "23015564")
-			w.WriteHeader(http.StatusOK)
-
-			testMethod(spy, r, "GET")
-		},
-	)
-
-	mux.HandleFunc("/broker/download/scala/1.8/darwinx64", combinedHandler)
-
-	/*
-		mux.HandleFunc("/broker/download/scala/1.8/darwinx64", func(w http.ResponseWriter, r *http.Request) {
-			testMethod(t, r, "GET")
-
-			w.Header().Add("content-type", "application/zip")
-			w.Header().Add("accept-ranges", "bytes")
-			w.Header().Add("content-length", "23015564")
-
-			w.WriteHeader(200)
-			writeLen, err := w.Write(expectedDownloadContent)
-			if err != nil {
-				fmt.Printf("Error writing mock response body: Error=%+v\n", err)
-				//		t.Fatalf("Error writing mock response body: Error=%+v", err)
-			}
-			fmt.Printf("Written response body with length: %d\n", writeLen)
-
-			//	testBody(t, r, bytes.NewReader(expectedDownloadContent))
+func TestClient_Download(t *testing.T) {
+	g := goblin.Goblin(t)
+	
+	g.Describe("Client", func() {
+		
+		expectedTestDataPath := os.ExpandEnv("$HOME/go/src/github.com/alex-held/devctl/internal/sdkman/testdata/scala-1.8")
+		expectedDownloadPath := os.ExpandEnv("$HOME/.devctl/archives/scala/1.8/scala-1.8")
+		
+		var client *Client
+		var logger *logrus.Logger
+		var mux *http.ServeMux
+		var out bytes.Buffer
+		var teardown testutils.Teardown
+		var ctx context.Context
+		
+		RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
+		
+		g.Describe("Download", func() {
+			g.JustBeforeEach(func() {
+				client, logger, mux, out, teardown = setup()
+				ctx = context.Background()
+			})
+			
+			g.AfterEach(func() {
+				out.Reset()
+				teardown()
+			})
+			
+			g.It("WHEN no problems => THEN downloads SDK to local path", func() {
+				expectedDownloadContent, _ := ioutil.ReadFile(expectedTestDataPath)
+				logger.
+					WithField("path", expectedDownloadContent).
+					WithField("content", expectedDownloadContent).
+					Debugln("loading expected-download-content from ./testdata")
+				
+				logger.
+					WithField("path", expectedTestDataPath).
+					Debugln("Expected Download Path")
+				
+				combinedHandler := combine(
+					handleTestdata(logger, expectedTestDataPath),
+					func(w http.ResponseWriter, r *http.Request) {
+						w.Header().Add("content-type", "application/zip")
+						w.Header().Add("accept-ranges", "actualDownloadContent")
+						w.Header().Add("content-length", "23015564")
+						testMethod(t, r, "GET")
+					},
+				)
+				
+				// https://api.sdkman.io/2/broker/download/scala/1.8/darwinx64
+				mux.HandleFunc("/broker/download/scala/1.8/darwinx64", combinedHandler)
+				
+				download, _, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", aarch.MacOsx)
+				Expect(err).To(BeNil())
+				logger.WithField("path", download.Path).Infoln("Actual Download Path")
+				
+				actualDownloadContent, err := ioutil.ReadAll(download.Reader)
+				Expect(err).To(BeNil())
+				Expect(actualDownloadContent).To(Equal(expectedDownloadContent))
+				Expect(download.Path).To(Equal(expectedDownloadPath))
+			})
+			
 		})
-	*/
-
-	expectedDownloadPath := os.ExpandEnv("$HOME/.devctl/archives/scala/1.8/scala-1.8")
-	z.With(zap.String("path", expectedTestDataPath)).Info("Expected Download")
-
-	download, _, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", aarch.MacOsx)
-
-	require.NoError(t, err)
-
-	actualDownloadPath := download.Path
-	assert.Equal(t, expectedDownloadPath, actualDownloadPath)
-
-	actualDownloadBytes, err := afero.ReadFile(fs, expectedDownloadPath)
-	assert.Equal(spy, expectedDownloadContent, actualDownloadBytes)
+	})
+	
 }
 
 func testBody(t *testing.T, r *http.Request, want io.Reader) {
@@ -208,19 +178,19 @@ func testBody(t *testing.T, r *http.Request, want io.Reader) {
 	if err != nil {
 		t.Errorf("Error while accessing request body: %v", err)
 	}
-
+	
 	gotBytes, err := ioutil.ReadAll(got)
 	gotString := string(gotBytes)
 	if err != nil {
 		panic(err)
 	}
-
+	
 	wantBytes, err := ioutil.ReadAll(want)
 	wantString := string(wantBytes)
 	if err != nil {
 		panic(err)
 	}
-
+	
 	if gotString != wantString {
 		t.Errorf("Request body: %v, want %v", gotString, wantString)
 	}

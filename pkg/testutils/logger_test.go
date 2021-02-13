@@ -17,13 +17,11 @@ func TestLogger_Captures_LogMessages(t *testing.T) {
 	g := goblin.Goblin(t)
 
 	g.Describe("Logger", func() {
-
 		RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 		var out *bytes.Buffer
 		var logger *logrus.Logger
 
 		g.Describe("GIVEN the go test -v (verbose) flag has not been set", func() {
-
 			g.JustBeforeEach(func() {
 				ToggleTestVerbose(false)
 				out = bytes.NewBuffer(nil)
@@ -59,7 +57,6 @@ func TestLogger_Captures_LogMessages(t *testing.T) {
 		})
 
 		g.Describe("GIVEN the go test -v (verbose) flag has been set", func() {
-
 			g.JustBeforeEach(func() {
 				ToggleTestVerbose(true)
 				out = bytes.NewBuffer(nil)
@@ -95,7 +92,6 @@ func TestLogger_Captures_LogMessages(t *testing.T) {
 				Expect(out.Len()).To(Equal(out.Len()))
 			})
 		})
-
 	})
 }
 
@@ -133,6 +129,5 @@ func TestDefaultLogger_Captures_FailedState(t *testing.T) {
 			Expect(buf.String()).To(MatchRegexp("time=.*\\slevel=fatal error=.*fail this test\""))
 			Expect(buf.Len()).To(Equal(buf.Len()))
 		})
-
 	})
 }
