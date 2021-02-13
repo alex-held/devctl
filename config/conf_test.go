@@ -1,10 +1,15 @@
 package config
 
 import (
-	"fmt"
+	"path"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/franela/goblin"
+	. "github.com/onsi/gomega"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+
+	"github.com/alex-held/devctl/pkg/testutils"
 )
 
 var expectedConfig = &DevEnvConfig{
@@ -31,10 +36,34 @@ var expectedConfig = &DevEnvConfig{
 }
 
 func TestViperConfig(t *testing.T) {
-	InitViper("testdata/devenv.yaml")
-	cfg := LoadViperConfig()
+	g := goblin.Goblin(t)
+	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 
-	msg := fmt.Sprintf("Loaded 'testdata/devenv.yaml': \n%+v\n", *cfg)
-	fmt.Println(msg)
-	require.Equal(t, expectedConfig, cfg)
+	g.Describe("ViperConfig", func() {
+		const testdataPath = "testdata/devenv.yaml"
+		dir := path.Dir(testdataPath)
+		config := path.Base(testdataPath)
+
+		g.It("WHEN Loading Config from file => THEN config contains all configurations of the config-file", func() {
+			viper.AddConfigPath(dir)
+			viper.SetConfigName(config)
+			viper.SetConfigType("yaml")
+
+			cfg := LoadViperConfig()
+			logger := testutils.NewLogger(nil)
+			fields := logrus.Fields{
+				"testdata-path": testdataPath,
+				"global-config": cfg.GlobalConfig,
+				"sdk-config":    cfg.SDKConfig,
+				"config":        *cfg,
+			}
+
+			logger.WithFields(fields).Traceln("loaded viper config from testdata/devenv.yaml")
+			Expect(cfg.GlobalConfig).To(Equal(DevEnvGlobalConfig{Version: "v1"}))
+			Expect(cfg.SDKConfig.SDKS[0].SDK).To(Equal("java"))
+			Expect(cfg.SDKConfig.SDKS).To(HaveLen(2))
+			Expect(cfg.SDKConfig.SDKS[0].Installations).To(HaveLen(2))
+			Expect(cfg).To(Equal(expectedConfig))
+		})
+	})
 }

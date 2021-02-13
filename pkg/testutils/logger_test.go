@@ -67,9 +67,7 @@ func TestLogger_Captures_LogMessages(t *testing.T) {
 				logger.
 					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
 					WithField("temp-dir-path", t.TempDir()).
-					Infof("To learn more about this cli visit our docs.")
-				str := out.String()
-				println(str)
+					Debugln("To learn more about this cli visit our docs.")
 				Expect(out.String()).To(ContainSubstring("To learn more about this cli visit our docs."))
 				Expect(out.Len()).To(Equal(out.Len()))
 			})
