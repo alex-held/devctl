@@ -165,7 +165,6 @@ linters:
     - dupl
     - errcheck
     - exhaustive
-    - funlen
     - gochecknoinits
     - goconst
     - gocritic
@@ -203,6 +202,7 @@ linters:
     - asciicheck
 
     # don't enable:
+    # - funlen
     # - gochecknoglobals
     # - godot
     # - goerr113
