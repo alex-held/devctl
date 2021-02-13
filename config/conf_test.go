@@ -58,7 +58,7 @@ func TestViperConfig(t *testing.T) {
 				"config":        *cfg,
 			}
 
-			logger.WithFields(fields).Debugln("loaded viper config from testdata/devenv.yaml")
+			logger.WithFields(fields).Traceln("loaded viper config from testdata/devenv.yaml")
 			Expect(cfg.GlobalConfig).To(Equal(DevEnvGlobalConfig{Version: "v1"}))
 			Expect(cfg.SDKConfig.SDKS[0].SDK).To(Equal("java"))
 			Expect(cfg.SDKConfig.SDKS).To(HaveLen(2))

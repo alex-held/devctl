@@ -3,50 +3,72 @@ package cli
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/franela/goblin"
+	. "github.com/onsi/gomega"
 )
 
 // TestStaticCliConfigOption
 func TestStaticCliConfigOption(t *testing.T) {
-	tCases := map[string]struct {
-		Input    StaticOption
-		Expected staticConfig
-	}{
-		"DefaultStaticCliConfigOption": {Input: DefaultStaticCliConfigOption(), Expected: staticConfig{
-			cliName:        "devctl",
-			cliDescription: "A lightweight dev-environment manager / bootstrapper",
-			configFileName: "",
-			configFileType: "",
-			envPrefix:      "DEVCTL",
-		}},
-		"StaticCliConfigOption": {Input: StaticCliConfigOption("a", "b"), Expected: staticConfig{
-			cliName:        "a",
-			cliDescription: "b",
-			configFileName: "",
-			configFileType: "",
-			envPrefix:      "A",
-		}},
-		"DefaultStaticConfigFileOption": {Input: DefaultStaticConfigFileOption(), Expected: staticConfig{
-			cliName:        "",
-			cliDescription: "",
-			configFileName: "config",
-			configFileType: "yaml",
-			envPrefix:      "",
-		}},
-		"StaticConfigFileOption": {Input: StaticConfigFileOption(".devctl-cfg", "toml"), Expected: staticConfig{
-			cliName:        "",
-			cliDescription: "",
-			configFileName: ".devctl-cfg",
-			configFileType: "toml",
-			envPrefix:      "",
-		}},
-	}
+	g := goblin.Goblin(t)
+	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 
-	for scenario, tc := range tCases {
-		t.Run(scenario, func(scenarioT *testing.T) {
-			staticCfg := &staticConfig{}
-			actual := *tc.Input(staticCfg)
-			assert.Equal(scenarioT, actual, tc.Expected)
+	g.Describe("StaticCliConfigOption", func() {
+		staticCfg := &staticConfig{}
+
+		g.JustBeforeEach(func() {
+			staticCfg = &staticConfig{}
 		})
-	}
+
+		g.It("DefaultStaticCliConfigOption", func() {
+			in := DefaultStaticCliConfigOption()
+			expected := staticConfig{
+				cliName:        "devctl",
+				cliDescription: "A lightweight dev-environment manager / bootstrapper",
+				configFileName: "",
+				configFileType: "",
+				envPrefix:      "DEVCTL",
+			}
+			actual := in(staticCfg)
+			Expect(*actual).To(Equal(expected))
+		})
+
+		g.It("StaticCliConfigOption", func() {
+			in := StaticCliConfigOption("a", "b")
+			expected := staticConfig{
+				cliName:        "a",
+				cliDescription: "b",
+				configFileName: "",
+				configFileType: "",
+				envPrefix:      "A",
+			}
+			actual := in(staticCfg)
+			Expect(*actual).To(Equal(expected))
+		})
+
+		g.It("DefaultStaticConfigFileOption", func() {
+			in := DefaultStaticConfigFileOption()
+			expected := staticConfig{
+				cliName:        "",
+				cliDescription: "",
+				configFileName: "config",
+				configFileType: "yaml",
+				envPrefix:      "",
+			}
+			actual := in(staticCfg)
+			Expect(*actual).To(Equal(expected))
+		})
+
+		g.It("StaticConfigFileOption", func() {
+			in := StaticConfigFileOption(".devctl-cfg", "toml")
+			expected := staticConfig{
+				cliName:        "",
+				cliDescription: "",
+				configFileName: ".devctl-cfg",
+				configFileType: "toml",
+				envPrefix:      "",
+			}
+			actual := in(staticCfg)
+			Expect(*actual).To(Equal(expected))
+		})
+	})
 }
