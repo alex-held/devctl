@@ -14,7 +14,7 @@ import (
 )
 
 // BaseUrl BaseUrl of the remote sdkman api
-const BaseURL = "https://api.sdkman.io"
+const BaseURL = "https://api.sdkman.io/2"
 
 // Client provides access to the sdkman api
 type Client struct {

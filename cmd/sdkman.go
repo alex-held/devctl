@@ -1,13 +1,12 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
-	"os"
-	"os/exec"
-	"path/filepath"
-
+	
+	"github.com/alex-held/devctl/internal/sdkman"
 	"github.com/spf13/cobra"
-
+	
 	"github.com/alex-held/devctl/pkg/cli"
 )
 
@@ -23,17 +22,15 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			c := cli.GetOrCreateCLI()
-			sdkmanDir := filepath.Join(c.ConfigDir(), "sdkman")
-			command := exec.Command("__sdkman_install_candidate_version", "java")
-			command.Env = append(os.Environ(),
-				fmt.Sprintf("SDKMAN_DIR=%s", sdkmanDir),
-			)
-			output, err := command.CombinedOutput()
+			// c := cli.GetOrCreateCLI()
+			ctx := context.Background()
+			client := sdkman.NewSdkManClient()
+			sdks, resp, err := client.ListSdks.ListAllSDK(ctx)
 			if err != nil {
 				cli.ExitWithError(1, err)
 			}
-			println(string(output))
+			defer resp.Body.Close()
+			fmt.Printf("%#v", sdks)
 		},
 	}
 }
