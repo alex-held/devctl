@@ -1,13 +1,19 @@
 package cmd
 
 import (
-	"context"
-	"fmt"
+	"os"
 	
 	"github.com/alex-held/devctl/internal/sdkman"
 	"github.com/spf13/cobra"
 	
 	"github.com/alex-held/devctl/pkg/cli"
+)
+
+type OutputFormat string
+
+const (
+	Text  OutputFormat = "text"
+	Table OutputFormat = "table"
 )
 
 // NewSdkManCommand creates the sdkman command
@@ -23,14 +29,30 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			// c := cli.GetOrCreateCLI()
-			ctx := context.Background()
+			ctx :=	cmd.Context()
 			client := sdkman.NewSdkManClient()
 			sdks, resp, err := client.ListSdks.ListAllSDK(ctx)
 			if err != nil {
 				cli.ExitWithError(1, err)
 			}
 			defer resp.Body.Close()
-			fmt.Printf("%#v", sdks)
+			
+			outputFlag := cmd.Flag("format")
+			switch OutputFormat(outputFlag.Value.String()) {
+			case Table:
+				println(sdks.String())
+				goto exit
+			case Text:
+				for _, sdk := range sdks {
+					println(sdk)
+				}
+				goto exit
+			default:
+				println(sdks)
+				goto exit
+			}
+			exit:
+			os.Exit(0)
 		},
 	}
 }

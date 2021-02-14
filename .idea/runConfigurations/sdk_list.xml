@@ -1,17 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="sdk list" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="devctl" />
     <working_directory value="$PROJECT_DIR$/" />
-    <go_parameters value="-i" />
-    <parameters value="sdk list" />
-    <envs>
-      <env name="CC" value="$CC$" />
-    </envs>
+    <useCustomBuildTags value="true" />
+    <parameters value="sdkman " />
     <kind value="PACKAGE" />
     <filePath value="$PROJECT_DIR$/" />
     <package value="github.com/alex-held/devctl" />
     <directory value="$PROJECT_DIR$/" />
     <output_directory value="$PROJECT_DIR$" />
-    <redirect_input value="true" />
     <method v="2" />
   </configuration>
 </component>
