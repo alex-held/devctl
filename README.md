@@ -20,7 +20,7 @@
 [![CodeScene Code Health](https://codescene.io/projects/12756/status-badges/code-health)](https://codescene.io/projects/12756)
 [![CodeScene System Mastery](https://codescene.io/projects/12756/status-badges/system-mastery)](https://codescene.io/projects/12756)
 
-
+[![Go Report Card](https://goreportcard.com/badge/github.com/alex-held/devctl)](https://goreportcard.com/report/github.com/alex-held/devctl)
       
 ### 🏠 [Homepage](https://github.com/alex-held/devctl/wiki)
 
