@@ -34,16 +34,6 @@ type DevEnvConfig struct {
 	SDKConfig    DevEnvSDKSConfig   `yaml:"sdk,omitempty" mapstructure:"sdk,omitempty"`
 }
 
-var (
-	DefaultDevEnvConfig = DevEnvConfig{
-		GlobalConfig: DefaultDevEnvGlobalConfig,
-	}
-
-	DefaultDevEnvGlobalConfig = DevEnvGlobalConfig{
-		Version: "v1",
-	}
-)
-
 func InitViper(filename string) {
 	dir := path.Dir(filename)
 	config := path.Base(filename)

@@ -40,7 +40,7 @@ func (s *DownloadService) DownloadSDK(ctx context.Context, filepath, sdk, versio
 			return nil, nil, err
 		}
 
-		resp, err := s.client.httpClient.Do(req)
+		resp, err := s.client.client.Do(req)
 		if err != nil {
 			return nil, resp, err
 		}

@@ -13,12 +13,13 @@ import (
 	"github.com/spf13/afero"
 )
 
+// BaseUrl BaseUrl of the remote sdkman api
+const BaseURL = "https://api.sdkman.io"
+
 // Client provides access to the sdkman api
 type Client struct {
-	context    context.Context
-	baseURL    *url.URL
-	client     *http.Client
-	httpClient HTTPClient
+	baseURL *url.URL
+	client  *http.Client
 
 	// allocate a single struct instead of one for each service
 	common service
@@ -29,71 +30,22 @@ type Client struct {
 	fs       afero.Fs
 }
 
-// ClientConfig contains configurable values for the creation of the sdkman.Client
-type ClientConfig struct {
-	httpClient       *http.Client
-	context          context.Context
-	fs               afero.Fs
-	baseURL, version string
-}
-
-// ClientOption is a function which configures ClientConfig
-type ClientOption func(config *ClientConfig) *ClientConfig
-
-// HttpClientOption configures the internal http.Client for the sdkman.Client
-func HTTPClientOption(client *http.Client) ClientOption {
-	return func(c *ClientConfig) *ClientConfig {
-		c.httpClient = client
-		return c
-	}
-}
-
-// FileSystemOption configures the afero.Fs used in the sdkman.Client
-func FileSystemOption(fs afero.Fs) ClientOption {
-	return func(c *ClientConfig) *ClientConfig {
-		c.fs = fs
-		return c
-	}
-}
-
-// DefaultSdkManOptions configures the sdkman.Client using defaults
-func DefaultSdkManOptions() []ClientOption {
-	return []ClientOption{
-		HTTPClientOption(&http.Client{}),
-		FileSystemOption(afero.NewOsFs()),
-		URLOptions(BaseURL),
-	}
-}
-
-// SdkManUrlOptions configures the api baseurl
-func URLOptions(baseURL string) ClientOption {
-	return func(c *ClientConfig) *ClientConfig {
-		c.baseURL = baseURL
-		return c
-	}
-}
-
-// BaseUrl BaseUrl of the remote sdkman api
-const BaseURL = "https://api.sdkman.io"
-
 // NewSdkManClient creates the default *Client using defaults and then the provided options
 func NewSdkManClient(options ...ClientOption) *Client {
 	config := &ClientConfig{}
-	for _, defaultOption := range DefaultSdkManOptions() {
+	for _, defaultOption := range DefaultClientOptions() {
 		config = defaultOption(config)
 	}
 	for _, option := range options {
 		config = option(config)
 	}
-
-	baseURL, _ := url.Parse(fmt.Sprintf("%s/%s", config.baseURL, config.version))
+	sanitizedBaseURL := strings.TrimSuffix(config.baseURL, "/") + "/"
+	baseURL, _ := url.Parse(sanitizedBaseURL)
 
 	c := &Client{
-		baseURL:    baseURL,
-		context:    config.context,
-		client:     config.httpClient,
-		httpClient: http.DefaultClient,
-		fs:         config.fs,
+		baseURL: baseURL,
+		client:  config.httpClient,
+		fs:      config.fs,
 	}
 
 	c.common.client = c
