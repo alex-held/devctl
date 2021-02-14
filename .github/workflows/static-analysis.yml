@@ -1,0 +1,48 @@
+name: static-analysis
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+jobs:
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Install Task
+        run: sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
+
+      - name: Run Tests & Coverage
+        run: ./bin/task cover
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+          args: --out-format=checkstyle  ./... >  golangci-lint.out
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: |
+            -Dsonar.organization=alex-held
+            -Dsonar.projectKey=
+            -Dsonar.sources=.
+            -Dsonar.exclusions=**/*_test.go
+            -Dsonar.tests=.
+            -Dsonar.test.inclusions=**/*_test.go
+            -Dsonar.go.golangci-lint.reportPaths=golangci-lint.out
+            -Dsonar.go.coverage.reportPaths=coverage.out
+            -Dsonarsonar.go.tests.reportPaths=testrun.out
+            -Dsonar.go.coverage.reportPaths
+            -Dsonar.verbose=true
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
