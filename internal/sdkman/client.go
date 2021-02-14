@@ -26,6 +26,7 @@ type Client struct {
 
 	// Services used for talking to different parts of the SDKMAN API.
 	Download *DownloadService
+	Version  *VersionService
 	ListSdks *ListAllSDKService
 	fs       afero.Fs
 }
@@ -51,6 +52,7 @@ func NewSdkManClient(options ...ClientOption) *Client {
 	c.common.client = c
 	c.Download = (*DownloadService)(&c.common)
 	c.ListSdks = (*ListAllSDKService)(&c.common)
+	c.Version = (*VersionService)(&c.common)
 
 	return c
 }
