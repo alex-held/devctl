@@ -32,15 +32,14 @@ jobs:
         with:
           args: |
             -Dsonar.organization=alex-held
-            -Dsonar.projectKey=
+            -Dsonar.projectKey=alex-held_devctl
             -Dsonar.sources=.
             -Dsonar.exclusions=**/*_test.go
             -Dsonar.tests=.
             -Dsonar.test.inclusions=**/*_test.go
             -Dsonar.go.golangci-lint.reportPaths=golangci-lint.out
             -Dsonar.go.coverage.reportPaths=coverage.out
-            -Dsonarsonar.go.tests.reportPaths=testrun.out
-            -Dsonar.go.coverage.reportPaths
+            -Dsonar.go.tests.reportPaths=test-report.out
             -Dsonar.verbose=true
 
         env:
