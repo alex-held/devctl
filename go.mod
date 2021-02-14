@@ -3,6 +3,7 @@ module github.com/alex-held/devctl
 go 1.16
 
 require (
+	github.com/blang/semver v3.5.1+incompatible
 	github.com/bndr/gotabulate v1.1.2
 	github.com/coreos/etcd v3.3.25+incompatible
 	github.com/coreos/go-systemd v0.0.0-20191104093116-d3cd4ed1dbcf // indirect
@@ -15,14 +16,14 @@ require (
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible
 	github.com/json-iterator/go v1.1.10 // indirect
-	github.com/kr/pretty v0.2.1
-	github.com/kr/text v0.2.0 // indirect
+	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
 	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/onsi/gomega v1.10.5
 	github.com/pelletier/go-toml v1.8.1 // indirect
+	github.com/pkg/errors v0.9.1
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/afero v1.5.1
@@ -37,6 +38,5 @@ require (
 	golang.org/x/text v0.3.5 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200605160147-a5ece683394c // indirect
 	sigs.k8s.io/yaml v1.2.0 // indirect
 )

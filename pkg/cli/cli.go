@@ -58,6 +58,9 @@ func GetOrCreateCLI() CLI {
 
 // ExitWithError  prints an error message and exits the application with ErrorCode: code
 func ExitWithError(code int, err error) {
+	if err == nil {
+		return
+	}
 	_, _ = fmt.Fprintln(os.Stderr, "Error:", err)
 	if cerr, ok := err.(*client.ClusterError); ok {
 		_, _ = fmt.Fprintln(os.Stderr, cerr.Detail())
