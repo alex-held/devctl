@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"os"
-	
-	"github.com/alex-held/devctl/internal/sdkman"
+
 	"github.com/spf13/cobra"
-	
+
+	"github.com/alex-held/devctl/internal/sdkman"
+
 	"github.com/alex-held/devctl/pkg/cli"
 )
 
@@ -27,7 +28,7 @@ func NewSdkManCommand() (cmd *cobra.Command) {
 			return cmd.Usage()
 		},
 	}
-	
+
 	cmd.AddCommand(NewSdkManListCommand())
 	return cmd
 }
@@ -45,10 +46,10 @@ func NewSdkManListCommand() (cmd *cobra.Command) {
 				cli.ExitWithError(1, err)
 			}
 			defer resp.Body.Close()
-			
+
 			formatFlag := cmd.Flag("format")
 			format := formatFlag.Value.String()
-			
+
 			switch OutputFormat(format) {
 			case Table:
 				println(sdks.String())
@@ -64,7 +65,7 @@ func NewSdkManListCommand() (cmd *cobra.Command) {
 			}
 		},
 	}
-	
-	cmd.Flags().StringVarP(&fmtFlag, "format", "f", string(Table), "the output format of the cli app. -format=table" )
+
+	cmd.Flags().StringVarP(&fmtFlag, "format", "f", string(Table), "the output format of the cli app. -format=table")
 	return cmd
 }

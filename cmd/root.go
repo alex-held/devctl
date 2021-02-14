@@ -3,14 +3,13 @@ package cmd
 import (
 	"fmt"
 	"os"
-	
+
 	"github.com/spf13/cobra"
-	
+
 	"github.com/alex-held/devctl/pkg/cli"
 )
 
 var cfgFile string
-
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -34,7 +33,7 @@ dev-env use go 1.15.x
 	/*	PersistentPreRun: funcutil(cmd *cobra.Command, args []string) {
 		initConfig()
 	},*/
-	
+
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: funcutil(cmd *cobra.Command, args []string) { },
@@ -52,7 +51,7 @@ func Execute() {
 //nolint:gochecknoinits
 func init() {
 	cobra.OnInitialize(initConfig)
-	
+
 	rootCmd.AddCommand(
 		NewCompletionCommand(),
 		NewConfigCommand(),
@@ -60,12 +59,12 @@ func init() {
 		NewSdkManCommand(),
 		NewPrefixCommand(),
 	)
-	
+
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.devctl/config.yaml)")
-	
+
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
