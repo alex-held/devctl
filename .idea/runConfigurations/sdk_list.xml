@@ -3,7 +3,7 @@
     <module name="devctl" />
     <working_directory value="$PROJECT_DIR$/" />
     <useCustomBuildTags value="true" />
-    <parameters value="sdkman " />
+    <parameters value="sdkman list" />
     <kind value="PACKAGE" />
     <filePath value="$PROJECT_DIR$/" />
     <package value="github.com/alex-held/devctl" />
