@@ -3,8 +3,9 @@ package cmd
 import (
 	"os"
 
-	"github.com/alex-held/devctl/internal/sdkman"
 	"github.com/spf13/cobra"
+
+	"github.com/alex-held/devctl/internal/sdkman"
 
 	"github.com/alex-held/devctl/pkg/cli"
 )

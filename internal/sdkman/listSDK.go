@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-	
+
 	"github.com/jedib0t/go-pretty/table"
 	"github.com/jedib0t/go-pretty/text"
 )
@@ -19,6 +19,7 @@ func (s SDKList) Format(f fmt.State, verb rune) {
 
 }
 
+// nolint: gomnd
 func (s SDKList) String() string {
 	tw := table.NewWriter()
 	tw.SetCaption("sdkman - list")
@@ -32,8 +33,8 @@ func (s SDKList) String() string {
 			VAlign:       text.VAlignMiddle,
 			VAlignFooter: text.VAlignMiddle,
 			VAlignHeader: text.VAlignMiddle,
-			WidthMin:     50,
-			WidthMax:     50,
+			WidthMin:     51,
+			WidthMax:     51,
 		},
 		{
 			Number:       2,
@@ -43,8 +44,8 @@ func (s SDKList) String() string {
 			VAlign:       text.VAlignMiddle,
 			VAlignFooter: text.VAlignMiddle,
 			VAlignHeader: text.VAlignMiddle,
-			WidthMin:     100,
-			WidthMax:     200,
+			WidthMin:     101,
+			WidthMax:     201,
 		},
 	})
 	tw.SetTitle("Available SDK's")
@@ -71,12 +72,12 @@ func (s *ListAllSDKService) ListAllSDK(ctx context.Context) (sdks SDKList, resp 
 		return nil, resp, err
 	}
 	defer resp.Body.Close()
-	
+
 	responseBodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, resp, err
 	}
-	
+
 	sdkCSV := string(responseBodyBytes)
 	sdkList := strings.Split(sdkCSV, ",")
 	return sdkList, resp, nil
