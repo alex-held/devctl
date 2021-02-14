@@ -30,7 +30,6 @@ type Client struct {
 	fs       afero.Fs
 }
 
-
 // NewSdkManClient creates the default *Client using defaults and then the provided options
 func NewSdkManClient(options ...ClientOption) *Client {
 	config := &ClientConfig{}
