@@ -21,7 +21,13 @@
 [![CodeScene System Mastery](https://codescene.io/projects/12756/status-badges/system-mastery)](https://codescene.io/projects/12756)
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/alex-held/devctl)](https://goreportcard.com/report/github.com/alex-held/devctl)
-      
+
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=alex-held_devctl&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=alex-held_devctl)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=alex-held_devctl&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=alex-held_devctl)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=alex-held_devctl&metric=security_rating)](https://sonarcloud.io/dashboard?id=alex-held_devctl)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=alex-held_devctl&metric=sqale_index)](https://sonarcloud.io/dashboard?id=alex-held_devctl)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=alex-held_devctl&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=alex-held_devctl)
+
 ### 🏠 [Homepage](https://github.com/alex-held/devctl/wiki)
 
 > CLI-Toolchain to create a consistent development environment across platforms (Package Manager, Installer, SDK's, PathVars, EnvVars, Secrets, Configs, dotfiles, Terminal Customizations and more
