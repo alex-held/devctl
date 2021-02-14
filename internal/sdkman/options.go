@@ -2,12 +2,19 @@ package sdkman
 
 import (
 	"net/http"
-
+	
 	"github.com/spf13/afero"
 )
 
 // ClientOption is a function which configures ClientConfig
 type ClientOption func(config *ClientConfig) *ClientConfig
+
+// ClientConfig contains configurable values for the creation of the sdkman.Client
+type ClientConfig struct {
+	httpClient *http.Client
+	fs         afero.Fs
+	baseURL    string
+}
 
 // HttpClientOption configures the internal http.Client for the sdkman.Client
 func HTTPClientOption(client *http.Client) ClientOption {

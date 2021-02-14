@@ -30,12 +30,6 @@ type Client struct {
 	fs       afero.Fs
 }
 
-// ClientConfig contains configurable values for the creation of the sdkman.Client
-type ClientConfig struct {
-	httpClient *http.Client
-	fs         afero.Fs
-	baseURL    string
-}
 
 // NewSdkManClient creates the default *Client using defaults and then the provided options
 func NewSdkManClient(options ...ClientOption) *Client {
