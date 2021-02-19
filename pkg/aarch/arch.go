@@ -3,6 +3,10 @@ package aarch
 // Arch The Processor Architecture the CLI is running at
 type Arch string
 
+func (a *Arch) String() string {
+	return string(*a)
+}
+
 const (
 	// MacOsx
 	MacOsx Arch = "darwinx64"
