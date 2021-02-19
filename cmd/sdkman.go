@@ -36,6 +36,7 @@ func NewSdkManCommand() (cmd *cobra.Command) {
 
 	cmd.AddCommand(
 		NewSdkManListCommand(),
+		NewSdkManVersionsCommand(),
 		NewSdkManDefaultCommand(),
 		NewSdkManDownloadCommand(),
 	)
@@ -89,6 +90,27 @@ func NewSdkManDefaultCommand() (cmd *cobra.Command) {
 			ctx := cmd.Context()
 			client := sdkman.NewSdkManClient()
 			defaultVersion, err := client.Version.Default(ctx, args[0])
+			if err != nil {
+				cli.ExitWithError(1, err)
+			}
+
+			fmt.Println(defaultVersion)
+		},
+	}
+
+	// cmd.Flags().StringVarP(&fmtFlag, "format", "f", string(Table), "the output format of the cli app. -format=table")
+	return cmd
+}
+
+// NewSdkManCommand creates the sdkman command
+func NewSdkManVersionsCommand() (cmd *cobra.Command) {
+	cmd = &cobra.Command{
+		Use:       "versions",
+		Short:     "Displays the latest (default) version of a given  sdk ",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			client := sdkman.NewSdkManClient()
+			defaultVersion, err := client.Version.All(ctx, args[0], aarch.MacOsx)
 			if err != nil {
 				cli.ExitWithError(1, err)
 			}
