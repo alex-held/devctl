@@ -23,6 +23,12 @@ import (
 
 const baseURLPath = "/2"
 
+type handlerSetup struct {
+	pattern string
+	handler http.HandlerFunc
+}
+
+
 func setup() (client *Client, logger *logrus.Logger, mux *http.ServeMux, out bytes.Buffer, teardown testutils.Teardown) { //nolint:lll
 	logger = testutils.NewLogger(&out)
 	
