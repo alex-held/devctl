@@ -10,14 +10,14 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/alex-held/devctl/pkg/aarch"
+	a "github.com/alex-held/devctl/internal/system"
 )
 
 type VersionService service
 
 var logger = log.New()
 
-func (s *VersionService) All(ctx context.Context, sdk string, arch aarch.Arch) (versions []string, err error) {
+func (s *VersionService) All(ctx context.Context, sdk string, arch a.Arch) (versions []string, err error) {
 	req, err := s.client.NewRequest(ctx, "GET", fmt.Sprintf("candidates/%s/%s/versions/all", sdk, arch), http.NoBody)
 
 	if err != nil {

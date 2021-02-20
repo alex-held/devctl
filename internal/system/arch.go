@@ -1,4 +1,4 @@
-package aarch
+package system
 
 // Arch The Processor Architecture the CLI is running at
 type Arch string

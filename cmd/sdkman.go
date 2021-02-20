@@ -9,11 +9,11 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
-	"github.com/alex-held/devctl/pkg/aarch"
+	"github.com/alex-held/devctl/internal/system"
 
 	"github.com/alex-held/devctl/internal/sdkman"
 
-	"github.com/alex-held/devctl/pkg/cli"
+	"github.com/alex-held/devctl/internal/cli"
 )
 
 var fmtFlag string
@@ -109,7 +109,7 @@ func NewSdkManVersionsCommand() (cmd *cobra.Command) {
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			client := sdkman.NewSdkManClient()
-			defaultVersion, err := client.Version.All(ctx, args[0], aarch.MacOsx)
+			defaultVersion, err := client.Version.All(ctx, args[0], system.MacOsx)
 			if err != nil {
 				cli.ExitWithError(1, err)
 			}
@@ -130,7 +130,7 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 		Long: `
 		download [sdk] #downloads latest (default) version
 		download [sdk] [version]
-		download [sdk] [version] [arch]`,
+		download [sdk] [version] [system]`,
 		Args: cobra.RangeArgs(1, 3),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -145,7 +145,7 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 				cli.ExitWithError(1, err)
 				dlPath := client.Download.Resolve()(sdk, version)
 
-				dl, r, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version, aarch.MacOsx)
+				dl, r, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version, system.MacOsx)
 				cli.ExitWithError(1, err)
 				defer r.Body.Close()
 				fmt.Printf("Downloaded sdk to path: %s", dl.Path)
@@ -156,7 +156,7 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 				cli.ExitWithError(1, err)
 				dlPath := client.Download.Resolve()(sdk, version.String())
 
-				dl, r, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version.String(), aarch.MacOsx)
+				dl, r, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version.String(), system.MacOsx)
 				cli.ExitWithError(1, err)
 				defer r.Body.Close()
 				fmt.Printf("Downloaded sdk to path: %s", dl.Path)

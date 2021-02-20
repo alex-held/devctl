@@ -8,12 +8,12 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/alex-held/devctl/internal/system"
+
 	"github.com/coreos/etcd/pkg/fileutil"
 	"github.com/spf13/afero"
 
-	"github.com/alex-held/devctl/pkg/cli"
-
-	"github.com/alex-held/devctl/pkg/aarch"
+	"github.com/alex-held/devctl/internal/cli"
 )
 
 type SDKDownload struct {
@@ -41,13 +41,13 @@ func (s *DownloadService) Resolve() func(...string) string {
 // DownloadSDK downloads the sdk from the sdkman broker.
 // SDK specifies the sdk
 // Version specifies the apiVersion
-// arch specifies the arch [darwinx64,darwin]
+// system specifies the system [darwinx64,darwin]
 // https://api.sdkman.io/2/broker/download/scala/scala-2.13.4/darwinx64
 // https://api.sdkman.io/2/broker/download/scala/2.13.4/darwinx64
 // nolint: lll,gocognit
-func (s *DownloadService) DownloadSDK(ctx context.Context, dlPath, sdk, version string, arch aarch.Arch) (*SDKDownload, *http.Response, error) {
+func (s *DownloadService) DownloadSDK(ctx context.Context, dlPath, sdk, version string, arch system.Arch) (*SDKDownload, *http.Response, error) {
 	switch arch {
-	case aarch.Linux64, aarch.MacOsx, aarch.LinuxArm32:
+	case system.Linux64, system.MacOsx, system.LinuxArm32:
 		req, err := s.client.NewRequest(ctx, "GET", fmt.Sprintf("broker/download/%s/%s/%s", sdk, version, string(arch)), http.NoBody)
 		if err != nil {
 			return nil, nil, err

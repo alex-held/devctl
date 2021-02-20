@@ -6,8 +6,8 @@ import (
 	"github.com/bndr/gotabulate"
 	"github.com/spf13/cobra"
 
+	"github.com/alex-held/devctl/internal/cli"
 	"github.com/alex-held/devctl/internal/config/config"
-	"github.com/alex-held/devctl/pkg/cli"
 )
 
 // NewSdkCommand creates the `devenv sdk` commands

@@ -17,8 +17,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
 
-	"github.com/alex-held/devctl/pkg/aarch"
-	"github.com/alex-held/devctl/pkg/testutils"
+	"github.com/alex-held/devctl/internal/system"
+	"github.com/alex-held/devctl/internal/testutils"
 )
 
 const baseURLPath = "/2"
@@ -160,7 +160,7 @@ func TestClient_Download(t *testing.T) {
 					testMethod(t, r, "GET")
 				})
 
-				download, resp, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", aarch.MacOsx)
+				download, resp, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", system.MacOsx)
 				Expect(err).To(BeNil())
 				defer resp.Body.Close()
 				logger.WithField("path", download.Path).Warnln("Actual Download Path")

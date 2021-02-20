@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/alex-held/devctl/internal/cli"
 	config2 "github.com/alex-held/devctl/internal/config/config"
-	"github.com/alex-held/devctl/pkg/cli"
 )
 
 func NewConfigCommand() *cobra.Command {

@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"github.com/alex-held/devctl/pkg/testutils"
+	"github.com/alex-held/devctl/internal/testutils"
 )
 
 var expectedConfig = &DevEnvConfig{
