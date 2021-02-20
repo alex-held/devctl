@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/alex-held/devctl/internal/cli"
+
 	"github.com/spf13/afero"
 )
 
@@ -29,6 +31,9 @@ type Client struct {
 	Version  *VersionService
 	ListSdks *ListAllSDKService
 	fs       afero.Fs
+
+	// Exposed utilities
+	HomeFinder cli.HomeFinder
 }
 
 // NewSdkManClient creates the default *Client using defaults and then the provided options

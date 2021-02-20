@@ -104,7 +104,7 @@ func TestClient_Download(t *testing.T) {
 
 	g.Describe("Client", func() {
 		g.Describe("Download", func() {
-			expectedDownloadPath := "/tmp/downloads/scala/1.8"
+			expectedDownloadPath := "/tmp/downloads/scala/1.8/scala-1.8.zip"
 			expectedTestDataPath := os.ExpandEnv("testdata/scala-1.8")
 
 			var client *Client
@@ -142,8 +142,8 @@ func TestClient_Download(t *testing.T) {
 					WithField("path", expectedDownloadPath).
 					Warnln("Expected Download Path")
 
-				// https://api.sdkman.io/2/broker/download/scala/1.8/darwinx64
-				mux.HandleFunc("/broker/download/scala/1.8/darwinx64", func(w http.ResponseWriter, r *http.Request) {
+				// https://api.sdkman.io/2/broker/download/scala/1.8/darwin
+				mux.HandleFunc("/broker/download/scala/1.8/darwin", func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("content-type", "application/zip")
 					w.Header().Add("accept-ranges", "actualDownloadContent")
 					w.Header().Add("content-length", fmt.Sprintf("%d", expectedContentBuffer.Len()))
@@ -160,17 +160,16 @@ func TestClient_Download(t *testing.T) {
 					testMethod(t, r, "GET")
 				})
 
-				download, resp, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", system.MacOsx)
+				download, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", system.Darwin)
 				Expect(err).To(BeNil())
-				defer resp.Body.Close()
 				logger.WithField("path", download.Path).Warnln("Actual Download Path")
 
 				actualDownloadContent, err := ioutil.ReadAll(download.Reader)
-				fileExists, _ := afero.Exists(client.fs, expectedDownloadPath+".zip")
+				fileExists, _ := afero.Exists(client.fs, expectedDownloadPath)
 				Expect(fileExists).To(BeTrue())
 				Expect(err).To(BeNil())
 				Expect(actualDownloadContent).To(Equal(expectedDownloadContent))
-				Expect(download.Path).To(Equal(expectedDownloadPath + ".zip"))
+				Expect(download.Path).To(Equal(expectedDownloadPath))
 			})
 		})
 	})
