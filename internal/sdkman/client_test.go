@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -18,8 +17,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
 
-	"github.com/alex-held/devctl/pkg/aarch"
-	"github.com/alex-held/devctl/pkg/testutils"
+	"github.com/alex-held/devctl/internal/system"
+	"github.com/alex-held/devctl/internal/testutils"
 )
 
 const baseURLPath = "/2"
@@ -101,21 +100,20 @@ func TestSdkmanClient_ListCandidates(t *testing.T) {
 
 func TestClient_Download(t *testing.T) {
 	g := goblin.Goblin(t)
+	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 
 	g.Describe("Client", func() {
-		expectedTestDataPath := os.ExpandEnv("testdata/scala-1.8")
-		expectedDownloadPath := filepath.Join(t.TempDir(), "archives", "scala", "1.8", "scala-1.8")
-
-		var client *Client
-		var logger *logrus.Logger
-		var mux *http.ServeMux
-		var _ bytes.Buffer
-		var teardown testutils.Teardown
-		var ctx context.Context
-
-		RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
-
 		g.Describe("Download", func() {
+			expectedDownloadPath := "/tmp/downloads/scala/1.8"
+			expectedTestDataPath := os.ExpandEnv("testdata/scala-1.8")
+
+			var client *Client
+			var logger *logrus.Logger
+			var mux *http.ServeMux
+			var _ bytes.Buffer
+			var teardown testutils.Teardown
+			var ctx context.Context
+
 			g.JustBeforeEach(func() {
 				client, logger, mux, _, teardown = setup()
 				ctx = context.Background()
@@ -162,15 +160,17 @@ func TestClient_Download(t *testing.T) {
 					testMethod(t, r, "GET")
 				})
 
-				download, resp, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", aarch.MacOsx)
+				download, resp, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", system.MacOsx)
 				Expect(err).To(BeNil())
 				defer resp.Body.Close()
 				logger.WithField("path", download.Path).Warnln("Actual Download Path")
 
 				actualDownloadContent, err := ioutil.ReadAll(download.Reader)
+				fileExists, _ := afero.Exists(client.fs, expectedDownloadPath+".zip")
+				Expect(fileExists).To(BeTrue())
 				Expect(err).To(BeNil())
 				Expect(actualDownloadContent).To(Equal(expectedDownloadContent))
-				Expect(download.Path).To(Equal(expectedDownloadPath))
+				Expect(download.Path).To(Equal(expectedDownloadPath + ".zip"))
 			})
 		})
 	})

@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/alex-held/devctl/pkg/cli"
+	"github.com/alex-held/devctl/internal/cli"
 )
 
 // NewPrefixCommand creates the `devenv prefix` commands

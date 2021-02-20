@@ -46,7 +46,7 @@ tasks:
     desc: Builds {{.PROJECT}}
     cmds:
       - task: install-deps
-      - go build -v -o {{.PROJECT}}
+      - go build -v -o out/{{.PROJECT}}
   
   test-quiet:
     desc: Tests {{.PROJECT}} quietly
@@ -59,9 +59,9 @@ tasks:
       Tests & Covers {{.PROJECT}}
       
       It will test your project and collects the coverage.
-      The coverage gets saved to coverage.out
+      The coverage gets saved to out/coverage.out
     cmds:
-      - go test -v -cover  -coverprofile=coverage.out  ./... -json > test-report.out
+      - go test -v -cover  -coverprofile=out/coverage.out  ./... -json > out/test-report.out
 
   lint-silently:
     desc: Lints & Fixes {{.PROJECT}}
