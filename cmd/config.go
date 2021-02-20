@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	config2 "github.com/alex-held/devctl/config"
+	config2 "github.com/alex-held/devctl/internal/config/config"
 	"github.com/alex-held/devctl/pkg/cli"
 )
 
