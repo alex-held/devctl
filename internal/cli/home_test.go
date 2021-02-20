@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/alex-held/devctl/internal/system"
+
 	"github.com/bxcodec/faker/v3"
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
@@ -16,9 +18,9 @@ import (
 func GetTestGetHomeFunc(os, username string) ConfigGetter {
 	return func() string {
 		switch os {
-		case OsDarwin:
+		case system.OsDarwin:
 			return fmt.Sprintf(" /Users/%s", username)
-		case OsWindows:
+		case system.OsWindows:
 			panic(errors.Errorf("windows not supported yet.."))
 		default: // linux
 			return fmt.Sprintf("/home/%s", username)

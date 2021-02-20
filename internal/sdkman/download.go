@@ -30,7 +30,7 @@ type DownloadService service
 // nolint: lll,gocognit
 func (s *DownloadService) DownloadSDK(ctx context.Context, dlPath, sdk, version string, arch system.Arch) (*SDKDownload, error) {
 	switch arch {
-	case system.Linux64, system.MacOsx, system.LinuxArm32:
+	case system.Darwin, system.MacOsx64, system.Linux, system.Linux64, system.LinuxArm32:
 		req, err := s.client.NewRequest(ctx, "GET", fmt.Sprintf("broker/download/%s/%s/%s", sdk, version, string(arch)), http.NoBody)
 		if err != nil {
 			return nil, err
@@ -47,17 +47,17 @@ func (s *DownloadService) DownloadSDK(ctx context.Context, dlPath, sdk, version 
 		}
 
 		dump := body.Bytes()
-		err = afero.WriteFile(s.client.fs, dlPath+".zip", dump, fileutil.PrivateFileMode)
+		err = afero.WriteFile(s.client.fs, dlPath, dump, fileutil.PrivateFileMode)
 		if err != nil {
 			return nil, err
 		}
 
-		downloadFile, err := s.client.fs.Open(dlPath + ".zip")
+		downloadFile, err := s.client.fs.Open(dlPath)
 		if err != nil {
 			return nil, err
 		}
 		download := &SDKDownload{
-			Path:   dlPath + ".zip",
+			Path:   dlPath,
 			Reader: downloadFile,
 		}
 		return download, nil

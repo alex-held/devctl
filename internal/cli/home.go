@@ -11,13 +11,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/pkg/errors"
-)
+	"github.com/alex-held/devctl/internal/system"
 
-const (
-	OsWindows = "windows"
-	OsDarwin  = "darwin"
-	OsLinux   = "linux"
+	"github.com/pkg/errors"
 )
 
 // ConfigReader reads Config
@@ -180,9 +176,9 @@ func NewHomeFinderForOS(goos, appPrefix string, getHome ConfigGetter, getEnv Env
 	}
 
 	switch goos {
-	case OsDarwin:
+	case system.OsDarwin:
 		return &Darwin{Base: base}
-	case OsWindows:
+	case system.OsWindows:
 		panic(errors.Errorf("runtime 'windows' is not yet supported"))
 	default:
 		return &XdgPosix{Base: base}

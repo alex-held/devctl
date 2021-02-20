@@ -109,7 +109,7 @@ func NewSdkManVersionsCommand() (cmd *cobra.Command) {
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			client := sdkman.NewSdkManClient()
-			defaultVersion, err := client.Version.All(ctx, args[0], system.MacOsx)
+			defaultVersion, err := client.Version.All(ctx, args[0], system.MacOsx64)
 			if err != nil {
 				cli.ExitWithError(1, err)
 			}
@@ -146,7 +146,7 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 				cli.ExitWithError(1, err)
 
 				dlPath := app.GetHomeFinder().SDKDir(sdk, version)
-				dl, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version, system.MacOsx)
+				dl, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version, system.MacOsx64)
 				cli.ExitWithError(1, err)
 				fmt.Printf("Downloaded sdk to path: %s", dl.Path)
 				os.Exit(0)
@@ -156,7 +156,7 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 				cli.ExitWithError(1, err)
 				dlPath := app.GetHomeFinder().SDKDir(sdk, version.String())
 
-				dl, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version.String(), system.MacOsx)
+				dl, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version.String(), system.MacOsx64)
 				cli.ExitWithError(1, err)
 				fmt.Printf("Downloaded sdk to path: %s", dl.Path)
 				os.Exit(0)
