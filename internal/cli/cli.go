@@ -8,6 +8,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 
+	"github.com/alex-held/devctl/internal/logging"
+
 	"github.com/coreos/etcd/client"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
@@ -86,10 +88,10 @@ func newApp(option ...StaticOption) (cli *app) {
 		c = o(c)
 	}
 
-	l := logrus.New()
-	l.SetFormatter(&logrus.JSONFormatter{})
-	l.SetLevel(logrus.InfoLevel)
-	l.SetOutput(os.Stdout)
+	l := logging.NewLogger(func(l *logrus.Logger) *logrus.Logger {
+		l.SetOutput(os.Stdout)
+		return l
+	})
 
 	cli = &app{
 		staticConfig: c,

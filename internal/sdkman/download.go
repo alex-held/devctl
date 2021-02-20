@@ -29,8 +29,8 @@ type DownloadService service
 // https://api.sdkman.io/2/broker/download/scala/2.13.4/darwinx64
 // nolint: lll,gocognit
 func (s *DownloadService) DownloadSDK(ctx context.Context, dlPath, sdk, version string, arch system.Arch) (*SDKDownload, error) {
-	switch arch {
-	case system.Darwin, system.MacOsx64, system.Linux, system.Linux64, system.LinuxArm32:
+	switch {
+	case arch.IsLinux() || arch.IsDarwin():
 		req, err := s.client.NewRequest(ctx, "GET", fmt.Sprintf("broker/download/%s/%s/%s", sdk, version, string(arch)), http.NoBody)
 		if err != nil {
 			return nil, err

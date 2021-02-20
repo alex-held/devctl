@@ -60,7 +60,7 @@ func GetExpectedHome(os, username, prefix string) (expectedHome string) {
 	return expectedHome
 }
 
-func TestPosix(t *testing.T) {
+func TestHomeFinder(t *testing.T) {
 	g := goblin.Goblin(t)
 	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 

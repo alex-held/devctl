@@ -87,7 +87,7 @@ func (b Base) getenv(s string) string {
 	return os.Getenv(s)
 }
 
-// Darwin
+// IsDarwin
 // ===============
 //
 
