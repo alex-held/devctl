@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"os"
-	
+
 	"github.com/alex-held/devctl/internal/sdkman"
 	"github.com/spf13/cobra"
-	
+
 	"github.com/alex-held/devctl/pkg/cli"
 )
+
+var fmtFlag string
 
 type OutputFormat string
 
@@ -17,42 +19,52 @@ const (
 )
 
 // NewSdkManCommand creates the sdkman command
-func NewSdkManCommand() *cobra.Command {
-	return &cobra.Command{
+func NewSdkManCommand() (cmd *cobra.Command) {
+	cmd = &cobra.Command{
 		Use:   "sdkman",
 		Short: "A brief description of your command",
-		Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return cmd.Usage()
+		},
+	}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	cmd.AddCommand(NewSdkManListCommand())
+	return cmd
+}
+
+// NewSdkManCommand creates the sdkman command
+func NewSdkManListCommand() (cmd *cobra.Command) {
+	cmd = &cobra.Command{
+		Use:   "list",
+		Short: "lists all installable sdks",
 		Run: func(cmd *cobra.Command, args []string) {
-			// c := cli.GetOrCreateCLI()
-			ctx :=	cmd.Context()
+			ctx := cmd.Context()
 			client := sdkman.NewSdkManClient()
 			sdks, resp, err := client.ListSdks.ListAllSDK(ctx)
 			if err != nil {
 				cli.ExitWithError(1, err)
 			}
 			defer resp.Body.Close()
-			
-			outputFlag := cmd.Flag("format")
-			switch OutputFormat(outputFlag.Value.String()) {
+
+			formatFlag := cmd.Flag("format")
+			format := formatFlag.Value.String()
+
+			switch OutputFormat(format) {
 			case Table:
 				println(sdks.String())
-				goto exit
+				os.Exit(0)
 			case Text:
 				for _, sdk := range sdks {
 					println(sdk)
 				}
-				goto exit
+				os.Exit(0)
 			default:
 				println(sdks)
-				goto exit
+				os.Exit(0)
 			}
-			exit:
-			os.Exit(0)
 		},
 	}
+
+	cmd.Flags().StringVarP(&fmtFlag, "format", "f", string(Table), "the output format of the cli app. -format=table")
+	return cmd
 }
