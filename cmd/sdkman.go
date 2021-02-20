@@ -147,9 +147,9 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 				sdk := args[0]
 				version, err := client.Version.Default(ctx, sdk)
 				cli.ExitWithError(1, err)
-				dlPath := client.Download.Resolve()(sdk, version.String())
+				dlPath := client.Download.Resolve()(sdk, version)
 
-				dl, r, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version.String(), aarch.MacOsx)
+				dl, r, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version, aarch.MacOsx)
 				cli.ExitWithError(1, err)
 				defer r.Body.Close()
 				fmt.Printf("Downloaded sdk to path: %s", dl.Path)
