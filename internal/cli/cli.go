@@ -1,10 +1,12 @@
-// Package cli
 package cli
 
 import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/coreos/etcd/client"
 	"github.com/mitchellh/go-homedir"
@@ -16,6 +18,7 @@ var (
 )
 
 type CLI interface {
+	GetHomeFinder() HomeFinder
 	Name() string
 	ConfigFileName() string
 	ConfigDir() string
@@ -23,6 +26,11 @@ type CLI interface {
 
 type app struct {
 	staticConfig *staticConfig
+	context      Contextified
+}
+
+func (a *app) GetHomeFinder() HomeFinder {
+	return a.context.g.Env.HomeFinder
 }
 
 func (a *app) Name() string {
@@ -78,8 +86,21 @@ func newApp(option ...StaticOption) (cli *app) {
 		c = o(c)
 	}
 
+	l := logrus.New()
+	l.SetFormatter(&logrus.JSONFormatter{})
+	l.SetLevel(logrus.InfoLevel)
+	l.SetOutput(os.Stdout)
+
 	cli = &app{
 		staticConfig: c,
+		context: NewContextified(&GlobalContext{
+			Log: l,
+			VDL: NewVDebugLog(l),
+			Env: &Env{
+				RWMutex:    sync.RWMutex{},
+				HomeFinder: DefaultHomeFinder(c.cliName),
+			},
+		}),
 	}
 
 	return cli

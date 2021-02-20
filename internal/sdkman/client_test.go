@@ -160,9 +160,8 @@ func TestClient_Download(t *testing.T) {
 					testMethod(t, r, "GET")
 				})
 
-				download, resp, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", system.MacOsx)
+				download, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", system.MacOsx)
 				Expect(err).To(BeNil())
-				defer resp.Body.Close()
 				logger.WithField("path", download.Path).Warnln("Actual Download Path")
 
 				actualDownloadContent, err := ioutil.ReadAll(download.Reader)
