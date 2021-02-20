@@ -5,10 +5,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/alex-held/devctl/pkg/aarch"
 	"github.com/blang/semver"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+
+	"github.com/alex-held/devctl/pkg/aarch"
 
 	"github.com/alex-held/devctl/internal/sdkman"
 
@@ -85,7 +86,7 @@ func NewSdkManDefaultCommand() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
 		Use:       "default",
 		Short:     "Displays the latest (default) version of a given  sdk ",
-		ValidArgs: strings.Split("ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm", ","),
+		ValidArgs: strings.Split("ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm", ","), //nolint: lll
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			client := sdkman.NewSdkManClient()
@@ -97,16 +98,14 @@ func NewSdkManDefaultCommand() (cmd *cobra.Command) {
 			fmt.Println(defaultVersion)
 		},
 	}
-
-	// cmd.Flags().StringVarP(&fmtFlag, "format", "f", string(Table), "the output format of the cli app. -format=table")
 	return cmd
 }
 
 // NewSdkManCommand creates the sdkman command
 func NewSdkManVersionsCommand() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
-		Use:       "versions",
-		Short:     "Displays the latest (default) version of a given  sdk ",
+		Use:   "versions",
+		Short: "Displays the latest (default) version of a given  sdk ",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			client := sdkman.NewSdkManClient()
@@ -118,8 +117,6 @@ func NewSdkManVersionsCommand() (cmd *cobra.Command) {
 			fmt.Println(defaultVersion)
 		},
 	}
-
-	// cmd.Flags().StringVarP(&fmtFlag, "format", "f", string(Table), "the output format of the cli app. -format=table")
 	return cmd
 }
 
@@ -134,7 +131,6 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 		download [sdk] #downloads latest (default) version
 		download [sdk] [version]
 		download [sdk] [version] [arch]`,
-		//		ValidArgs: strings.Split("ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm", ","),
 		Args: cobra.RangeArgs(1, 3),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -154,7 +150,7 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 				defer r.Body.Close()
 				fmt.Printf("Downloaded sdk to path: %s", dl.Path)
 				os.Exit(0)
-			case 2:
+			case 2: //nolint: gomnd
 				sdk := args[0]
 				version, err := semver.ParseTolerant(args[1])
 				cli.ExitWithError(1, err)
@@ -167,11 +163,9 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 				os.Exit(0)
 			default:
 				cli.ExitWithError(1, errors.New("sdkman download called with too many arguments"))
-
 			}
 		},
 	}
 
-	// cmd.Flags().StringVarP(&fmtFlag, "format", "f", string(Table), "the output format of the cli app. -format=table")
 	return cmd
 }
