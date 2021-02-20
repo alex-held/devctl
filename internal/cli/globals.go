@@ -4,18 +4,6 @@ import (
 	logger "github.com/sirupsen/logrus"
 )
 
-type JSONFile struct {
-	//	Contextified
-	//	filename string
-	//	which    string
-	// jw       *jsonw.Wrapper
-	// exists bool
-	// setMutex sync.RWMutex
-
-	// txMutex sync.Mutex
-	// tx      *jsonFileTransaction
-}
-
 // VDebugLog is a "Verbose" debug logger; enable it if you really
 // want spam and/or minutiae
 type VDebugLog struct {
@@ -47,7 +35,6 @@ type GlobalContext struct {
 	// DesktopAppState                  *DesktopAppState
 	/* The state of focus for the currently running instance of the app */
 
-	Config *JSONFile
 }
 
 // Contextified objects have explicit references to the GlobalContext,

@@ -21,8 +21,42 @@ type ConfigReader interface {
 	io.Reader
 }
 
+// EnvSettings describes all of the environment settings.
+type EnvSettings struct {
+	namespace string
+	// config    *genericclioptions.ConfigFlags
+
+	// KubeConfig is the path to the kubeconfig file
+	KubeConfig string
+	// KubeContext is the name of the kubeconfig context.
+	KubeContext string
+	// Bearer KubeToken used for authentication
+	KubeToken string
+	// Username to impersonate for the operation
+	KubeAsUser string
+	// Groups to impersonate for the operation, multiple groups parsed from a comma delimited list
+	KubeAsGroups []string
+	// Kubernetes API Server Endpoint for authentication
+	KubeAPIServer string
+	// Custom certificate authority file.
+	KubeCaFile string
+	// Debug indicates whether or not Helm is running in Debug mode.
+	Debug bool
+	// RegistryConfig is the path to the registry config file.
+	RegistryConfig string
+	// RepositoryConfig is the path to the repositories file.
+	RepositoryConfig string
+	// RepositoryCache is the path to the repository cache directory.
+	RepositoryCache string
+	// PluginsDirectory is the path to the plugins directory.
+	PluginsDirectory string
+	// MaxHistory is the max release history maintained.
+	MaxHistory int
+}
+
 type Env struct {
 	sync.RWMutex
+
 	// cmd        CLI
 	//	config     ConfigReader
 	HomeFinder HomeFinder
