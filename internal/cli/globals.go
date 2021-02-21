@@ -24,7 +24,6 @@ func NewVDebugLog(l *logger.Logger) *VDebugLog {
 type GlobalContext struct {
 	Log *logger.Logger // Handles all logging
 	VDL *VDebugLog     // verbose debug log
-	Env *Env           // Env variables, cmdline args & config
 
 	// API                              API
 	/* How to make a REST call to the server */

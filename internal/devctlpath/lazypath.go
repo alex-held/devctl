@@ -16,19 +16,99 @@ const (
 
 type lazypath string
 type lazypathFinder struct {
-	lp     lazypath
-	finder finder
+	cfgName string
+	lp      lazypath
+	finder  finder
 }
 
-func NewLazyFinder(appPrefix string, userHomeFn UserHomePathFinder, cacheFn CachePathFinder, configRootFn ConfigRootFinder) lazypathFinder {
-	return lazypathFinder{
-		lp: lazypath(appPrefix),
-		finder: finder{
-			GetUserHomeFn:   userHomeFn,
-			GetCachePathFn:  cacheFn,
-			GetConfigRootFn: configRootFn,
-		},
+// Pather resolves different paths related to the CLI itself
+type Pather interface {
+
+	// ConfigFilePath returns the path of the config.yaml used to configure the app itself
+	ConfigFilePath() string
+
+	// ConfigRoot returns the root path of the CLI configuration.
+	ConfigRoot(elem ...string) string
+
+	// Config returns a path to store configuration.
+	Config(elem ...string) string
+
+	// Bin returns a path to store executable binaries.
+	Bin(elem ...string) string
+
+	// Download returns the path where to save downloads
+	Download(elem ...string) string
+
+	// SDK returns the path where sdks are installed
+	SDK(elem ...string) string
+
+	// Cache returns the path where to cache files
+	Cache(elem ...string) string
+}
+
+type Option func(*lazypathFinder) *lazypathFinder
+
+func WithAppPrefix(prefix string) Option {
+	return func(l *lazypathFinder) *lazypathFinder {
+		l.lp = lazypath(prefix)
+		return l
 	}
+}
+
+func WithConfigFile(cfgName string) Option {
+	return func(l *lazypathFinder) *lazypathFinder {
+		l.cfgName = cfgName
+		return l
+	}
+}
+
+func WithUserHomeFn(userHomeFn UserHomePathFinder) Option {
+	return func(l *lazypathFinder) *lazypathFinder {
+		l.finder.GetUserHomeFn = userHomeFn
+		return l
+	}
+}
+
+func WithConfigRootFn(cfgRootFn ConfigRootFinder) Option {
+	return func(l *lazypathFinder) *lazypathFinder {
+		l.finder.GetConfigRootFn = cfgRootFn
+		return l
+	}
+}
+
+func WithCachePathFn(cacheFn CachePathFinder) Option {
+	return func(l *lazypathFinder) *lazypathFinder {
+		l.finder.GetCachePathFn = cacheFn
+		return l
+	}
+}
+
+var defaults = []Option{
+	WithAppPrefix("devctl"),
+	WithCachePathFn(nil),
+	WithUserHomeFn(nil),
+	WithConfigRootFn(nil),
+	WithConfigFile(devctlConfigFileName),
+}
+
+// DefaultPather creates and configures a Pather using the default Option's
+func DefaultPather() Pather {
+	lpFinder := &lazypathFinder{}
+	for _, opt := range defaults {
+		lpFinder = opt(lpFinder)
+	}
+	return lpFinder
+}
+
+// NewPather configures how the lazypathFinder resolves the ConfigRoot
+func NewPather(opts ...Option) Pather {
+	lpFinder := DefaultPather().(*lazypathFinder)
+
+	for _, opt := range opts {
+		lpFinder = opt(lpFinder)
+	}
+
+	return lpFinder
 }
 
 func (f lazypathFinder) resolveSubDir(sub string, elem ...string) string {
@@ -37,7 +117,6 @@ func (f lazypathFinder) resolveSubDir(sub string, elem ...string) string {
 }
 
 func (f lazypathFinder) configRoot(elem ...string) string {
-
 	// There is an order to checking for a path.
 	// 1. GetConfigRootFn has been provided
 	// 1. GetUserHomeFn + AppPrefix has been provided
@@ -78,7 +157,6 @@ func (f lazypathFinder) configRoot(elem ...string) string {
 // 2. Check if an XDG environment variable is set
 // 3. Fall back to a default
 func (f lazypathFinder) cachePath(elem ...string) string {
-
 	fqrdn := fmt.Sprintf("io.alexheld%s", f.lp.getAppPrefix())
 
 	if f.finder.GetCachePathFn != nil {
@@ -95,62 +173,13 @@ func (f lazypathFinder) cachePath(elem ...string) string {
 
 	p = os.Getenv(xdg.ConfigHomeEnvVar)
 	if p != "" {
-		p := filepath.Join(p, fqrdn)
+		p = filepath.Join(p, fqrdn)
 		return filepath.Join(p, filepath.Join(elem...))
 	}
-
 
 	p = cacheHome()
 	p = filepath.Join(p, fqrdn)
 	return filepath.Join(p, filepath.Join(elem...))
-}
-
-func (l lazypath) path(devctlEnvVar, xdgEnvVar string, defaultFn func() string, elem ...string) string {
-
-	// There is an order to checking for a path.
-	// 1. See if a Helm specific environment variable has been set.
-	// 2. Check if an XDG environment variable is set
-	// 3. Fall back to a default
-	base := os.Getenv(devctlEnvVar)
-	if base != "" {
-		return filepath.Join(base, filepath.Join(elem...))
-	}
-
-	base = os.Getenv(xdgEnvVar)
-	if base != "" {
-		base = filepath.Join(base, l.getAppPrefix())
-		return filepath.Join(base, filepath.Join(elem...))
-	}
-	if base == "" {
-		base = defaultFn()
-	}
-	return filepath.Join(base, filepath.Join(elem...))
-}
-
-// cachePath defines the base directory relative to which user specific non-essential data files
-// should be stored.
-func (l lazypath) cachePath(elem ...string) string {
-	return l.path(CacheHomeEnvVar, xdg.CacheHomeEnvVar, cacheHome, filepath.Join(elem...))
-}
-
-// configRoot defines the base directory relative to which user specific configuration files should
-// be stored.
-func (l lazypath) configRoot(elem ...string) string {
-	return l.path(ConfigHomeRootEnvVar, xdg.ConfigHomeEnvVar, func() string {
-		configHome := configHome()(l)
-		return configHome
-	}, elem...)
-}
-
-// configRoot defines the base directory relative to which user specific configuration files should
-// be stored.
-func (l lazypath) configSubPath(sub string, elem ...string) string {
-	return filepath.Join(l.configRoot(sub), filepath.Join(elem...))
-}
-
-// userHomePath defines the base directory relative to which user home directory
-func (l lazypath) userHomePath(elem ...string) string {
-	return l.path("HOME", "HOME", userHome, filepath.Join(elem...))
 }
 
 func (l lazypath) getAppPrefix() (prefix string) {

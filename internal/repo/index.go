@@ -2,6 +2,7 @@ package repo
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -14,7 +15,7 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
-	"gopkg.in/yaml.v2"
+	"sigs.k8s.io/yaml"
 
 	"github.com/alex-held/devctl/internal/downloader"
 	"github.com/alex-held/devctl/internal/fileutil"
@@ -31,16 +32,35 @@ const APIVersionV1 = "v1"
 var (
 	// ErrNoAPIVersion indicates that an API version was not specified.
 	ErrNoAPIVersion = errors.New("no API version specified")
-	// ErrNoChartVersion indicates that a sdk with the given version is not found.
+
+	// ErrNoSDKVersion indicates that a sdk with the given version is not found.
 	ErrNoSDKVersion = errors.New("no sdk version found")
-	// ErrNoChartName indicates that a sdk with the given name is not found.
+
+	// ErrNoSDKName indicates that a sdk with the given name is not found.
 	ErrNoSDKName = errors.New("no sdk name found")
 )
+
+type IndexFile struct {
+	// This is used ONLY for validation against chartmuseum's index files and is discarded after validation.
+	ServerInfo map[string]interface{} `json:"serverInfo,omitempty"`
+
+	APIVersion string                            `json:"apiVersion"`
+	Generated  time.Time                         `json:"generated"`
+	Entries    map[string]downloader.SDKVersions `json:"entries"`
+
+	//nolint:godox
+	// TODO: add PublicKeys []string `json:"publicKeys,omitempty"`
+
+	// Annotations are additional mappings uninterpreted by Helm. They are made available for
+	// other applications to add information to the index file.
+	Annotations map[string]string `json:"annotations,omitempty"`
+}
 
 // Get returns the SDKVersion for the given name.
 //
 // If version is empty, this will return the chart with the latest stable version,
 // prerelease versions will be skipped.
+// nolint:gocognit
 func (i IndexFile) Get(name, version string) (v *downloader.SDKVersion, err error) {
 	vs, ok := i.Entries[name]
 	if !ok {
@@ -51,7 +71,7 @@ func (i IndexFile) Get(name, version string) (v *downloader.SDKVersion, err erro
 	}
 
 	// when customer input exact version, check whether have exact match one first
-	if len(version) != 0 {
+	if version == "" {
 		for _, ver := range vs {
 			if version == ver.Version {
 				return ver, nil
@@ -67,19 +87,6 @@ func (i IndexFile) Get(name, version string) (v *downloader.SDKVersion, err erro
 		return ver, nil
 	}
 	return nil, errors.Errorf("no chart version found for %s-%s", name, version)
-}
-
-type IndexFile struct {
-	// This is used ONLY for validation against chartmuseum's index files and is discarded after validation.
-	APIVersion string                            `json:"apiVersion"`
-	Generated  time.Time                         `json:"generated"`
-	Entries    map[string]downloader.SDKVersions `json:"entries"`
-
-	// TODO: add PublicKeys []string               `json:"publicKeys,omitempty"`
-
-	// Annotations are additional mappings uninterpreted by Helm. They are made available for
-	// other applications to add information to the index file.
-	Annotations map[string]string `json:"annotations,omitempty"`
 }
 
 // Merge merges the given index file into this index.
@@ -111,7 +118,7 @@ func (i IndexFile) Add(md *meta.Metadata, filename, baseURL, digest string) {
 }
 
 // Has returns true if the index has an entry for a chart with the given name and exact version.
-func (i *IndexFile) Has(name string, version string) bool {
+func (i *IndexFile) Has(name, version string) bool {
 	for _, sdkVersion := range i.Entries[name] {
 		if sdkVersion.Version == version {
 			return true
@@ -182,18 +189,19 @@ func (i IndexFile) MustAdd(md *meta.Metadata, filename, baseURL string) error {
 }
 
 // LoadIndexFile takes a file at the given path and returns an IndexFile object
-func LoadIndexFile(path string) (*IndexFile, error) {
-	b, err := ioutil.ReadFile(path)
+func LoadIndexFile(p string) (*IndexFile, error) {
+	b, err := ioutil.ReadFile(p)
 	if err != nil {
 		return nil, err
 	}
-	i, err := loadIndex(b, path)
+	i, err := loadIndex(b, p)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error loading %s", path)
+		return nil, errors.Wrapf(err, "error loading %s", p)
 	}
 	return i, nil
 }
 
+//nolint:gocognit
 func loadIndex(data []byte, source string) (i *IndexFile, err error) {
 	i = &IndexFile{}
 	if err := yaml.UnmarshalStrict(data, i); err != nil {
@@ -224,12 +232,16 @@ func loadIndex(data []byte, source string) (i *IndexFile, err error) {
 // It indexes only charts that have been packaged (*.tgz).
 //
 // The index returned will be in an unsorted state
+// nolint:gocognit
 func IndexDirectory(dir, baseURL string) (*IndexFile, error) {
 	archives, err := filepath.Glob(filepath.Join(dir, "*.tgz"))
 	if err != nil {
 		return nil, err
 	}
-	moreArchives, err := filepath.Glob(filepath.Join(dir, "**/*.tgz"))
+
+	// moreArchives, err := filepath.Glob(filepath.Join(dir, "**/*.tgz"))
+	moreArchives, err := filepath.Glob(filepath.Join(dir, fmt.Sprintf("**%s*.tgz", string(filepath.Separator))))
+
 	if err != nil {
 		return nil, err
 	}
@@ -253,7 +265,6 @@ func IndexDirectory(dir, baseURL string) (*IndexFile, error) {
 
 		m, err := loader.Load(arch)
 		if err != nil {
-			// Assume this is not a chart.
 			continue
 		}
 

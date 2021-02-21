@@ -34,6 +34,7 @@ type SdkDownloader struct {
 type SDKVersions []*SDKVersion
 type SDKVersion struct {
 	*meta.Metadata
+
 	URLs    []string  `json:"urls"`
 	Created time.Time `json:"created,omitempty"`
 	Removed bool      `json:"removed,omitempty"`

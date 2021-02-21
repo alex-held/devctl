@@ -29,6 +29,7 @@ func (l DirLoader) Load() (*meta.Meta, error) {
 // LoadDir loads from a directory.
 //
 // This loads charts only from directories.
+// nolint:gocognit
 func LoadDir(dir string) (*meta.Meta, error) {
 	topdir, err := filepath.Abs(dir)
 	if err != nil {
@@ -154,7 +155,7 @@ func symwalk(path string, info os.FileInfo, walkFn filepath.WalkFunc) error {
 		filename := filepath.Join(path, name)
 		fileInfo, err := os.Lstat(filename)
 		if err != nil {
-			if err := walkFn(filename, fileInfo, err); err != nil && err != filepath.SkipDir {
+			if err = walkFn(filename, fileInfo, err); err != nil && err != filepath.SkipDir {
 				return err
 			}
 		} else {

@@ -1,7 +1,6 @@
 package fileutil
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -13,7 +12,9 @@ import (
 	"github.com/spf13/afero"
 )
 
-func AtomicWriteFile(fs afero.Fs, filename string, r *bytes.Reader, mode os.FileMode) error {
+// nolint:godox
+// TODO: func AtomicWriteFile(fs afero.Fs, filename string, r *bytes.Reader, mode os.FileMode) error {
+func AtomicWriteFile(fs afero.Fs, filename string, r io.Reader, mode os.FileMode) error {
 	dir, file := filepath.Split(filename)
 
 	tempFile, err := afero.TempFile(fs, dir, file)
@@ -72,8 +73,8 @@ func renameFallback(fs afero.Fs, err error, src, dst string) error {
 	return renameByCopy(fs, src, dst)
 }
 
-func CopyDir(fs afero.Fs, src, dst string) error {
-	var err error
+//nolint:gocognit
+func CopyDir(fs afero.Fs, src, dst string) (err error) {
 	var fds []os.FileInfo
 	var srcinfo os.FileInfo
 
@@ -81,7 +82,8 @@ func CopyDir(fs afero.Fs, src, dst string) error {
 		return err
 	}
 
-	if err = fs.MkdirAll(dst, srcinfo.Mode()); err != nil {
+	err = fs.MkdirAll(dst, srcinfo.Mode())
+	if err != nil {
 		return err
 	}
 
@@ -106,7 +108,7 @@ func CopyDir(fs afero.Fs, src, dst string) error {
 	return nil
 }
 
-func CopyFile(fs afero.Fs, src string, dst string) error {
+func CopyFile(fs afero.Fs, src, dst string) error {
 	var err error
 	var srcfd afero.File
 	var dstfd afero.File

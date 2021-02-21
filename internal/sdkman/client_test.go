@@ -23,7 +23,7 @@ import (
 
 const baseURLPath = "/2"
 
-func setup() (client *Client, logger *logrus.Logger, mux *http.ServeMux, out bytes.Buffer, teardown testutils.Teardown) { //nolint:lll
+func setup() (client *Client, logger *logrus.Logger, mux *http.ServeMux, out bytes.Buffer, teardown testutils.Teardown) {
 	logger = testutils.NewLogger(&out)
 
 	mux = http.NewServeMux()
@@ -84,7 +84,7 @@ func TestSdkmanClient_ListCandidates(t *testing.T) {
 			g.It("Lists available sdk", func() {
 				mux.HandleFunc("/candidates/all", func(w http.ResponseWriter, r *http.Request) {
 					testMethod(t, r, "GET")
-					_, _ = fmt.Fprint(w, "ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm") //nolint:lll
+					_, _ = fmt.Fprint(w, "ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm")
 				})
 
 				candidates, resp, err := client.ListSdks.ListAllSDK(ctx)
@@ -92,7 +92,7 @@ func TestSdkmanClient_ListCandidates(t *testing.T) {
 				defer resp.Body.Close()
 				logger.WithField("length", len(candidates)).Debug(candidates)
 				Expect(candidates).To(HaveLen(43))
-				Expect(candidates).To(ConsistOf(strings.Split("ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm", ","))) //nolint:lll
+				Expect(candidates).To(ConsistOf(strings.Split("ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm", ",")))
 			})
 		})
 	})
@@ -128,7 +128,6 @@ func TestClient_Download(t *testing.T) {
 				expectedContentBuffer := bytes.NewBuffer(expectedDownloadContent)
 
 				if err != nil {
-					//nolint:lll
 					errMessage := fmt.Sprintf("problem reading the testata. testdata-path: %s; error: %+v\n", expectedTestDataPath, err)
 					_, _ = os.Stderr.WriteString(errMessage)
 					t.Fatal(errMessage)

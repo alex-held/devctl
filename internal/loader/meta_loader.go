@@ -50,24 +50,22 @@ type BufferedFile struct {
 }
 
 // LoadFiles loads from in-memory files.
+// nolint:gocognit
 func LoadFiles(files []*BufferedFile) (*meta.Meta, error) {
 	c := new(meta.Meta)
 	subcharts := make(map[string][]*BufferedFile)
 
 	// do not rely on assumed ordering of files in the chart and crash
-	// if Chart.yaml was not coming early enough to initialize metadata
+	// if Meta.yaml was not coming early enough to initialize metadata
 	for _, f := range files {
 		c.Raw = append(c.Raw, &meta.File{Name: f.Name, Data: f.Data})
-		if f.Name == "Chart.yaml" {
+		if f.Name == "Meta.yaml" {
 			if c.Metadata == nil {
 				c.Metadata = new(meta.Metadata)
 			}
 			if err := yaml.Unmarshal(f.Data, c.Metadata); err != nil {
-				return c, errors.Wrap(err, "cannot load Chart.yaml")
+				return c, errors.Wrap(err, "cannot load Meta.yaml")
 			}
-			// NOTE(bacongobbler): while the chart specification says that APIVersion must be set,
-			// Helm 2 accepted charts that did not provide an APIVersion in their chart metadata.
-			// Because of that, if APIVersion is unset, we should assume we're loading a v1 chart.
 			if c.Metadata.APIVersion == "" {
 				c.Metadata.APIVersion = meta.APIVersionV1
 			}
@@ -75,7 +73,7 @@ func LoadFiles(files []*BufferedFile) (*meta.Meta, error) {
 	}
 	for _, f := range files {
 		switch {
-		case f.Name == "Chart.yaml":
+		case f.Name == "Meta.yaml":
 			// already processed
 			continue
 		case f.Name == "values.yaml":
@@ -104,7 +102,7 @@ func LoadFiles(files []*BufferedFile) (*meta.Meta, error) {
 	}
 
 	if c.Metadata == nil {
-		return c, errors.New("Chart.yaml file is missing")
+		return c, errors.New("Meta.yaml file is missing")
 	}
 
 	if err := c.Validate(); err != nil {

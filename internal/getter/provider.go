@@ -7,11 +7,10 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/alex-held/devctl/internal/cli"
 	"github.com/alex-held/devctl/internal/sdkman"
 )
 
-// Getter is an interface to support GET to the specified URL.
+// Getter gets stuff
 type Getter interface {
 	// Get file content by url string
 	Get(url string, options ...Option) (*bytes.Buffer, error)
@@ -24,7 +23,6 @@ type options struct {
 	url                   string
 	unTar                 bool
 	insecureSkipVerifyTLS bool
-	userAgent             string
 	version               string
 	timeout               time.Duration
 	ctx                   context.Context
@@ -58,6 +56,12 @@ func WithRegistryClient(client *sdkman.RegistryService) Option {
 func WithUntar() Option {
 	return func(opts *options) {
 		opts.unTar = true
+	}
+}
+
+func WithContextx(ctx context.Context) Option {
+	return func(opts *options) {
+		opts.ctx = ctx
 	}
 }
 
@@ -102,7 +106,8 @@ var httpProvider = Provider{
 // All finds all of the registered getters as a list of Provider instances.
 // Currently, the built-in getters and the discovered plugins with downloader
 // notations are collected.
-func All(settings *cli.Env) Providers {
+// func All(settings *cli.Env) Providers {
+func All() Providers {
 	result := Providers{httpProvider}
 	return result
 }

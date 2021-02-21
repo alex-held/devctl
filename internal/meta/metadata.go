@@ -33,8 +33,8 @@ func sanitizeString(str string) string {
 	}, str)
 }
 
-func isValidSDKType(in string) bool {
-	switch in {
+func isValidSDKType(t string) bool {
+	switch t {
 	case "", "src", "sdk":
 		return true
 	}
@@ -48,6 +48,7 @@ func isValidSemver(v string) bool {
 
 // Metadata for a Meta. This models the structure of a Chart.yaml file.
 type Metadata struct {
+
 	// The name of the meta. Required.
 	Name string `json:"name,omitempty"`
 
@@ -73,11 +74,12 @@ type Metadata struct {
 	// made available for inspection by other applications.
 	Annotations map[string]string `json:"annotations,omitempty"`
 
+	// Specifies the meta type: src or sdk
+	Type string `json:"type,omitempty"`
+
 	// Dependencies are a list of dependencies for a meta.
 	// Dependencies []*Dependency `json:"dependencies,omitempty"`
 
-	// Specifies the meta type: application or library
-	Type string `json:"type,omitempty"`
 }
 
 func (md *Metadata) Validate() error {
@@ -104,10 +106,11 @@ func (md *Metadata) Validate() error {
 	if md.Version == "" {
 		return ValidationError("sdk.metadata.version is required")
 	}
-	if isValidSDKType(md.Type) {
+
+	if !isValidSemver(md.Version) {
 		return ValidationErrorf("sdk.metadata.version %q is invalid", md.Version)
 	}
-	if isValidSemver(md.Version) {
+	if !isValidSDKType(md.Type) {
 		return ValidationError("sdk.metadata.type  must be src or sdk")
 	}
 

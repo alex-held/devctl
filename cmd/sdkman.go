@@ -5,7 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/blang/semver"
+	"github.com/alex-held/devctl/internal/devctlpath"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
@@ -135,7 +136,6 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			client := sdkman.NewSdkManClient()
-			app := cli.GetOrCreateCLI()
 
 			switch len(args) {
 			case 0:
@@ -145,18 +145,21 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 				version, err := client.Version.Default(ctx, sdk)
 				cli.ExitWithError(1, err)
 
-				dlPath := app.GetHomeFinder().SDKDir(sdk, version)
-				dl, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version, system.DarwinX64)
+				archive := fmt.Sprintf("%s-%s.zip", sdk, version)
+				dlPath := devctlpath.DownloadPath(sdk, version, archive)
+
+				dl, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version, system.GetCurrent())
 				cli.ExitWithError(1, err)
 				fmt.Printf("Downloaded sdk to path: %s", dl.Path)
 				os.Exit(0)
 			case 2: //nolint: gomnd
 				sdk := args[0]
-				version, err := semver.ParseTolerant(args[1])
-				cli.ExitWithError(1, err)
-				dlPath := app.GetHomeFinder().SDKDir(sdk, version.String())
+				version := args[1]
 
-				dl, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version.String(), system.DarwinX64)
+				archive := fmt.Sprintf("%s-%s.zip", sdk, version)
+				dlPath := devctlpath.DownloadPath(sdk, version, archive)
+
+				dl, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version, system.GetCurrent())
 				cli.ExitWithError(1, err)
 				fmt.Printf("Downloaded sdk to path: %s", dl.Path)
 				os.Exit(0)

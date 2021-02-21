@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="go test devctl" type="GoTestRunConfiguration" factoryName="Go Test" folderName="cover" singleton="false" nameIsGenerated="true">
+    <module name="devctl" />
+    <working_directory value="$PROJECT_DIR$" />
+    <go_parameters value="-v -cover -test.v" />
+    <framework value="gotest" />
+    <kind value="DIRECTORY" />
+    <package value="github.com/alex-held/devctl" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <method v="2" />
+  </configuration>
+</component>

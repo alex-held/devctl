@@ -19,6 +19,8 @@ import (
 
 var drivePathPattern = regexp.MustCompile(`^[a-zA-Z]:/`)
 
+const metaYamlFileName = "Meta.yaml"
+
 // LoadArchive loads from a reader containing a compressed tar archive.
 func LoadArchive(in io.Reader) (*meta.Meta, error) {
 	files, err := LoadArchiveFiles(in)
@@ -70,7 +72,9 @@ func LoadFile(name string) (*meta.Meta, error) {
 // Sometimes users will provide a values.yaml for an argument where a chart is expected. One common occurrence
 // of this is invoking `helm template values.yaml mychart` which would otherwise produce a confusing error
 // if we didn't check for this.
-func ensureArchive(name string, raw *os.File) error {
+//nolint:godox
+// func ensureArchive(name string, raw *os.File) error {
+func ensureArchive(name string, raw io.ReadSeeker) error {
 	defer raw.Seek(0, 0) // reset read offset to allow archive loading to proceed.
 
 	// Check the file format to give us a chance to provide the user with more actionable feedback.
@@ -95,6 +99,7 @@ func ensureArchive(name string, raw *os.File) error {
 // LoadArchiveFiles reads in files out of an archive into memory. This function
 // performs important path security checks and should always be used before
 // expanding a tarball
+// nolint:gocyclo
 func LoadArchiveFiles(in io.Reader) ([]*BufferedFile, error) {
 	unzipped, err := gzip.NewReader(in)
 	if err != nil {
@@ -159,8 +164,8 @@ func LoadArchiveFiles(in io.Reader) ([]*BufferedFile, error) {
 			return nil, errors.New("chart contains illegally named files")
 		}
 
-		if parts[0] == "Chart.yaml" {
-			return nil, errors.New("chart yaml not in base directory")
+		if parts[0] == metaYamlFileName {
+			return nil, errors.New("meta yaml not in base directory")
 		}
 
 		if _, err := io.Copy(b, tr); err != nil {

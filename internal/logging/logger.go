@@ -1,39 +1,51 @@
 package logging
 
 import (
+	"io"
 	"os"
 
 	"github.com/sirupsen/logrus"
 )
 
-type LoggerOptions func(*logrus.Logger) *logrus.Logger
+var defaults = []Option{
+	WithFormatter(&logrus.JSONFormatter{}),
+	WithLevel(logrus.InfoLevel),
+	WithOutput(os.Stdout),
+}
 
-func NewLogger(opts ...LoggerOptions) *logrus.Logger {
+type Option func(*logrus.Logger) *logrus.Logger
+
+func NewLogger(opts ...Option) *logrus.Logger {
 	logger := logrus.New()
-	for _, opt := range GetDefaultLoggerOptions() {
+
+	for _, opt := range defaults {
 		logger = opt(logger)
 	}
 
 	for _, opt := range opts {
 		logger = opt(logger)
 	}
+
 	return logger
 }
 
-func GetDefaultLoggerOptions() (opts []LoggerOptions) {
-	opts = []LoggerOptions{
-		func(l *logrus.Logger) *logrus.Logger {
-			l.SetFormatter(&logrus.JSONFormatter{})
-			return l
-		},
-		func(l *logrus.Logger) *logrus.Logger {
-			l.SetLevel(logrus.InfoLevel)
-			return l
-		},
-		func(l *logrus.Logger) *logrus.Logger {
-			l.SetOutput(os.Stdout)
-			return l
-		},
+func WithFormatter(format logrus.Formatter) Option {
+	return func(l *logrus.Logger) *logrus.Logger {
+		l.SetFormatter(format)
+		return l
 	}
-	return opts
+}
+
+func WithOutput(w io.Writer) Option {
+	return func(l *logrus.Logger) *logrus.Logger {
+		l.SetOutput(w)
+		return l
+	}
+}
+
+func WithLevel(level logrus.Level) Option {
+	return func(l *logrus.Logger) *logrus.Logger {
+		l.SetLevel(level)
+		return l
+	}
 }
