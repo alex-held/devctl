@@ -9,7 +9,7 @@ import (
 	"github.com/alex-held/devctl/internal/getter"
 )
 
-// En
+// Entry
 type Entry struct {
 	Name string `json:"name"`
 	URL  string `json:"url"`
@@ -20,7 +20,6 @@ type Entry struct {
 type SDKRepository struct {
 	Config     *Entry
 	ChartPaths []string
-	IndexFile  *IndexFile
 	Client     getter.Getter
 	CachePath  string
 }
@@ -39,7 +38,6 @@ func NewSDKRepo(cfg *Entry, getters getter.Providers) (*SDKRepository, error) {
 
 	return &SDKRepository{
 		Config:    cfg,
-		IndexFile: NewIndexFile(),
 		Client:    client,
 		CachePath: devctlpath.CachePath("repository"),
 	}, nil

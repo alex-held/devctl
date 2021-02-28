@@ -10,6 +10,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const APIVersionV1 = "v1"
+
 // File represents the repositories.yaml file
 type File struct {
 	APIVersion   string    `json:"apiVersion"`
