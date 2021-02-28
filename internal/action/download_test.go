@@ -26,7 +26,7 @@ func TestDownloader_DownloadF(t *testing.T) {
 		var expectedArchivePath string
 
 		g.JustBeforeEach(func() {
-			fixture = SetupFixture()
+			fixture = SetupFixture(g)
 
 			expectedArchivePath = fixture.pather.Download("scala", "2.13.4", "scala-2.13.4.zip")
 			testdata, err = ioutil.ReadFile("testdata/scala-2.13.4.zip")

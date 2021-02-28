@@ -56,6 +56,7 @@ type Actions struct {
 	*Options
 	Install  *Install
 	Download *Download
+	Config   *Config
 }
 
 func NewActions(opts ...Option) *Actions {
@@ -80,6 +81,7 @@ func NewActions(opts ...Option) *Actions {
 	actions.action = common
 	actions.Download = (*Download)(actions.action)
 	actions.Install = (*Install)(actions.action)
+	actions.Config = (*Config)(actions.action)
 
 	return actions
 }

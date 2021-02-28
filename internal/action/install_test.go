@@ -27,7 +27,7 @@ func TestInstall_InstallF(t *testing.T) {
 		var expectedArchivePath, expectedSdkDir string
 
 		g.JustBeforeEach(func() {
-			fixture = SetupFixture()
+			fixture = SetupFixture(g)
 
 			expectedArchivePath = fixture.pather.Download("scala", "2.13.4", "scala-2.13.4.zip")
 			expectedSdkDir = fixture.pather.SDK("scala", "2.13.4")

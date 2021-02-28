@@ -29,6 +29,7 @@ func testExists(g *goblin.G, fs afero.Fs, expected, msg string) {
 }
 
 type ActionTestFixture struct {
+	g        *goblin.G
 	actions  *Actions
 	fs       afero.Fs
 	logger   *logrus.Logger
@@ -40,7 +41,7 @@ type ActionTestFixture struct {
 	pather   devctlpath.Pather
 }
 
-func SetupFixture() (fixture *ActionTestFixture) {
+func SetupFixture(g *goblin.G) (fixture *ActionTestFixture) {
 	const baseURLPath = "/2"
 	var out bytes.Buffer
 
@@ -70,6 +71,7 @@ func SetupFixture() (fixture *ActionTestFixture) {
 	actions := NewActions(WithFs(fs), WithSdkmanClient(client))
 
 	fixture = &ActionTestFixture{
+		g:        g,
 		actions:  actions,
 		logger:   logger,
 		mux:      mux,
