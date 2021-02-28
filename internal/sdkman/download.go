@@ -13,7 +13,6 @@ type SDKDownload struct {
 	bytes.Buffer
 }
 
-
 // DownloadService downloads SDKs to the filesystem
 type DownloadService service
 
@@ -23,7 +22,7 @@ type DownloadService service
 // system specifies the system [darwinx64,darwin]
 // https://api.sdkman.io/2/broker/download/scala/scala-2.13.4/darwinx64
 // https://api.sdkman.io/2/broker/download/scala/2.13.4/darwinx64
-// nolint: lll,gocognit
+// nolint: lll
 func (s *DownloadService) DownloadSDK(ctx context.Context, sdk, version string, arch system.Arch) (dl *SDKDownload, err error) {
 	switch {
 	case arch.IsLinux() || arch.IsDarwin():
