@@ -2,36 +2,34 @@ package testutils
 
 import (
 	"flag"
-	"io"
+	"os"
 
 	"github.com/alex-held/devctl/internal/logging"
 
 	"github.com/sirupsen/logrus"
 )
 
-func NewLogger(out io.Writer) *logrus.Logger {
-	verbose := flag.CommandLine.Lookup("test.v")
+func NewLogger() *logging.Logger {
+	verboseFlag := flag.CommandLine.Lookup("test.v")
+
+	var level logrus.Level
+	var verbose bool
+	switch verboseFlag.Value.String() {
+	case "true":
+		verbose = true
+		level = logrus.TraceLevel
+	default:
+		verbose = false
+		level = logrus.WarnLevel
+	}
 
 	logger := logging.NewLogger(
-		func(l *logrus.Logger) *logrus.Logger {
-			l.SetFormatter(&logrus.TextFormatter{})
-			return l
-		},
-		func(l *logrus.Logger) *logrus.Logger {
-			if out != nil {
-				l.SetOutput(out)
-			}
-			return l
-		},
-		func(l *logrus.Logger) *logrus.Logger {
-			switch verbose.Value.String() {
-			case "true":
-				l.SetLevel(logrus.DebugLevel)
-			default:
-				l.SetLevel(logrus.WarnLevel)
-			}
-			return l
-		})
+		logging.WithVerbose(verbose),
+		logging.WithLevel(level),
+		logging.WithOutputs(),
+		logging.WithErrorOutputs(os.Stderr),
+		logging.WithFormatter(&logrus.TextFormatter{}),
+	)
 
 	return logger
 }

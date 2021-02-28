@@ -14,8 +14,9 @@ import (
 
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
+
+	"github.com/alex-held/devctl/internal/logging"
 
 	"github.com/alex-held/devctl/internal/system"
 	"github.com/alex-held/devctl/internal/testutils"
@@ -23,8 +24,8 @@ import (
 
 const baseURLPath = "/2"
 
-func setup() (client *Client, logger *logrus.Logger, mux *http.ServeMux, out bytes.Buffer, teardown testutils.Teardown) {
-	logger = testutils.NewLogger(&out)
+func setup() (client *Client, logger *logging.Logger, mux *http.ServeMux, teardown testutils.Teardown) {
+	logger = testutils.NewLogger()
 
 	mux = http.NewServeMux()
 	fs := afero.NewMemMapFs()
@@ -48,7 +49,7 @@ func setup() (client *Client, logger *logrus.Logger, mux *http.ServeMux, out byt
 	teardown = func() {
 		server.Close()
 	}
-	return client, logger, mux, out, teardown
+	return client, logger, mux, teardown
 }
 
 func testMethod(t testing.TB, r *http.Request, want string) {
@@ -64,20 +65,19 @@ func TestSdkmanClient_ListCandidates(t *testing.T) {
 
 	g.Describe("Client", func() {
 		var client *Client
-		var logger *logrus.Logger
+		var logger *logging.Logger
 		var mux *http.ServeMux
-		var out bytes.Buffer
 		var teardown testutils.Teardown
 		var ctx context.Context
 
 		g.Describe("Download", func() {
 			g.JustBeforeEach(func() {
-				client, logger, mux, out, teardown = setup()
+				client, logger, mux, teardown = setup()
 				ctx = context.Background()
 			})
 
 			g.AfterEach(func() {
-				out.Reset()
+				logger.Output.Reset()
 				teardown()
 			})
 
@@ -108,14 +108,14 @@ func TestClient_Download(t *testing.T) {
 			expectedTestDataPath := os.ExpandEnv("testdata/scala-1.8")
 
 			var client *Client
-			var logger *logrus.Logger
+			var logger *logging.Logger
 			var mux *http.ServeMux
 			var _ bytes.Buffer
 			var teardown testutils.Teardown
 			var ctx context.Context
 
 			g.JustBeforeEach(func() {
-				client, logger, mux, _, teardown = setup()
+				client, logger, mux, teardown = setup()
 				ctx = context.Background()
 			})
 

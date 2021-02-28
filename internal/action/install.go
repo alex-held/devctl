@@ -89,7 +89,7 @@ func (i *Install) Install(ctx context.Context, sdk, version string) (dir string,
 		return extractIntoDir, errors.Wrapf(err, "error executing download action; sdk=%s; version=%s\n", sdk, version)
 	}
 
-	_, err = extractArchive(i.Fs, extractIntoDir, archive)
+	_, err = extractArchive(i.Options.Fs, extractIntoDir, archive)
 	if err != nil {
 		return extractIntoDir, errors.Wrapf(err,
 			"unable to extract files from zip; archive=%s; dir=%s\n",

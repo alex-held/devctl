@@ -5,8 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/alex-held/devctl/internal/logging"
 
 	"github.com/coreos/etcd/client"
@@ -82,16 +80,12 @@ func newApp(option ...StaticOption) (cli *app) {
 		c = o(c)
 	}
 
-	l := logging.NewLogger(func(l *logrus.Logger) *logrus.Logger {
-		l.SetOutput(os.Stdout)
-		return l
-	})
+	l := logging.NewLogger()
 
 	cli = &app{
 		staticConfig: c,
 		context: NewContextified(&GlobalContext{
 			Log: l,
-			VDL: NewVDebugLog(l),
 		}),
 	}
 

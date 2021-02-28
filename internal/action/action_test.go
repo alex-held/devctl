@@ -1,7 +1,6 @@
 package action
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"net/http"
@@ -11,8 +10,9 @@ import (
 
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
+
+	"github.com/alex-held/devctl/internal/logging"
 
 	"github.com/alex-held/devctl/internal/devctlpath"
 	"github.com/alex-held/devctl/internal/sdkman"
@@ -32,23 +32,17 @@ type ActionTestFixture struct {
 	g        *goblin.G
 	actions  *Actions
 	fs       afero.Fs
-	logger   *logrus.Logger
+	logger   *logging.Logger
 	mux      *http.ServeMux
-	out      bytes.Buffer
 	teardown testutils.Teardown
 	context  context.Context
 	client   *sdkman.Client
 	pather   devctlpath.Pather
 }
 
-func SetupFixture(g *goblin.G) (fixture *ActionTestFixture) {
+func SetupFixtureDeps(g *goblin.G, fs afero.Fs, pather devctlpath.Pather, logger *logging.Logger, td func()) (fixture *ActionTestFixture) {
 	const baseURLPath = "/2"
-	var out bytes.Buffer
-
-	logger := testutils.NewLogger(&out)
-	pather := devctlpath.NewPather()
 	mux := http.NewServeMux()
-	fs := afero.NewMemMapFs()
 
 	apiHandler := http.NewServeMux()
 	apiHandler.Handle(baseURLPath+"/", http.StripPrefix(baseURLPath, mux))
@@ -60,6 +54,7 @@ func SetupFixture(g *goblin.G) (fixture *ActionTestFixture) {
 
 	server := httptest.NewServer(apiHandler)
 	teardown := func() {
+		td()
 		server.Close()
 	}
 	client := sdkman.NewSdkManClient(
@@ -68,7 +63,7 @@ func SetupFixture(g *goblin.G) (fixture *ActionTestFixture) {
 		sdkman.HTTPClientOption(&http.Client{}),
 	)
 
-	actions := NewActions(WithFs(fs), WithSdkmanClient(client))
+	actions := NewActions(WithFs(fs), WithSdkmanClient(client), WithPather(pather), WithLogger(logger))
 
 	fixture = &ActionTestFixture{
 		g:        g,
@@ -76,13 +71,16 @@ func SetupFixture(g *goblin.G) (fixture *ActionTestFixture) {
 		logger:   logger,
 		mux:      mux,
 		pather:   pather,
-		out:      out,
 		fs:       fs,
 		teardown: teardown,
 		context:  context.Background(),
 		client:   client,
 	}
 	return fixture
+}
+
+func SetupFixture(g *goblin.G) (fixture *ActionTestFixture) {
+	return SetupFixtureDeps(g, afero.NewMemMapFs(), devctlpath.NewPather(), testutils.NewLogger(), func() {})
 }
 
 func TestNewActions(t *testing.T) {
@@ -96,17 +94,17 @@ func TestNewActions(t *testing.T) {
 	g.Describe("NewActions", func() {
 		g.It("WithFs", func() {
 			actions := NewActions(WithFs(fs))
-			Expect(actions.Fs).Should(Equal(fs))
+			Expect(actions.Options.Fs).Should(Equal(fs))
 		})
 
 		g.It("WithPather", func() {
 			actions := NewActions(WithPather(pather))
-			Expect(actions.Pather).Should(Equal(pather))
+			Expect(actions.Options.Pather).Should(Equal(pather))
 		})
 
 		g.It("WithSdkmanClient", func() {
 			actions := NewActions(WithSdkmanClient(client))
-			Expect(actions.Client).Should(Equal(client))
+			Expect(actions.Options.Client).Should(Equal(client))
 		})
 	})
 }

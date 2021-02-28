@@ -14,10 +14,10 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/sirupsen/logrus"
 
-	"github.com/alex-held/devctl/internal/logging"
-
 	"github.com/coreos/etcd/pkg/stringutil"
 	_ "github.com/onsi/gomega/matchers"
+
+	"github.com/alex-held/devctl/internal/logging"
 )
 
 func TestHomeFinder(t *testing.T) {
@@ -391,7 +391,7 @@ type GoblinG struct {
 	TestingTB testing.TB
 	*goblin.G
 	QuickCheckConfig *quick.Config
-	Logger           *logrus.Logger
+	Logger           *logging.Logger
 }
 
 func TestPather_QuickCheck(t *testing.T) {
@@ -399,7 +399,7 @@ func TestPather_QuickCheck(t *testing.T) {
 		TestingTB:        t,
 		G:                goblin.Goblin(t),
 		QuickCheckConfig: NewQuickCheckConfig(5000, 100),
-		Logger:           logging.NewLogger(logging.WithOutput(os.Stderr), logging.WithLevel(logrus.ErrorLevel)),
+		Logger:           logging.NewLogger(logging.WithOutputs(), logging.WithLevel(logrus.ErrorLevel)),
 	}
 
 	tt := map[string]struct {

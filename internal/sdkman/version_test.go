@@ -30,7 +30,7 @@ func TestVersionService_All(t *testing.T) {
 			var ctx context.Context
 
 			g.JustBeforeEach(func() {
-				client, _, mux, _, teardown = setup()
+				client, _, mux, teardown = setup()
 				ctx = context.Background()
 			})
 

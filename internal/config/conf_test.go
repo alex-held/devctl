@@ -50,7 +50,7 @@ func TestViperConfig(t *testing.T) {
 			viper.SetConfigType("yaml")
 
 			cfg := LoadViperConfig()
-			logger := testutils.NewLogger(nil)
+			logger := testutils.NewLogger()
 			fields := logrus.Fields{
 				"testdata-path": testdataPath,
 				"global-config": cfg.GlobalConfig,

@@ -7,6 +7,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 
+	"github.com/alex-held/devctl/internal/logging"
+
 	"github.com/alex-held/devctl/internal/devctlpath"
 	"github.com/alex-held/devctl/internal/sdkman"
 )
@@ -16,10 +18,17 @@ type Options struct {
 	Fs     afero.Fs
 	Pather devctlpath.Pather
 	Client *sdkman.Client
+	Logger *logging.Logger
 }
 
 type Option func(options *Options) *Options
 
+func WithLogger(l *logging.Logger) Option {
+	return func(o *Options) *Options {
+		o.Logger = l
+		return o
+	}
+}
 func WithFs(fs afero.Fs) Option {
 	return func(o *Options) *Options {
 		o.Fs = fs
@@ -45,6 +54,7 @@ var defaults = []Option{
 	WithFs(afero.NewOsFs()),
 	WithSdkmanClient(sdkman.NewSdkManClient()),
 	WithPather(devctlpath.NewPather()),
+	WithLogger(logging.NewLogger()),
 }
 
 type action struct {
@@ -53,10 +63,11 @@ type action struct {
 
 type Actions struct {
 	*action
-	*Options
+	Options  *Options
 	Install  *Install
 	Download *Download
 	Config   *Config
+	Symlink  *Symlink
 }
 
 func NewActions(opts ...Option) *Actions {
@@ -82,6 +93,7 @@ func NewActions(opts ...Option) *Actions {
 	actions.Download = (*Download)(actions.action)
 	actions.Install = (*Install)(actions.action)
 	actions.Config = (*Config)(actions.action)
+	actions.Symlink = (*Symlink)(actions.action)
 
 	return actions
 }

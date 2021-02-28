@@ -9,7 +9,7 @@ import (
 type Config action
 
 func (c *Config) Save(cfg *config2.Config) (err error) {
-	err = config2.Save(c.Fs, c.Pather, cfg)
+	err = config2.Save(c.Options.Fs, c.Options.Pather, cfg)
 	if err != nil {
 		return errors.Wrapf(err, "failed to save config file; config=%v\n", *cfg)
 	}
@@ -17,7 +17,7 @@ func (c *Config) Save(cfg *config2.Config) (err error) {
 }
 
 func (c *Config) Load() (cfg *config2.Config, err error) {
-	cfg, err = config2.LoadOrCreate(c.Fs, c.Pather)
+	cfg, err = config2.LoadOrCreate(c.Options.Fs, c.Options.Pather)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to load config file")
 	}
