@@ -17,7 +17,7 @@ func (c *Config) Save(cfg *config2.Config) (err error) {
 }
 
 func (c *Config) Load() (cfg *config2.Config, err error) {
-	cfg, err = config2.Load(c.Fs, c.Pather)
+	cfg, err = config2.LoadOrCreate(c.Fs, c.Pather)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to load config file")
 	}

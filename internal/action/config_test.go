@@ -61,6 +61,23 @@ func TestConfig_SetCurrentSDK(t *testing.T) {
 			sut = fixture.actions.Config
 		})
 
+		g.Describe("GIVEN no config file", func() {
+			g.It("THEN creates config file with sdk and set installation + current", func() {
+				err := sut.SetCurrentSdk(sdk, version, sdkPath)
+				Expect(err).Should(BeNil())
+
+				fixture.AssertConfig(func(c *config.Config) []configAssertion {
+					return []configAssertion{
+						{c.Sdks[sdk], Not(BeNil())},
+						{c.Sdks[sdk].Current, Equal(version)},
+						{c.Sdks[sdk].Installations[version], Equal(sdkPath)},
+						{c.Sdks[sdk].Installations, HaveLen(1)},
+						{c.Sdks[sdk].SDK, Equal(sdk)},
+					}
+				})
+			})
+		})
+
 		g.Describe("GIVEN blank config file", func() {
 			g.It("THEN add sdk with installation and current", func() {
 				fixture.SetupConfig(func(c *config.Config) {})
@@ -80,18 +97,46 @@ func TestConfig_SetCurrentSDK(t *testing.T) {
 		})
 
 		g.Describe("GIVEN config file contains sdk", func() {
+			const otherVersion = "2.13.0"
+			const otherSdkPath = "sdks/scala/2.13.0"
+
+			g.Describe("AND version not installed", func() {
+				g.It("THEN adds installation + sets current for sdk", func() {
+					fixture.SetupConfig(func(c *config.Config) {
+						c.Sdks[sdk] = config.SdkConfig{
+							SDK:     sdk,
+							Current: otherVersion,
+							Installations: map[string]string{
+								otherVersion: otherSdkPath,
+							},
+						}
+					})
+
+					err := sut.SetCurrentSdk(sdk, version, sdkPath)
+					Expect(err).Should(BeNil())
+					fixture.AssertConfig(func(c *config.Config) []configAssertion {
+						return []configAssertion{
+							{*c, Not(BeNil())},
+							{c.Sdks, HaveLen(1)},
+							{c.Sdks[sdk].Installations, HaveLen(2)},
+							{c.Sdks[sdk].Installations[version], Equal(sdkPath)},
+							{c.Sdks[sdk].SDK, Equal(sdk)},
+							{c.Sdks[sdk].Current, Equal(version)},
+						}
+					})
+				})
+			})
+
 			g.Describe("AND version already installed", func() {
 				g.Describe("AND current set to different version", func() {
-					const otherVersion = "2.13.0"
-					const otherSdkPath = "sdks/scala/2.13.0"
-
-					g.It("THEN update current", func() {
+					g.It("THEN", func() {
 						fixture.SetupConfig(func(c *config.Config) {
 							c.Sdks[sdk] = config.SdkConfig{
 								SDK:     sdk,
 								Current: otherVersion,
 								Installations: map[string]string{
 									otherVersion: otherSdkPath,
+									version:      sdkPath,
 								},
 							}
 						})
@@ -103,6 +148,36 @@ func TestConfig_SetCurrentSDK(t *testing.T) {
 								{*c, Not(BeNil())},
 								{c.Sdks, HaveLen(1)},
 								{c.Sdks[sdk].Installations, HaveLen(2)},
+								{c.Sdks[sdk].Installations[version], Equal(sdkPath)},
+								{c.Sdks[sdk].SDK, Equal(sdk)},
+								{c.Sdks[sdk].Current, Equal(version)},
+							}
+						})
+					})
+				})
+
+				g.Describe("AND current set to same version with different path", func() {
+					const otherSdkPath = "other/path/to/sdks/scala/2.13.0"
+
+					g.It("THEN update installation path", func() {
+						fixture.SetupConfig(func(c *config.Config) {
+							c.Sdks[sdk] = config.SdkConfig{
+								SDK:     sdk,
+								Current: version,
+								Installations: map[string]string{
+									version: otherSdkPath,
+								},
+							}
+						})
+
+						err := sut.SetCurrentSdk(sdk, version, sdkPath)
+						Expect(err).Should(BeNil())
+						fixture.AssertConfig(func(c *config.Config) []configAssertion {
+							return []configAssertion{
+								{*c, Not(BeNil())},
+								{c.Sdks, HaveLen(1)},
+								{c.Sdks[sdk].Installations, HaveLen(1)},
+								{c.Sdks[sdk].Installations[version], Equal(sdkPath)},
 								{c.Sdks[sdk].SDK, Equal(sdk)},
 								{c.Sdks[sdk].Current, Equal(version)},
 							}
