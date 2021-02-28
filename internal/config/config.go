@@ -62,7 +62,7 @@ func Save(fs afero.Fs, pather devctlpath.Pather, cfg *Config) (err error) {
 		return errors.Wrapf(err, "failed to marshal config.Config; config=%+v", *cfg)
 	}
 
-	err = afero.WriteFile(fs, cfgPath, configBytes, 777)
+	err = afero.WriteFile(fs, cfgPath, configBytes, 0777)
 	if err != nil {
 		return errors.Wrapf(err, "failed to write config file to fs; path=%s; yaml=%s", cfgPath, string(configBytes))
 	}

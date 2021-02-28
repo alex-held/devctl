@@ -11,6 +11,8 @@ import (
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
+
+	"github.com/alex-held/devctl/internal/system"
 )
 
 func TestDownloader_DownloadF(t *testing.T) {
@@ -35,7 +37,7 @@ func TestDownloader_DownloadF(t *testing.T) {
 			}
 
 			// https://api.sdkman.io/2/broker/download/scala/2.13.4/darwin
-			fixture.mux.HandleFunc("/broker/download/scala/2.13.4/darwin", func(w http.ResponseWriter, r *http.Request) {
+			fixture.mux.HandleFunc(fmt.Sprintf("/broker/download/scala/2.13.4/%s", system.GetCurrent()), func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Add("content-type", "application/zip")
 				w.Header().Add("content-length", fmt.Sprintf("%d", len(testdata)))
 				_, e := io.Copy(w, bytes.NewBuffer(testdata))
