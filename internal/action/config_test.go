@@ -31,7 +31,7 @@ func (f *ActionTestFixture) SetupConfig(configFn func(*config.Config)) {
 	if err != nil {
 		f.g.Fatalf("failed to marshal config file while setup; error=%v", err)
 	}
-	err = afero.WriteFile(f.fs, f.pather.ConfigFilePath(), b, 777)
+	err = afero.WriteFile(f.fs, f.pather.ConfigFilePath(), b, 0700)
 	if err != nil {
 		f.g.Fatalf("failed to write marshaled config file while setup; error=%v", err)
 	}

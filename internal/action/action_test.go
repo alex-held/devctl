@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"os/exec"
 	"testing"
 
 	"github.com/franela/goblin"
@@ -38,6 +39,23 @@ type ActionTestFixture struct {
 	context  context.Context
 	client   *sdkman.Client
 	pather   devctlpath.Pather
+}
+
+func SetupFs(g *goblin.G, fs afero.Fs, dirs []string, links map[string]string) {
+	for _, dir := range dirs {
+		err := fs.MkdirAll(dir, 0700)
+		if err != nil {
+			g.Fail(err)
+		}
+	}
+
+	for source, dest := range links {
+		cmd := exec.Command("ln", "-s", source, dest)
+		err := cmd.Run()
+		if err != nil {
+			g.Fatalf("failed to setup pre-existing symlink; source=%s; dest=%s", source, dest)
+		}
+	}
 }
 
 func SetupFixtureDeps(g *goblin.G, fs afero.Fs, pather devctlpath.Pather, logger *logging.Logger, td func()) (fixture *ActionTestFixture) {

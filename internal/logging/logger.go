@@ -20,10 +20,11 @@ type Logger struct {
 }
 
 var defaults = []Option{
-	WithFormatter(&logrus.JSONFormatter{
-		DisableTimestamp:  true,
-		DisableHTMLEscape: true,
-		PrettyPrint:       true,
+	WithFormatter(&logrus.TextFormatter{
+		ForceColors:      true,
+		DisableTimestamp: true,
+		PadLevelText:     true,
+		QuoteEmptyFields: true,
 	}),
 	WithLevel(logrus.TraceLevel),
 	WithOutputs(os.Stdout),
@@ -107,10 +108,11 @@ func WithVerbose(verbose bool) Option {
 	return func(l *Logger) *Logger {
 		if verbose {
 			l.Logger.SetLevel(logrus.TraceLevel)
-		} else {
-			l.Logger.SetLevel(logrus.WarnLevel)
+			l.IsVerbose = true
+			return l
 		}
-		l.IsVerbose = verbose
+		l.Logger.SetLevel(logrus.WarnLevel)
+		l.IsVerbose = false
 		return l
 	}
 }
