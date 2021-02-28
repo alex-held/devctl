@@ -9,7 +9,7 @@ vars:
     sh: git log -n 1 --format=%h
 
 tasks:
-  
+
   tidy:
     desc: Tidies go.mod and go.sum
     summary: |
@@ -18,22 +18,19 @@ tasks:
     cmds:
       - go mod tidy -v
       - git diff-index --quiet HEAD
-  
-  
+
   install-deps:
     desc: Installs all required tooling and dependencies
     cmds:
       - go mod download
       - go get -u
-  
-  
-  
+
   install:
     desc: Installs {{.PROJECT}} into GOBIN
     cmds:
       - task: build
       - cp {{.PROJECT}} {{.GOPATH}}/bin/{{.PROJECT}}
-  
+
   run:
     desc: Runs {{.PROJECT}}
     cmds:
@@ -41,13 +38,23 @@ tasks:
       - ./{{.PROJECT}} {{.ARGS}}
     env:
       ARGS:
-  
+
   build:
     desc: Builds {{.PROJECT}}
     cmds:
       - task: install-deps
       - go build -v -o out/{{.PROJECT}}
-  
+
+  test:cover:
+    desc: Tests & Covers {{.PROJECT}}
+    summary: |
+      Tests & Covers {{.PROJECT}}
+
+      It will test your project and collects the coverage.
+      The coverage gets saved to out/coverage.out
+    cmds:
+      - go test -v -cover  -coverprofile=out/coverage.out  ./... -json > out/test-report.out
+
   test-quiet:
     desc: Tests {{.PROJECT}} quietly
     cmds:
@@ -63,12 +70,19 @@ tasks:
     cmds:
       - go test -v -cover  -coverprofile=out/coverage.out  ./... -json > out/test-report.out
 
-  lint-silently:
-    desc: Lints & Fixes {{.PROJECT}}
-    cmds:
-      - golangci-lint run ./... --fix
-  
   lint:
     desc: Lints & Fixes {{.PROJECT}}
     cmds:
       - golangci-lint -v --color=always run ./...  --fix
+
+  lint:silently:
+    desc: Lints & Fixes {{.PROJECT}}
+    cmds:
+      - golangci-lint run ./... --fix
+
+  lint:tool:
+    desc: Lints & Fixes inside a given file {{.PROJECT}}
+    vars:
+      FILE:
+    cmds:
+      - golangci-lint run --color=always {{.FILE}} --fix > out/lint || (cat out/lint && rm out/lint) && rm out/lint
