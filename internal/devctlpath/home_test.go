@@ -262,14 +262,6 @@ func TestHomeFinder(t *testing.T) {
 			Expect(actual).To(Equal(expected))
 		})
 
-		g.It("WHEN no pathFn set", func() {
-			userHome, _ := os.UserHomeDir()
-			expected := filepath.Join(userHome, ".test_devctl/downloads")
-			lazyFinder = NewPather(WithAppPrefix(testAppPrefix))
-			actual := lazyFinder.Download()
-			Expect(actual).To(Equal(expected))
-		})
-
 		g.It("WHEN configRoot set", func() {
 			expected := filepath.Join(customConfigRoot, "downloads")
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix), WithConfigRootFn(func() string {
