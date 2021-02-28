@@ -11,6 +11,10 @@ import (
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 
+	"github.com/alex-held/devctl/internal/system"
+
+	"github.com/alex-held/devctl/internal/devctlpath"
+
 	"github.com/spf13/afero"
 )
 
@@ -37,7 +41,7 @@ func TestInstall_InstallF(t *testing.T) {
 			}
 
 			// https://api.sdkman.io/2/broker/download/scala/2.13.4/darwin
-			fixture.mux.HandleFunc("/broker/download/scala/2.13.4/darwin", func(w http.ResponseWriter, r *http.Request) {
+			fixture.mux.HandleFunc(fmt.Sprintf("/broker/download/scala/2.13.4/%s", system.GetCurrent()), func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Add("content-type", "application/zip")
 				w.Header().Add("content-length", fmt.Sprintf("%d", len(testdata)))
 				_, e := io.Copy(w, bytes.NewBuffer(testdata))
@@ -47,7 +51,7 @@ func TestInstall_InstallF(t *testing.T) {
 			})
 
 			fs = afero.NewMemMapFs()
-			sut = *NewActions(WithFs(fs), WithSdkmanClient(fixture.client)).Install
+			sut = *NewActions(WithFs(fs), WithSdkmanClient(fixture.client), WithPather(devctlpath.NewPather())).Install
 		})
 
 		g.AfterEach(func() {
