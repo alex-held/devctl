@@ -5,18 +5,14 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"net/http"
 
 	"github.com/alex-held/devctl/internal/system"
-
-	"github.com/coreos/etcd/pkg/fileutil"
-	"github.com/spf13/afero"
 )
 
 type SDKDownload struct {
-	Path   string
-	Reader io.Reader
+	bytes.Buffer
 }
+
 
 // DownloadService downloads SDKs to the filesystem
 type DownloadService service
@@ -28,10 +24,10 @@ type DownloadService service
 // https://api.sdkman.io/2/broker/download/scala/scala-2.13.4/darwinx64
 // https://api.sdkman.io/2/broker/download/scala/2.13.4/darwinx64
 // nolint: lll,gocognit
-func (s *DownloadService) DownloadSDK(ctx context.Context, dlPath, sdk, version string, arch system.Arch) (*SDKDownload, error) {
+func (s *DownloadService) DownloadSDK(ctx context.Context, sdk, version string, arch system.Arch) (dl *SDKDownload, err error) {
 	switch {
 	case arch.IsLinux() || arch.IsDarwin():
-		req, err := s.client.NewRequest(ctx, "GET", fmt.Sprintf("broker/download/%s/%s/%s", sdk, version, string(arch)), http.NoBody)
+		req, err := s.client.NewRequest(ctx, "GET", fmt.Sprintf("broker/download/%s/%s/%s", sdk, version, string(arch)), nil)
 		if err != nil {
 			return nil, err
 		}
@@ -40,27 +36,14 @@ func (s *DownloadService) DownloadSDK(ctx context.Context, dlPath, sdk, version 
 			return nil, err
 		}
 		defer resp.Body.Close()
-		var body bytes.Buffer
-		_, err = io.Copy(&body, resp.Body)
+
+		dl := &SDKDownload{}
+		_, err = io.Copy(dl, resp.Body)
 		if err != nil {
 			return nil, err
 		}
 
-		dump := body.Bytes()
-		err = afero.WriteFile(s.client.fs, dlPath, dump, fileutil.PrivateFileMode)
-		if err != nil {
-			return nil, err
-		}
-
-		downloadFile, err := s.client.fs.Open(dlPath)
-		if err != nil {
-			return nil, err
-		}
-		download := &SDKDownload{
-			Path:   dlPath,
-			Reader: downloadFile,
-		}
-		return download, nil
+		return dl, nil
 
 	default:
 		return nil, fmt.Errorf("right now the provided aarc.Arch '%s' is not supported", arch)

@@ -10,13 +10,13 @@ import (
 
 type InstallService service
 
-func (c *InstallService) Install(ctx context.Context, sdk, version string) (path string, err error) {
-	archive := fmt.Sprintf("%s-%s.zip", sdk, version)
-	dlPath := devctlpath.DownloadPath(sdk, version, archive)
+func (c *InstallService) Install(ctx context.Context, sdk, version string) (dlPath string, err error) {
 
-	downloadSDK, err := c.client.Download.DownloadSDK(ctx, dlPath, sdk, version, system.DarwinX64)
+	dlPath = devctlpath.DownloadPath(sdk, version, fmt.Sprintf("%s-%s.zip", sdk, version))
 
-	fmt.Println(downloadSDK.Path)
+	dl, err := c.client.Download.DownloadSDK(ctx, sdk, version, system.DarwinX64)
 
-	return downloadSDK.Path, err
+	fmt.Println(dl.String())
+
+	return dlPath, err
 }
