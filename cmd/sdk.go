@@ -6,8 +6,9 @@ import (
 	"github.com/bndr/gotabulate"
 	"github.com/spf13/cobra"
 
+	config2 "github.com/alex-held/devctl/internal/config"
+
 	"github.com/alex-held/devctl/internal/cli"
-	"github.com/alex-held/devctl/internal/config/config"
 )
 
 // NewSdkCommand creates the `devenv sdk` commands
@@ -41,7 +42,7 @@ func newSdkVersionsCommand() *cobra.Command {
 		Short:     "Configures sdk versions",
 		ValidArgs: []string{"list"},
 		Run: func(cmd *cobra.Command, args []string) {
-			cfg := config.LoadViperConfig()
+			cfg := config2.LoadViperConfig()
 
 			var tVals [][]interface{}
 			for _, sdk := range cfg.SDKConfig.SDKS {
@@ -100,7 +101,7 @@ func sdkVersionsListCommandfunc(cmd *cobra.Command, args []string) {
 }
 
 func listSdkVersions(sdk string) (versions []string) {
-	cfg := config.LoadViperConfig()
+	cfg := config2.LoadViperConfig()
 
 	for _, sdkConfig := range cfg.SDKConfig.SDKS {
 		if sdkConfig.SDK == sdk {
@@ -144,7 +145,7 @@ func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 	}
 
 	removeSDK := args[0]
-	devEnvConfig := config.LoadViperConfig()
+	devEnvConfig := config2.LoadViperConfig()
 
 	filteredSdks := devEnvConfig.SDKConfig.SDKS[:0]
 	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
@@ -154,7 +155,7 @@ func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 	}
 	devEnvConfig.SDKConfig.SDKS = filteredSdks
 
-	err := config.UpdateDevEnvConfig(*devEnvConfig)
+	err := config2.UpdateDevEnvConfig(*devEnvConfig)
 	if err != nil {
 		cli.ExitWithError(1, err)
 	}
@@ -167,7 +168,7 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	}
 
 	addSDK := args[0]
-	devEnvConfig := config.LoadViperConfig()
+	devEnvConfig := config2.LoadViperConfig()
 	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
 		if sdkConfig.SDK == addSDK {
 			cli.ExitWithError(1, fmt.Errorf("SDK'%s' already configured. ", addSDK))
@@ -175,11 +176,11 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	devEnvConfig.SDKConfig.SDKS = append(devEnvConfig.SDKConfig.SDKS, config.DevEnvSDKConfig{
+	devEnvConfig.SDKConfig.SDKS = append(devEnvConfig.SDKConfig.SDKS, config2.DevEnvSDKConfig{
 		SDK: addSDK,
 	})
 
-	err := config.UpdateDevEnvConfig(*devEnvConfig)
+	err := config2.UpdateDevEnvConfig(*devEnvConfig)
 	if err != nil {
 		cli.ExitWithError(1, err)
 	}
@@ -193,7 +194,7 @@ func sdkListCommandfunc(cmd *cobra.Command, args []string) {
 }
 
 func listSdks() (sdks []string) {
-	devenv := config.LoadViperConfig()
+	devenv := config2.LoadViperConfig()
 	for _, sdk := range devenv.SDKConfig.SDKS {
 		sdks = append(sdks, sdk.SDK)
 	}
