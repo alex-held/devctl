@@ -20,8 +20,8 @@ func userHome() string {
 // be stored.
 //
 // If $XDG_CONFIG_HOME is either not set or empty, a default equal to $HOME/.config is used.
-func configHome() func(lazypath) {
-	return func(lp lazypath) {
+func configHome() func(lazypath) string {
+	return func(lp lazypath) string {
 		return filepath.Join(userHome(), ".config", lp.getAppPrefix())
 	}
 }
