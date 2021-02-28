@@ -14,8 +14,9 @@ import (
 
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
+
+	"github.com/alex-held/devctl/internal/logging"
 
 	"github.com/alex-held/devctl/internal/system"
 	"github.com/alex-held/devctl/internal/testutils"
@@ -23,8 +24,8 @@ import (
 
 const baseURLPath = "/2"
 
-func setup() (client *Client, logger *logrus.Logger, mux *http.ServeMux, out bytes.Buffer, teardown testutils.Teardown) { //nolint:lll
-	logger = testutils.NewLogger(&out)
+func setup() (client *Client, logger *logging.Logger, mux *http.ServeMux, teardown testutils.Teardown) {
+	logger = testutils.NewLogger()
 
 	mux = http.NewServeMux()
 	fs := afero.NewMemMapFs()
@@ -48,7 +49,7 @@ func setup() (client *Client, logger *logrus.Logger, mux *http.ServeMux, out byt
 	teardown = func() {
 		server.Close()
 	}
-	return client, logger, mux, out, teardown
+	return client, logger, mux, teardown
 }
 
 func testMethod(t testing.TB, r *http.Request, want string) {
@@ -64,27 +65,26 @@ func TestSdkmanClient_ListCandidates(t *testing.T) {
 
 	g.Describe("Client", func() {
 		var client *Client
-		var logger *logrus.Logger
+		var logger *logging.Logger
 		var mux *http.ServeMux
-		var out bytes.Buffer
 		var teardown testutils.Teardown
 		var ctx context.Context
 
 		g.Describe("Download", func() {
 			g.JustBeforeEach(func() {
-				client, logger, mux, out, teardown = setup()
+				client, logger, mux, teardown = setup()
 				ctx = context.Background()
 			})
 
 			g.AfterEach(func() {
-				out.Reset()
+				logger.Output.Reset()
 				teardown()
 			})
 
 			g.It("Lists available sdk", func() {
 				mux.HandleFunc("/candidates/all", func(w http.ResponseWriter, r *http.Request) {
 					testMethod(t, r, "GET")
-					_, _ = fmt.Fprint(w, "ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm") //nolint:lll
+					_, _ = fmt.Fprint(w, "ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm")
 				})
 
 				candidates, resp, err := client.ListSdks.ListAllSDK(ctx)
@@ -92,7 +92,7 @@ func TestSdkmanClient_ListCandidates(t *testing.T) {
 				defer resp.Body.Close()
 				logger.WithField("length", len(candidates)).Debug(candidates)
 				Expect(candidates).To(HaveLen(43))
-				Expect(candidates).To(ConsistOf(strings.Split("ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm", ","))) //nolint:lll
+				Expect(candidates).To(ConsistOf(strings.Split("ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm", ",")))
 			})
 		})
 	})
@@ -108,14 +108,14 @@ func TestClient_Download(t *testing.T) {
 			expectedTestDataPath := os.ExpandEnv("testdata/scala-1.8")
 
 			var client *Client
-			var logger *logrus.Logger
+			var logger *logging.Logger
 			var mux *http.ServeMux
 			var _ bytes.Buffer
 			var teardown testutils.Teardown
 			var ctx context.Context
 
 			g.JustBeforeEach(func() {
-				client, logger, mux, _, teardown = setup()
+				client, logger, mux, teardown = setup()
 				ctx = context.Background()
 			})
 
@@ -128,7 +128,6 @@ func TestClient_Download(t *testing.T) {
 				expectedContentBuffer := bytes.NewBuffer(expectedDownloadContent)
 
 				if err != nil {
-					//nolint:lll
 					errMessage := fmt.Sprintf("problem reading the testata. testdata-path: %s; error: %+v\n", expectedTestDataPath, err)
 					_, _ = os.Stderr.WriteString(errMessage)
 					t.Fatal(errMessage)
@@ -160,16 +159,11 @@ func TestClient_Download(t *testing.T) {
 					testMethod(t, r, "GET")
 				})
 
-				download, err := client.Download.DownloadSDK(ctx, expectedDownloadPath, "scala", "1.8", system.Darwin)
-				Expect(err).To(BeNil())
-				logger.WithField("path", download.Path).Warnln("Actual Download Path")
+				download, err := client.Download.DownloadSDK(ctx, "scala", "1.8", system.Darwin)
 
-				actualDownloadContent, err := ioutil.ReadAll(download.Reader)
-				fileExists, _ := afero.Exists(client.fs, expectedDownloadPath)
-				Expect(fileExists).To(BeTrue())
 				Expect(err).To(BeNil())
-				Expect(actualDownloadContent).To(Equal(expectedDownloadContent))
-				Expect(download.Path).To(Equal(expectedDownloadPath))
+				Expect(download).ShouldNot(BeNil())
+				Expect(download.Buffer.Bytes()).Should(Equal(expectedDownloadContent))
 			})
 		})
 	})

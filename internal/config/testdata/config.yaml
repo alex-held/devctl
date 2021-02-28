@@ -1,0 +1,9 @@
+version: v1
+
+sdks:
+  java:
+    sdk: java
+    current: openjdk-11
+    installations:
+      openjdk-15: "/Library/Java/VirtualMachines/OpenJDK15/Contents/Home"
+      openjdk-11: "/Library/Java/VirtualMachines/OpenJDK11/Contents/Home"

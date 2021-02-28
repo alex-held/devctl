@@ -10,8 +10,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/alex-held/devctl/internal/cli"
-
 	"github.com/spf13/afero"
 )
 
@@ -28,12 +26,10 @@ type Client struct {
 
 	// Services used for talking to different parts of the SDKMAN API.
 	Download *DownloadService
+	Registry *RegistryService
 	Version  *VersionService
 	ListSdks *ListAllSDKService
 	fs       afero.Fs
-
-	// Exposed utilities
-	HomeFinder cli.HomeFinder
 }
 
 // NewSdkManClient creates the default *Client using defaults and then the provided options
@@ -58,6 +54,7 @@ func NewSdkManClient(options ...ClientOption) *Client {
 	c.Download = (*DownloadService)(&c.common)
 	c.ListSdks = (*ListAllSDKService)(&c.common)
 	c.Version = (*VersionService)(&c.common)
+	c.Registry = (*RegistryService)(&c.common)
 
 	return c
 }

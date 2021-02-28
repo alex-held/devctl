@@ -2,19 +2,9 @@ package cli
 
 import (
 	logger "github.com/sirupsen/logrus"
+
+	"github.com/alex-held/devctl/internal/logging"
 )
-
-type JSONFile struct {
-	//	Contextified
-	//	filename string
-	//	which    string
-	// jw       *jsonw.Wrapper
-	// exists bool
-	// setMutex sync.RWMutex
-
-	// txMutex sync.Mutex
-	// tx      *jsonFileTransaction
-}
 
 // VDebugLog is a "Verbose" debug logger; enable it if you really
 // want spam and/or minutiae
@@ -34,9 +24,8 @@ func NewVDebugLog(l *logger.Logger) *VDebugLog {
 }
 
 type GlobalContext struct {
-	Log *logger.Logger // Handles all logging
-	VDL *VDebugLog     // verbose debug log
-	Env *Env           // Env variables, cmdline args & config
+	Log *logging.Logger // Handles all logging
+	VDL *VDebugLog      // verbose debug log
 
 	// API                              API
 	/* How to make a REST call to the server */
@@ -47,7 +36,6 @@ type GlobalContext struct {
 	// DesktopAppState                  *DesktopAppState
 	/* The state of focus for the currently running instance of the app */
 
-	Config *JSONFile
 }
 
 // Contextified objects have explicit references to the GlobalContext,
