@@ -91,18 +91,12 @@ var defaults = []Option{
 	WithConfigFile(devctlConfigFileName),
 }
 
-// DefaultPather creates and configures a Pather using the default Option's
-func DefaultPather() Pather {
+// NewPather creates and configures a Pather using the default Option's and then applies provided opts Option's
+func NewPather(opts ...Option) Pather {
 	lpFinder := &lazypathFinder{}
 	for _, opt := range defaults {
 		lpFinder = opt(lpFinder)
 	}
-	return lpFinder
-}
-
-// NewPather configures how the lazypathFinder resolves the ConfigRoot
-func NewPather(opts ...Option) Pather {
-	lpFinder := DefaultPather().(*lazypathFinder)
 
 	for _, opt := range opts {
 		lpFinder = opt(lpFinder)

@@ -3,7 +3,7 @@ package devctlpath
 
 const devctlConfigFileName = "config.yaml"
 
-var lf Pather = DefaultPather()
+var lf Pather = NewPather()
 
 type finder struct {
 	GetUserHomeFn   UserHomePathFinder
