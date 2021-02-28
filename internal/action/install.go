@@ -2,108 +2,100 @@ package action
 
 import (
 	"archive/zip"
-	"bytes"
 	"context"
-	"fmt"
 	"io"
+	"path"
 	"path/filepath"
 	"strings"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
-	"github.com/alex-held/devctl/internal/sdkman"
-	"github.com/alex-held/devctl/internal/system"
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
+
+	"github.com/alex-held/devctl/internal/devctlpath"
 )
 
-type Install struct {
-	fs     afero.Fs
-	client *sdkman.Client
-}
+// Install Provides the Install Action
+type Install action
 
 func extractArchive(fs afero.Fs, extractIntoDir string, f afero.File) (files []string, err error) {
 	stat, err := f.Stat()
 	if err != nil {
 		return nil, err
 	}
+
 	reader, err := zip.NewReader(f, stat.Size())
 	if err != nil {
 		return nil, err
 	}
 
 	for _, file := range reader.File {
-		readCloser, err := file.Open()
+		err = extractFile(fs, extractIntoDir, file, func(s string) {
+			files = append(files, s)
+		})
 		if err != nil {
-			return files, err
+			return nil, err
 		}
-		extractToFile := filepath.Join(extractIntoDir, file.Name)
-		if !strings.HasSuffix(file.Name, "/") {
-			files = append(files, extractToFile)
-		}
-		fileWriteTo, err := fs.Create(extractToFile)
-		if err != nil {
-			_ = readCloser.Close()
-			return files, err
-		}
-		bytes := make([]byte, file.UncompressedSize64)
-		_, err = readCloser.Read(bytes)
-		if err != io.EOF && err != nil {
-			_ = readCloser.Close()
-			return files, err
-		}
-		_, err = fileWriteTo.Write(bytes)
-		if err != nil {
-			_ = readCloser.Close()
-			return files, err
-		}
-		_ = readCloser.Close()
 	}
 	return files, nil
 }
 
-func saveArchive(fs afero.Fs, buf bytes.Buffer, path string) (file afero.File, err error) {
-	exist, err := afero.Exists(fs, path)
+func extractFile(fs afero.Fs, extractIntoDir string, file *zip.File, appender func(string)) (err error) {
+	rc, err := file.Open()
 	if err != nil {
-		return nil, errors.Wrapf(err, "Cannot check whether downloaded archive already exists; archive=%s\n", path)
+		return err
 	}
-	if exist {
-		return nil, nil
-	}
-	archive, err := fs.Create(path)
+
+	defer rc.Close()
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to create file; path=%s", path)
+		return err
 	}
-	n, err := io.Copy(archive, &buf)
+
+	sanitized := sanitize(file.Name)
+	extractToFile := filepath.Join(extractIntoDir, sanitized)
+	if !strings.HasSuffix(file.Name, "/") {
+		appender(extractToFile)
+	}
+	fileWriteTo, err := fs.Create(extractToFile)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to copy http content into archive file; written %d bytes\n", n)
+		return err
 	}
-	return archive, nil
+	b := make([]byte, file.UncompressedSize64)
+	_, err = rc.Read(b)
+	if err != io.EOF && err != nil {
+		return err
+	}
+	_, err = fileWriteTo.Write(b)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (i *Install) Install(ctx context.Context, sdk, version string) error {
+func sanitize(name string) (sanitized string) {
+	name = strings.ReplaceAll(name, `\`, `/`)
+	sanitized = path.Clean(name)
+	sanitized = strings.TrimPrefix(sanitized, "/")
 
-	// download zip archive
-	dl, err := i.client.Download.DownloadSDK(ctx, sdk, version, system.GetCurrent())
-	if err != nil {
-		return errors.Wrap(err, "error downloading sdk from api.sdkman.io")
+	for strings.HasPrefix(name, "../") {
+		sanitized = sanitized[len("../"):]
 	}
+	return sanitized
+}
 
-	// copy content to zip archive in devctl download path
-	archiveName := fmt.Sprintf("%s-%s.zip", sdk, version)
-	archiveDir := devctlpath.DownloadPath(sdk, version)
-	archivePath := filepath.Join(archiveDir, archiveName)
-	archive, err := saveArchive(i.fs, dl.Buffer, archivePath)
-	if err != nil {
-		return errors.Wrapf(err, "unable to save http content to zip file; path=%s\n", archivePath)
-	}
-
-	// extract zip archive from devctl download path into devctl sdk path
+func (i *Install) Install(ctx context.Context, sdk, version string) (dir string, err error) {
+	archive, err := i.Actions.Download.Download(ctx, sdk, version)
 	extractIntoDir := devctlpath.SDKsPath(sdk, version)
-	_, err = extractArchive(i.fs, extractIntoDir, archive)
-
 	if err != nil {
-		return errors.Wrapf(err, "unable to extract files from zip; archive=%s; dir=%s\n", archivePath, extractIntoDir)
+		return extractIntoDir, errors.Wrapf(err, "error executing download action; sdk=%s; version=%s\n", sdk, version)
 	}
 
-	return nil
+	_, err = extractArchive(i.Fs, extractIntoDir, archive)
+	if err != nil {
+		return extractIntoDir, errors.Wrapf(err,
+			"unable to extract files from zip; archive=%s; dir=%s\n",
+			archive.Name(),
+			extractIntoDir)
+	}
+
+	return extractIntoDir, nil
 }
