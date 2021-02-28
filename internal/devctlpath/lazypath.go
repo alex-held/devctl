@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/alex-held/devctl/internal/devctlpath/xdg"
+	"github.com/alex-held/devctl/internal/system"
 )
 
 const (
@@ -118,6 +119,8 @@ func (f lazypathFinder) configRoot(elem ...string) string {
 	// 2. Check if an XDG environment variable is set
 	// 3. Fall back to a default
 
+	arch := system.GetCurrent()
+
 	if f.finder.GetConfigRootFn != nil {
 		p := f.finder.ConfigRoot()
 		return filepath.Join(p, filepath.Join(elem...))
@@ -125,7 +128,16 @@ func (f lazypathFinder) configRoot(elem ...string) string {
 
 	if f.finder.GetUserHomeFn != nil {
 		p := f.finder.GetUserHomeFn()
-		p = filepath.Join(p, f.lp.getAppPrefix())
+		switch {
+		case arch.IsLinux():
+			p = filepath.Join(p, ".config", f.lp.getAppPrefix())
+		case arch.IsDarwin():
+			p = filepath.Join(p, f.lp.getAppPrefix())
+		default:
+			// nolint:godox
+			// todo: not supported yet
+			p = filepath.Join(p, f.lp.getAppPrefix())
+		}
 		return filepath.Join(p, filepath.Join(elem...))
 	}
 

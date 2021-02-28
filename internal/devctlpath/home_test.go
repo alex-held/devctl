@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 	"testing/quick"
 	"time"
@@ -13,6 +14,8 @@ import (
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 	"github.com/sirupsen/logrus"
+
+	"github.com/alex-held/devctl/internal/system"
 
 	"github.com/coreos/etcd/pkg/stringutil"
 	_ "github.com/onsi/gomega/matchers"
@@ -42,14 +45,15 @@ func TestHomeFinder(t *testing.T) {
 	g.Describe("ConfigRoot", func() {
 		g.It("WHEN no pathFn set", func() {
 			userHome, _ := os.UserHomeDir()
-			expected := filepath.Join(userHome, testAppPrefixWithLeadingDot)
+			expected := resolveConfigSubDir(userHome, testAppPrefix)
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix))
 			actual := lazyFinder.ConfigRoot()
 			Expect(actual).To(Equal(expected))
 		})
 
 		g.It("WHEN userHomeFn set", func() {
-			expected := filepath.Join(customUserHomeFn(), testAppPrefixWithLeadingDot)
+			userHome := customUserHomeFn()
+			expected := resolveConfigSubDir(userHome, testAppPrefixWithLeadingDot)
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix), WithUserHomeFn(customUserHomeFn))
 			actual := lazyFinder.ConfigRoot()
 			Expect(actual).To(Equal(expected))
@@ -114,14 +118,15 @@ func TestHomeFinder(t *testing.T) {
 	g.Describe("Bin", func() {
 		g.It("WHEN no pathFn set", func() {
 			userHome, _ := os.UserHomeDir()
-			expected := filepath.Join(userHome, ".test_devctl/bin")
+			expected := resolveConfigSubDir(userHome, testAppPrefix, "bin")
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix))
 			actual := lazyFinder.Bin()
 			Expect(actual).To(Equal(expected))
 		})
 
 		g.It("WHEN userHomeFn set", func() {
-			expected := filepath.Join(customUserHomeFn(), ".test_devctl/bin")
+			userHome := customUserHomeFn()
+			expected := resolveConfigSubDir(userHome, testAppPrefix, "bin")
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix), WithUserHomeFn(customUserHomeFn))
 			actual := lazyFinder.Bin()
 			Expect(actual).To(Equal(expected))
@@ -159,14 +164,15 @@ func TestHomeFinder(t *testing.T) {
 	g.Describe("SDK", func() {
 		g.It("WHEN no pathFn set", func() {
 			userHome, _ := os.UserHomeDir()
-			expected := filepath.Join(userHome, ".test_devctl/sdks")
+			expected := resolveConfigSubDir(userHome, testAppPrefix, "sdks")
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix))
 			actual := lazyFinder.SDK()
 			Expect(actual).To(Equal(expected))
 		})
 
 		g.It("WHEN userHomeFn set", func() {
-			expected := filepath.Join(customUserHomeFn(), ".test_devctl/sdks")
+			userHome := customUserHomeFn()
+			expected := resolveConfigSubDir(userHome, testAppPrefix, "sdks")
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix), WithUserHomeFn(customUserHomeFn))
 			actual := lazyFinder.SDK()
 			Expect(actual).To(Equal(expected))
@@ -204,14 +210,15 @@ func TestHomeFinder(t *testing.T) {
 	g.Describe("Config", func() {
 		g.It("WHEN no pathFn set", func() {
 			userHome, _ := os.UserHomeDir()
-			expected := filepath.Join(userHome, ".test_devctl/config")
+			expected := resolveConfigSubDir(userHome, testAppPrefix, "config")
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix))
 			actual := lazyFinder.Config()
 			Expect(actual).To(Equal(expected))
 		})
 
 		g.It("WHEN userHomeFn set", func() {
-			expected := filepath.Join(customUserHomeFn(), ".test_devctl/config")
+			userHome := customUserHomeFn()
+			expected := resolveConfigSubDir(userHome, testAppPrefix, "config")
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix), WithUserHomeFn(customUserHomeFn))
 			actual := lazyFinder.Config()
 			Expect(actual).To(Equal(expected))
@@ -249,23 +256,16 @@ func TestHomeFinder(t *testing.T) {
 	g.Describe("Download", func() {
 		g.It("WHEN no pathFn set", func() {
 			userHome, _ := os.UserHomeDir()
-			expected := filepath.Join(userHome, ".test_devctl/downloads")
+			expected := resolveConfigSubDir(userHome, testAppPrefix, "downloads")
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix))
 			actual := lazyFinder.Download()
 			Expect(actual).To(Equal(expected))
 		})
 
 		g.It("WHEN userHomeFn set", func() {
-			expected := filepath.Join(customUserHomeFn(), ".test_devctl/downloads")
+			userHome := customUserHomeFn()
+			expected := resolveConfigSubDir(userHome, testAppPrefix, "downloads")
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix), WithUserHomeFn(customUserHomeFn))
-			actual := lazyFinder.Download()
-			Expect(actual).To(Equal(expected))
-		})
-
-		g.It("WHEN no pathFn set", func() {
-			userHome, _ := os.UserHomeDir()
-			expected := filepath.Join(userHome, ".test_devctl/downloads")
-			lazyFinder = NewPather(WithAppPrefix(testAppPrefix))
 			actual := lazyFinder.Download()
 			Expect(actual).To(Equal(expected))
 		})
@@ -457,4 +457,20 @@ func (g *GoblinG) GetQuickCheckFunc(scenario string, functionUnderTest func(Path
 		}
 		return Expect(actual).To(Equal(expected))
 	}
+}
+
+func resolveConfigSubDir(home, prefix string, elem ...string) (path string) {
+	arch := system.GetCurrent()
+	prefix = "." + strings.TrimPrefix(prefix, ".")
+	var cfgRoot string
+	switch {
+	case arch.IsLinux():
+		cfgRoot = filepath.Join(home, ".config", prefix)
+	case arch.IsDarwin():
+		cfgRoot = filepath.Join(home, prefix)
+	default:
+		// windows not yet supported
+		panic(fmt.Errorf("the current os is not yet supported; os=%s", arch))
+	}
+	return filepath.Join(cfgRoot, filepath.Join(elem...))
 }
