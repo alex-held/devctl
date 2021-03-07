@@ -3,12 +3,11 @@ package shell
 import (
 	"bytes"
 	"fmt"
-	"testing"
+	"text/template"
 
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 	gomegatypes "github.com/onsi/gomega/types"
-	"github.com/stretchr/testify/require"
 
 	"github.com/alex-held/devctl/internal/testutils/matchers"
 )
@@ -43,45 +42,19 @@ type TestCase interface {
 	//	Ands() []string
 	Then() string
 	Description() string
-	Build() struct {
-		Config        *ShellHookConfig
-		FixtureConfig FixtureConfig
-	}
 	Bootstrap(fn ...ShellHookApplyFn) TestCase
 	Configure(fn ...ShellHookApplyFn) TestCase
 	CaptureActual(actual interface{}) TestCase
 	CaptureActualWithError(actual interface{}, err error) TestCase
+	GetSubjectUnderTest() *ShellHookGenerator
 	AssertAndReport()
 }
 
 func (t *testCase) String() string { return fmt.Sprintf("TestCase: %v\n\n", *t) }
 
-func (t *testCase) Build() struct {
-	Config        *ShellHookConfig
-	FixtureConfig FixtureConfig
-} {
-	return struct {
-		Config        *ShellHookConfig
-		FixtureConfig FixtureConfig
-	}{
-		Config:        t.builder.config,
-		FixtureConfig: t.builder.fixtureConfig,
-	}
-}
-
-type Builder struct {
-	builder          testInput
-	BaseConfig       interface{}
-	lazyConfigSetups []func(interface{}) interface{}
-	isLocked         bool
-}
-
-type FixtureConfig map[string]interface{}
-
 type testInput struct {
-	Inputs        interface{}
-	config        *ShellHookConfig
-	fixtureConfig FixtureConfig
+	Inputs    interface{}
+	Generator *ShellHookGenerator
 }
 
 type TestInput interface {
@@ -95,12 +68,16 @@ type testCase struct {
 	}
 	ThenDescription, description                   string
 	GivenCollection, WhenCollection, AndCollection []string
-	builder                                        *testInput
+	SubjectUnderTest                               *ShellHookGenerator
 	input                                          TestInput
 	Output                                         *TestOutput
 	Matchers                                       []gomegatypes.GomegaMatcher
 	fixture                                        *ShellHookFixture
 	grouping                                       string
+}
+
+func (t *testCase) GetSubjectUnderTest() *ShellHookGenerator {
+	return t.SubjectUnderTest
 }
 
 func (t *testCase) Description() string                       { return t.description }
@@ -118,21 +95,27 @@ func (t *testCase) CaptureActualWithError(actual interface{}, err error) TestCas
 
 func (t *testCase) Bootstrap(bootstrapFn ...ShellHookApplyFn) TestCase {
 	for _, bootstrap := range bootstrapFn {
-		c := t.builder.config
-		bootstrap(c)
+		t.SubjectUnderTest.Config = bootstrap(t.SubjectUnderTest.Config)
 	}
 	return t
 }
 
 func (t *testCase) Configure(fn ...ShellHookApplyFn) TestCase {
 	for _, applyFn := range fn {
-		t.builder.config = applyFn(t.builder.config)
+		t.SubjectUnderTest.Config = applyFn(t.SubjectUnderTest.Config)
 	}
 	return t
 }
+
 func (t *testCase) AssertAndReport() {
 	t.fixture.G.Helper()
 	Expect(t.Output.Error).ShouldNot(HaveOccurred())
+
+	result, ok := t.Output.Actual.(*ShellHook)
+	Expect(ok).Should(BeTrue(), "actual result should be of type *ShellHook\n")
+
+	fmt.Printf("Output: \n%s\n\n", result.ShellScriptString)
+
 	for _, matcher := range t.Matchers {
 		Expect(t.Output.Actual).Should(matcher)
 	}
@@ -140,16 +123,23 @@ func (t *testCase) AssertAndReport() {
 }
 
 func NewTestCase(description, then string, matchers ...gomegatypes.GomegaMatcher) *testCase {
+	tt := template.Must(template.ParseGlob("templates/*.tmpl"))
+
+	gen := &ShellHookGenerator{
+		Config: NewShellHookConfig(WithTemplates(tt)),
+		Out:    &bytes.Buffer{},
+		Errors: []error{},
+	}
+	gen.Config.GeneratorGetter = func() *ShellHookGenerator {
+		return gen
+	}
+
 	tc := &testCase{
-		ThenDescription: then,
-		description:     description,
-		builder: &testInput{
-			fixtureConfig: FixtureConfig{},
-			config:        NewShellHookConfig(),
-		},
-		input:    nil,
-		Output:   &TestOutput{},
-		Matchers: matchers,
+		ThenDescription:  then,
+		description:      description,
+		SubjectUnderTest: gen,
+		Output:           &TestOutput{},
+		Matchers:         matchers,
 	}
 	return tc
 }
@@ -171,7 +161,6 @@ func (c TestCaseCollection) Next() TestCase {
 type TestCaseCollection struct {
 	TestCases
 	CurrentPosition int
-	fixtureGetter   func() *ShellHookFixture
 }
 
 func NewTestCases(tcs ...TestCase) *TestCaseCollection {
@@ -222,12 +211,10 @@ func (tcc *TestCaseCollection) GetNext() (tc TestCase, done bool) {
 */
 
 type ShellHookFixture struct {
-	TestCases TestCaseCollection
-	// Cfg              *ShellHookConfig
+	TestCases       TestCaseCollection
 	CurrentTestCase TestCase
-	// SubjectUnderTest *ShellHookGenerator
-	Out *bytes.Buffer
-	G   *goblin.G
+	Out             *bytes.Buffer
+	G               *goblin.G
 }
 
 func (f *ShellHookFixture) CaptureActualWithError(actual interface{}, err error) *ShellHookFixture {
@@ -240,13 +227,6 @@ func (f *ShellHookFixture) CaptureActual(actual interface{}) *ShellHookFixture {
 	return f
 }
 
-type FixtureConfigFn func(fixture *FixtureConfig) *FixtureConfig
-
-type ConfigurableFixtureAsserter interface {
-	// Configure(applyFn ShellHookApplyFn) ConfigurableFixtureAsserter
-	Assert(accept GomegaAssertion) ConfigurableFixtureAsserter
-}
-
 func (f *ShellHookFixture) Next() { f.TestCases.Next() }
 
 type ShellHookGenerateAssertion struct {
@@ -255,11 +235,6 @@ type ShellHookGenerateAssertion struct {
 }
 type FixtureAsserter interface {
 	Assert(accept GomegaAssertion) FixtureAsserter
-}
-
-type ShellHookFixtureAssertion interface {
-	GetConfig() ShellHookConfig
-	Assert(accept GomegaAssertion)
 }
 
 func (a *ShellHookGenerateAssertion) Apply(applyFn func(*ShellHookGenerateAssertion) *ShellHookGenerateAssertion) *ShellHookGenerateAssertion {
@@ -271,17 +246,12 @@ func (a *ShellHookGenerateAssertion) WithSetup(applyFn ShellHookApplyFn) *ShellH
 }
 
 func assert(asserts ...gomegatypes.GomegaMatcher) ShellHookGenerateAssertion {
-	cfg := NewShellHookConfig()
+	tt := template.Must(template.ParseGlob("templates/*.tmpl"))
+	cfg := NewShellHookConfig(WithTemplates(tt))
 	return ShellHookGenerateAssertion{
 		Matchers: asserts,
 		Config:   cfg,
 	}
-}
-
-type ShellHookGenerateTestCase struct {
-	Description string
-	Expected    []ShellHookGenerateAssertion
-	TestCases   map[string]ShellHookGenerateAssertion
 }
 
 func NewShellHookFixture(g *goblin.G) *ShellHookFixture {
@@ -289,14 +259,12 @@ func NewShellHookFixture(g *goblin.G) *ShellHookFixture {
 	g.SetReporter(rep)
 	rep.SetTextFancier(goblin.TextFancier(&goblin.TerminalFancier{}))
 	tests := CreateShellHooksTestData()
+
 	fixture := &ShellHookFixture{
 		//	Reporter:        goblin.Reporter(rep),
 		// CurrentTestCase:  tests.Next(),
 		Out: &bytes.Buffer{},
 		G:   g,
-	}
-	fixture.TestCases.fixtureGetter = func() *ShellHookFixture {
-		return fixture
 	}
 	fixture.CurrentTestCase = tests.Next()
 	fixture.TestCases = tests
@@ -304,33 +272,7 @@ func NewShellHookFixture(g *goblin.G) *ShellHookFixture {
 }
 
 func (f *ShellHookFixture) CreateSubjectUnderTest() *ShellHookGenerator {
-	cfg := f.CurrentTestCase.Build()
-	return &ShellHookGenerator{
-		Out:       f.Out,
-		Templates: cfg.Config.Templates,
-		// Templates: f.FixtureConfig["templates"].(*template.Template),
-	}
-}
-
-// Iterate calls the f function with n = 1, 2, and 3.
-func Iterate(f func(next TestCase)) {
-	i := 0
-	tc := CreateShellHooksTestData().TestCases
-
-	max := len(tc) - 1
-	for i = 1; i <= max; i++ {
-		next := tc[i]
-		f(next)
-	}
-}
-
-func TestCreateIterator(t *testing.T) {
-	var i = 0
-	Iterate(func(next TestCase) {
-		i++
-		fmt.Printf("[%d] <%T> | testcase=%#v\n\n", i, next, next)
-	})
-	require.Equal(t, 6, i)
+	return f.CurrentTestCase.GetSubjectUnderTest()
 }
 
 func CreateShellHooksTestData() TestCaseCollection {
@@ -340,16 +282,27 @@ func CreateShellHooksTestData() TestCaseCollection {
 			"devctl",
 			"THEN generates DEVCTL exports",
 			matchers.ContainExport("DEVCTL_PREFIX", ".devctl"),
-			matchers.ContainExport("DEVCTL_HOME", "$HOME/$DEVCTL_PREFIX")),
+			matchers.ContainExport("DEVCTL_HOME", "$HOME/$DEVCTL_PREFIX")).
+			Configure(func(cfg *ShellHookConfig) *ShellHookConfig {
+				cfg.CreateDevctlSection()
+				return cfg
+			}),
 		NewTestCase(
 			"devctl",
 			"THEN generates DEVCTL section header",
-			matchers.HaveSectionHeader("DEVCTL")),
+			matchers.HaveSectionHeader("DEVCTL")).
+			Configure(func(cfg *ShellHookConfig) *ShellHookConfig {
+				cfg.CreateDevctlSection()
+				return cfg
+			}),
 		NewTestCase(
 			"devctl",
 			"THEN generates newlines after exports",
-			HaveSuffix("\n\n")),
-
+			HaveSuffix("\n\n")).
+			Configure(func(cfg *ShellHookConfig) *ShellHookConfig {
+				cfg.CreateDevctlSection()
+				return cfg
+			}),
 		// sdk
 		NewTestCase(
 			"sdk",
@@ -361,7 +314,7 @@ func CreateShellHooksTestData() TestCaseCollection {
 			matchers.ContainExport("SCALA_HOME", "$HOME/sdks/scala/current")).
 			Configure(func(cfg *ShellHookConfig) *ShellHookConfig {
 				return cfg.AddOrUpdateSection(
-					CreateSDKSection("go", "java", "dotnet", "scala"),
+					CreateSDKSection(cfg.GeneratorGetter, "go", "java", "dotnet", "scala"),
 				)
 			}),
 
