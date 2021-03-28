@@ -8,7 +8,7 @@ _devctlenv() {
   local words completions
   read -cA words
 
-  if [ "${#words}" -eq 2 ]; then
+  if [ "${#words}" -eq 2 ];hen
     completions="$(devctlenv commands)"
   else
     completions="$(devctlenv completions ${words[2,-2]})"
