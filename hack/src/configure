@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+#set -e
 
 src_dir="${0%/*}"
 
@@ -19,22 +19,22 @@ if ! type -p "$CC" >/dev/null; then
 fi
 
 case "$(uname -s)" in
-Darwin* )
+Darwin*)
   host_os="darwin$(uname -r)"
   ;;
-FreeBSD* )
+FreeBSD*)
   host_os="freebsd$(uname -r)"
   ;;
-OpenBSD* )
+OpenBSD*)
   host_os="openbsd$(uname -r)"
   ;;
-* )
+*)
   host_os="linux-gnu"
+  ;;
 esac
 
 eval "$("$src_dir"/shobj-conf -C "$CC" -o "$host_os")"
-cp "$src_dir/Makefile.in" "$src_dir/Makefile.in.backup"
-
+cp "$src_dir"/Makefile.in "$src_dir"/Makefile.in.backup 
 
 sed  "
   s#@CC@#${CC}#
@@ -51,4 +51,5 @@ sed  "
   s#@SHOBJ_STATUS@#${SHOBJ_STATUS}#
 " "$src_dir"/Makefile.in > "$src_dir"/Makefile
 
-cat "$src_dir/Makefile.in.backup" > "$src_dir"/src/Makefile"
+
+cat "$src_dir"/Makefile.in.backup > "$src_dir"/Makefile.in

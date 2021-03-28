@@ -6,27 +6,27 @@ set -e
 # DEVCTL Constants
 # --------------------------------------------------
 export DEVCTL_ENV_EXEC="devctlenv"
-export DEVCTL_SHIM_ROOT="$DEVCTL_ROOT/shims"
+export DEVCTL_SHIM_ROOT="$DEVCTL_ROOT/shims":
 export DEVCTL_HOOK_DIRNAME="devctl_hooks.d"
 
-
-if [ "--debug" == "$1"  ]; then
+if [ "--debug" == "$1" ]; then
   export DEVCTL_DEBUG=1
   shift
 fi
-
 
 export DEVCTL_DEBUG=1
 if [ -n "$DEVCTL_DEBUG" ]; then
   # https://wiki-dev.bash-hackers.org/scripting/debuggingtips#making_xtrace_more_useful
   export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
-  echo  $PS4
   set -x
 fi
 
 abort() {
-  { if [ "$#" -eq 0 ]; then cat -
-    else echo "$DEVCTL_ENV_EXEC: $*"
+  {
+    if [ "$#" -eq 0 ]; then
+      cat -
+    else
+      echo "$DEVCTL_ENV_EXEC: $*"
     fi
   } >&2
   exit 1
@@ -53,19 +53,25 @@ else
 
     # Use a subshell to avoid changing the current path
     (
-    while [ -n "$path" ]; do
-      cd_path="${path%/*}"
-      if [[ "$cd_path" != "$path" ]]; then
-        cd "$cd_path"
-      fi
-      name="${path##*/}"
-      path="$(resolve_link "$name" || true)"
-    done
+      while [ -n "$path" ]; do
+        cd_path="${path%/*}"
+        if [[ "$cd_path" != "$path" ]]; then
+          cd "$cd_path"
+        fi
+        name="${path##*/}"
+        path="$(resolve_link "$name" || true)"
+      done
 
-    echo "$PWD"
+      echo "$PWD"
     )
   }
 fi
+
+
+
+# --------------------------------------------------
+# DEVCTL_ROOT
+# --------------------------------------------------
 
 if [ -z "${DEVCTL_ROOT}" ]; then
   DEVCTL_ROOT="${HOME}/.devctl"
@@ -74,17 +80,27 @@ else
 fi
 export DEVCTL_ROOT
 
-if [ -z "${PYENV_DIR}" ]; then
-  PYENV_DIR="$PWD"
+
+# --------------------------------------------------
+# DEVCTL_DIR
+# --------------------------------------------------
+
+if [ -z "${DEVCTL_DIR}" ]; then
+  DEVCTL_DIR="$PWD"
 fi
-
-if [ ! -d "$PYENV_DIR" ] || [ ! -e "$PYENV_DIR" ]; then
-  abort "cannot change working directory to \`$PYENV_DIR'"
+if [ ! -d "$DEVCTL_DIR" ] || [ ! -e "$DEVCTL_DIR" ]; then
+  abort "cannot change working directory to \`$DEVCTL_DIR'"
 fi
+DEVCTL_DIR=$(cd "$DEVCTL_DIR" && echo "$PWD")
+export DEVCTL_DIR
 
-PYENV_DIR=$(cd "$PYENV_DIR" && echo "$PWD")
-export PYENV_DIR
 
+
+
+
+# --------------------------------------------------
+# DEVCTL_HOOKS
+# --------------------------------------------------
 
 shopt -s nullglob
 
@@ -98,44 +114,41 @@ done
 export PATH="${bin_path}:${PATH}"
 
 
-
-DEVCTL_HOOK_PATH="${DEVCTL_HOOK_PATH}:${DEVCTL_ROOT}/${DEVCTL_HOOK_DIRNAME}"
+DEVCTL_HOOK_PATH="${DEVCTL_HOOK_PATH}:${DEVCTL_ROOT}/devctlenv.d"
 if [ "${bin_path%/*}" != "$DEVCTL_ROOT" ]; then
   # Add devctl_hooks's own `devctl_hooks.d` unless devctl was cloned to DEVCTL_ROOT
-  DEVCTL_HOOK_PATH="${DEVCTL_HOOK_PATH}:${bin_path%/*}/${DEVCTL_HOOK_DIRNAME}"
+  DEVCTL_HOOK_PATH="${DEVCTL_HOOK_PATH}:${bin_path%/*}/devctlenv.d"
 fi
-
-DEVCTL_HOOK_PATH"${DEVCTL_HOOK_PATH}:/usr/local/etc/${DEVCTL_HOOK_DIRNAME}:/etc/${DEVCTL_HOOK_DIRNAME}:/usr/lib/devctl/hooks"
+DEVCTL_HOOK_PATH="${DEVCTL_HOOK_PATH}:/usr/local/etc/${DEVCTL_HOOK_DIRNAME}:/etc/${DEVCTL_HOOK_DIRNAME}:/usr/lib/devctl/hooks"
 for plugin_hook in "${DEVCTL_ROOT}/plugins/"*/etc/"${DEVCTL_HOOK_DIRNAME}"; do
   DEVCTL_HOOK_PATH="${DEVCTL_HOOK_PATH}:${plugin_hook}"
 done
 DEVCTL_HOOK_PATH="${DEVCTL_HOOK_PATH#:}"
 export DEVCTL_HOOK_PATH
-
 shopt -u nullglob
+
+
+# --------------------------------------------------
+# DEVCTLENV ARGS
+# --------------------------------------------------
+
 
 command="$1"
 case "$command" in
-"" )
-  { "${DEVCTL_ENV_EXEC}---version"
-    # devctlenv---version
-
-    "${DEVCTL_ENV_EXEC}-help"
-    # devctlenv-help
+"")
+  {
+    devctlenv---version
+    devctlenv-help
   } | abort
   ;;
--v | --version )
-  exec "${DEVCTL_ENV_EXEC}---version"
-  # exec devctlenv---version
-
+-v | --version)
+  exec devctlenv---version
   ;;
--h | --help )
-  exec "${DEVCTL_ENV_EXEC}-help"
-  # exec devctlenv-help
-
+-h | --help)
+  exec devctlenv-help
   ;;
-* )
-  command_path="$(command -v "${DEVCTL_ENV_EXEC}-$command" || true)"
+*)
+  command_path="$(command -v "devctlenv-$command" || true)"
   if [ -z "$command_path" ]; then
     if [ "$command" == "shell" ]; then
       abort "shell integration not enabled. Run \`${DEVCTL_ENV_EXEC} init' for instructions."
@@ -147,7 +160,7 @@ case "$command" in
   shift 1
   if [ "$1" = --help ]; then
     if [[ "$command" == "sh-"* ]]; then
-      echo "${DEVCTL_ENV_EXEC} help \"$command\""
+      echo "$DEVCTL_ENV_EXEC help \"$command\""
     # echo devctlenv help \"$command\""
 
     else
