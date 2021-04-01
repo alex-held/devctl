@@ -30,7 +30,7 @@ require (
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.7.1
-	github.com/stretchr/testify v1.7.0 // indirect
+	github.com/stretchr/testify v1.7.0
 	go.mongodb.org/mongo-driver v1.4.6 // indirect
 	go.uber.org/zap v1.16.0 // indirect
 	golang.org/x/sys v0.0.0-20210220050731-9a76102bfb43 // indirect
