@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+export GOPATH="$HOME/go"
+export GOROOT=
+
+
+exec devctlenv
+
+exec go exec "$(basename "$0")"
+
+
+
+
