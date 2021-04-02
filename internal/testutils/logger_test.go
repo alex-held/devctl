@@ -10,7 +10,7 @@ import (
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 
-	"github.com/alex-held/devctl/internal/logging"
+	"github.com/alex-held/devctl/pkg/logging"
 )
 
 func TestLogger_Captures_LogMessages(t *testing.T) {

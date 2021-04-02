@@ -20,7 +20,7 @@ import (
 	"github.com/coreos/etcd/pkg/stringutil"
 	_ "github.com/onsi/gomega/matchers"
 
-	"github.com/alex-held/devctl/internal/logging"
+	"github.com/alex-held/devctl/pkg/logging"
 )
 
 func TestHomeFinder(t *testing.T) {

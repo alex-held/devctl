@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/alex-held/devctl/internal/logging"
+	"github.com/alex-held/devctl/pkg/logging"
 
 	"github.com/coreos/etcd/client"
 	"github.com/mitchellh/go-homedir"
@@ -85,7 +85,7 @@ func newApp(option ...StaticOption) (cli *app) {
 	cli = &app{
 		staticConfig: c,
 		context: NewContextified(&GlobalContext{
-			Log: l,
+			Log: &l,
 		}),
 	}
 

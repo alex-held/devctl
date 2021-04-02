@@ -25,6 +25,7 @@ tasks:
     cmds:
       - go mod download
       - go get -u
+      - go install github.com/spf13/cobra/cobra
       - ./build/install-tools.sh -b {{.BIN_DIR}}
 
   install:
@@ -44,7 +45,6 @@ tasks:
   build:
     desc: Builds {{.PROJECT}}
     cmds:
-      - task: install-deps
       - go build -v -o out/{{.PROJECT}}
 
   test:cover:

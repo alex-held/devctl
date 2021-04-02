@@ -8,6 +8,8 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
+
+	"github.com/alex-held/devctl/internal/devctlpath"
 )
 
 type DevEnvGlobalConfig struct {
@@ -34,19 +36,32 @@ type DevEnvConfig struct {
 	SDKConfig    DevEnvSDKSConfig   `yaml:"SDK,omitempty" mapstructure:"SDK,omitempty"`
 }
 
+func (d *DevEnvConfig) GoString() string {
+	b, e := yaml.Marshal(d)
+	if e != nil {
+		return e.Error()
+	}
+	return fmt.Sprintf("%+v", string(b))
+}
+
+var initialized bool = false
+
 func InitViper(filename string) {
 	dir := path.Dir(filename)
 	config := path.Base(filename)
-
-	fmt.Printf("Config Directory: '%s'\n", dir)
-	fmt.Printf("Config File: '%s'\n", config)
 	viper.AddConfigPath(dir)
 	viper.SetConfigName(config)
 	viper.SetConfigType("yaml")
+	initialized = true
 }
 
 func LoadViperConfig() *DevEnvConfig {
-	configuration := &DevEnvConfig{}
+	if !initialized {
+		cfgPath := devctlpath.DevCtlConfigFilePath()
+		InitViper(cfgPath)
+	}
+
+	configuration := Default()
 
 	if err := viper.ReadInConfig(); err != nil {
 		_ = fmt.Errorf("error reading config file, %s\n ", err)
@@ -57,6 +72,15 @@ func LoadViperConfig() *DevEnvConfig {
 		_ = fmt.Errorf("unable to decode into struct, %v\n ", err)
 	}
 	return configuration
+}
+
+func Default() *DevEnvConfig {
+	return &DevEnvConfig{
+		GlobalConfig: DevEnvGlobalConfig{Version: VersionV1},
+		SDKConfig: DevEnvSDKSConfig{
+			SDKS: []DevEnvSDKConfig{},
+		},
+	}
 }
 
 func UpdateDevEnvConfig(cfg DevEnvConfig) error {

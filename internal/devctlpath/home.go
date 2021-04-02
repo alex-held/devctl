@@ -30,6 +30,10 @@ func (f *lazypathFinder) ConfigFilePath() string {
 }
 
 // ConfigPath returns the path where Helm stores configuration.
+func DefaultPather() Pather                     { return lf }
+func (f *lazypathFinder) DefaultPather() Pather { return f }
+
+// ConfigPath returns the path where Helm stores configuration.
 func ConfigPath(elem ...string) string                 { return lf.Config(elem...) }
 func (f *lazypathFinder) Config(elem ...string) string { return f.resolveSubDir("config", elem...) }
 

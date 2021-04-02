@@ -16,7 +16,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
 
-	"github.com/alex-held/devctl/internal/logging"
+	"github.com/alex-held/devctl/pkg/logging"
 
 	"github.com/alex-held/devctl/internal/system"
 	"github.com/alex-held/devctl/internal/testutils"

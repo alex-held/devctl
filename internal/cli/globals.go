@@ -3,7 +3,7 @@ package cli
 import (
 	logger "github.com/sirupsen/logrus"
 
-	"github.com/alex-held/devctl/internal/logging"
+	"github.com/alex-held/devctl/pkg/logging"
 )
 
 // VDebugLog is a "Verbose" debug logger; enable it if you really
@@ -24,8 +24,8 @@ func NewVDebugLog(l *logger.Logger) *VDebugLog {
 }
 
 type GlobalContext struct {
-	Log *logging.Logger // Handles all logging
-	VDL *VDebugLog      // verbose debug log
+	Log *logging.Log // Handles all logging
+	VDL *VDebugLog   // verbose debug log
 
 	// API                              API
 	/* How to make a REST call to the server */

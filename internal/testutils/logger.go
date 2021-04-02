@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/alex-held/devctl/internal/logging"
+	"github.com/alex-held/devctl/pkg/logging"
 
 	"github.com/sirupsen/logrus"
 )

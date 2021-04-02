@@ -11,7 +11,7 @@ import (
 	"github.com/alex-held/devctl/internal/config"
 
 	"github.com/alex-held/devctl/internal/devctlpath"
-	"github.com/alex-held/devctl/internal/logging"
+	"github.com/alex-held/devctl/pkg/logging"
 )
 
 func TestUse_UseSDKf(t *testing.T) {

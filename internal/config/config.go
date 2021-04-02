@@ -93,6 +93,7 @@ func Load(fs afero.Fs, pather devctlpath.Pather) (cfg *Config, err error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to read config file from fs; path=%s", cfgPath)
 	}
+	fmt.Printf("[CONFIG:RAWFILE]\t%s", string(configBytes))
 	cfg = NewBlankConfig()
 	err = yaml.Unmarshal(configBytes, cfg)
 	if err != nil {

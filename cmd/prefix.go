@@ -20,6 +20,11 @@ func NewPrefixCommand() *cobra.Command {
 			return listSdks(), cobra.ShellCompDirectiveDefault
 		},
 		Run: func(c *cobra.Command, args []string) {
+			if len(args) != 0 {
+				// app := cli.GetOrCreateCLI()
+				// config := app.GetOrCreateConfig()
+			}
+
 			config := viper.ConfigFileUsed()
 			homeDir, err := homedir.Dir()
 			if err != nil {
