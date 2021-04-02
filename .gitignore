@@ -12,6 +12,7 @@ target/
 testdata/devenv.yaml
 out/
 build/bin/**
+!build/bin/.gitkeep
 
 *.iml
 **/.DS_Store
