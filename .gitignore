@@ -10,7 +10,8 @@ target/
 
 
 testdata/devenv.yaml
-out/**
+out/
+build/bin/**
 
 *.iml
 **/.DS_Store
