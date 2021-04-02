@@ -33,7 +33,7 @@ type ActionTestFixture struct {
 	g        *goblin.G
 	actions  *Actions
 	fs       afero.Fs
-	logger   *logging.Logger
+	logger   logging.Log
 	mux      *http.ServeMux
 	teardown testutils.Teardown
 	context  context.Context
@@ -58,7 +58,7 @@ func SetupFs(g *goblin.G, fs afero.Fs, dirs []string, links map[string]string) {
 	}
 }
 
-func SetupFixtureDeps(g *goblin.G, fs afero.Fs, pather devctlpath.Pather, logger *logging.Logger, td func()) (fixture *ActionTestFixture) {
+func SetupFixtureDeps(g *goblin.G, fs afero.Fs, pather devctlpath.Pather, logger logging.Log, td func()) (fixture *ActionTestFixture) {
 	const baseURLPath = "/2"
 	mux := http.NewServeMux()
 
@@ -98,7 +98,7 @@ func SetupFixtureDeps(g *goblin.G, fs afero.Fs, pather devctlpath.Pather, logger
 }
 
 func SetupFixture(g *goblin.G) (fixture *ActionTestFixture) {
-	return SetupFixtureDeps(g, afero.NewMemMapFs(), devctlpath.NewPather(), testutils.NewLogger(), func() {})
+	return SetupFixtureDeps(g, afero.NewMemMapFs(), devctlpath.NewPather(), logging.NewLogger(), func() {})
 }
 
 func TestNewActions(t *testing.T) {

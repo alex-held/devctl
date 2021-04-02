@@ -2,12 +2,9 @@ package logging
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 
 	"github.com/sirupsen/logrus"
-
-	"github.com/alex-held/devctl/pkg/constants"
 )
 
 type LogLevel int
@@ -45,6 +42,7 @@ const (
 )
 
 type Log interface {
+	logrus.FieldLogger
 	Fatalf(format string, args ...interface{})
 	Panicf(format string, args ...interface{})
 	Errorf(format string, args ...interface{})
@@ -59,7 +57,6 @@ type Log interface {
 
 func (l *Logger) Fatalf(format string, args ...interface{}) {
 	l.logger.Fatalf("%s%s", l.prefix(), fmt.Sprintf(format, args...))
-	os.Exit(constants.Failure)
 }
 
 func (l *Logger) Panicf(format string, args ...interface{}) {

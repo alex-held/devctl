@@ -18,12 +18,12 @@ type Options struct {
 	Fs     afero.Fs
 	Pather devctlpath.Pather
 	Client *sdkman.Client
-	Logger *logging.Logger
+	Logger logging.Log
 }
 
 type Option func(options *Options) *Options
 
-func WithLogger(l *logging.Logger) Option {
+func WithLogger(l logging.Log) Option {
 	return func(o *Options) *Options {
 		o.Logger = l
 		return o

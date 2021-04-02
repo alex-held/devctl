@@ -18,7 +18,7 @@ func TestFormatLogMessage(t *testing.T) {
 	log.Level = logrus.TraceLevel
 	log.Info("Log messager here ✅")
 
-	expected := "\x1B[;2m[ \x1B[0m\x1b[96;1;4mINFO\x1b[0m\x1b[;2m ]\x1b[0m\x1b[;2m\t\x1b[0mLog messager here ✅\n"
+	expected := "\x1b[;2m[ \x1b[0m\x1b[38;2;23;175;225;1;4mINFO\x1b[0m\x1b[;2m ]\x1b[0m\x1b[;2m\t\x1b[0mLog messager here ✅\n"
 
 	assert.Equal(t, expected, b.String())
 }
@@ -34,33 +34,33 @@ func TestColorOutput(t *testing.T) {
 		{
 			Level:    LogLevelDebug,
 			Message:  "The file /Users/dev/go/src/github.com/alex-held/devctl/pkg.golang.org does not exist.",
-			Expected: "\x1b[;2m[ \x1b[0m\x1b[90;1;4mDEBUG\x1b[0m\x1b[;2m ]\x1b[0m\x1b[;2m\t\x1b[0mThe file /Users/dev/go/src/github.com/alex-held/devctl/pkg.golang.org does not exist.\n",
+			Expected: "\x1b[;2m[ \x1b[0m\x1b[38;2;23;175;225;1;4mDEBUG\x1b[0m\x1b[;2m ]\x1b[0m\x1b[;2m\t\x1b[0mThe file /Users/dev/go/src/github.com/alex-held/devctl/pkg.golang.org does not exist.\n",
 		},
 		{
 			Level:    LogLevelInfo,
 			Message:  "insert into the template",
-			Expected: "\x1b[;2m[ \x1b[0m\x1b[96;1;4mINFO\x1b[0m\x1b[;2m ]\x1b[0m\x1b[;2m\t\x1b[0minsert into the template\n",
+			Expected: "\x1b[;2m[ \x1b[0m\x1b[38;2;23;175;225;1;4mINFO\x1b[0m\x1b[;2m ]\x1b[0m\x1b[;2m\t\x1b[0minsert into the template\n",
 		},
 		{
 			Level:    LogLevelWarn,
 			Message:  "Could not find 'sdk/current' PATH",
-			Expected: "\x1b[;2m[ \x1b[0m\x1b[93;1;4mWARNING\x1b[0m\x1b[;2m ]\x1b[0m\x1b[;2m\t\x1b[0mCould not find 'sdk/current' PATH\n",
+			Expected: "\x1b[;2m[ \x1b[0m\x1b[38;2;249;254;0;1;4mWARNING\x1b[0m\x1b[;2m ]\x1b[0m\x1b[;2m\t\x1b[0mCould not find 'sdk/current' PATH\n",
 		},
 		{
 			Level:    LogLevelError,
 			Message:  "Prepare some data to insert into the template.",
-			Expected: "\x1b[;2m[ \x1b[0m\x1b[95;1;4mERROR\x1b[0m\x1b[;2m ]\x1b[0m\x1b[;2m\t\x1b[0mPrepare some data to insert into the template.\n",
+			Expected: "\x1b[;2m[ \x1b[0m\x1b[38;2;255;60;109;1;4mERROR\x1b[0m\x1b[;2m ]\x1b[0m\x1b[;2m\t\x1b[0mPrepare some data to insert into the template.\n",
 		},
 	}
 
 	for _, msg := range logMsgs {
 		b := &bytes.Buffer{}
 		log := NewLogger(WithBuffer(b), WithLevel(LogLevelDebug))
+
 		log.Logf(msg.Level, msg.Message)
 
 		actual := b.String()
 		assert.Equal(t, msg.Expected, actual)
-		b.Reset()
 	}
 }
 

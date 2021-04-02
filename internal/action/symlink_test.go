@@ -25,7 +25,7 @@ func TestSymlink_LinkCurrentSDKF(t *testing.T) {
 		var fs afero.Fs
 		var fixture *ActionTestFixture
 		var sut *Symlink
-		var logger *logging.Logger
+		var logger logging.Log
 		const sdk = "scala"
 		const version = "2.13.4"
 		var installedSdkPath string
@@ -45,7 +45,7 @@ func TestSymlink_LinkCurrentSDKF(t *testing.T) {
 			if err != nil {
 				g.Fatalf("failed to create tmp dir in setup; error=%v", err)
 			}
-			logger.Tracef("Tempdir=%s", dir)
+			logger.Debugf("Tempdir=%s", dir)
 			teardown := func() {
 				err := fs.RemoveAll(dir)
 				if err != nil {
@@ -80,7 +80,7 @@ func TestSymlink_LinkCurrentSDKF(t *testing.T) {
 		var fs afero.Fs
 		var fixture *ActionTestFixture
 		var sut *Symlink
-		var logger *logging.Logger
+		var logger logging.Log
 		const sdk = "scala"
 		const version = "2.13.4"
 		const alreadyLinkedVersion = "2.10.0"
@@ -106,7 +106,7 @@ func TestSymlink_LinkCurrentSDKF(t *testing.T) {
 			if err != nil {
 				g.Fatalf("failed to create tmp dir in setup; error=%v", err)
 			}
-			logger.Tracef("Tempdir=%s", dir)
+			logger.Debugf("Tempdir=%s", dir)
 			teardown := func() {
 				err = fs.RemoveAll(dir)
 				if err != nil {

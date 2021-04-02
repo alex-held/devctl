@@ -3,6 +3,7 @@ module github.com/alex-held/devctl
 go 1.16
 
 require (
+	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/bndr/gotabulate v1.1.2

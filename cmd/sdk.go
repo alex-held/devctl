@@ -2,11 +2,17 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"github.com/bndr/gotabulate"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
 	config2 "github.com/alex-held/devctl/internal/config"
+	"github.com/alex-held/devctl/internal/devctlpath"
+	"github.com/alex-held/devctl/pkg/constants"
 
 	"github.com/alex-held/devctl/internal/cli"
 )
@@ -45,14 +51,14 @@ func newSdkVersionsCommand() *cobra.Command {
 			cfg := config2.LoadViperConfig()
 
 			var tVals [][]interface{}
-			for _, sdk := range cfg.SDKConfig.SDKS {
+			for _, sdk := range cfg.Sdks {
 				currentVal := sdk.Current
 				if currentVal == "" {
 					currentVal = "<not installed>"
 				}
-				tRowHeader := []interface{}{sdk.SDK, currentVal, "", ""}
+				tRowHeader := []interface{}{sdk, currentVal, "", ""}
 				tVals = append(tVals, tRowHeader)
-				for _, sdkInstallationConfig := range sdk.Installations {
+				for _, sdkInstallationConfig := range sdk.Candidates {
 					tRow := []interface{}{
 						"",
 						"",
@@ -103,25 +109,36 @@ func sdkVersionsListCommandfunc(cmd *cobra.Command, args []string) {
 func listSdkVersions(sdk string) (versions []string) {
 	cfg := config2.LoadViperConfig()
 
-	for _, sdkConfig := range cfg.SDKConfig.SDKS {
-		if sdkConfig.SDK == sdk {
-			for _, sdkInstallation := range sdkConfig.Installations {
-				versions = append(versions, sdkInstallation.Version)
-			}
+	for _, sdkConfig := range cfg.Sdks {
+		for _, sdkInstallation := range sdkConfig.Candidates {
+			versions = append(versions, sdkInstallation.Version)
 		}
 	}
-
 	return versions
 }
 
+var sdk_current_path *string
+var sdk_name *string
+var sdk_candidate_path *string
+var sdk_version *string
+var sdk_candidates []string
+
 // newSdkAddCommand creates the `devenv sdk add` command
 func newSdkAddCommand() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "add [sdk]",
 		Short: "Adds a local SDK",
 		Args:  cobra.ExactArgs(1),
 		Run:   sdkAddCommandfunc,
 	}
+
+	cmd.Flags().StringVarP(sdk_current_path, "current", "c", "", "--current '~/.devctl/sdks/java/adopt-jdk/16.1'")
+	cmd.Flags().StringVarP(sdk_name, "name", "n", "", "--name 'java'")
+	cmd.Flags().StringVarP(sdk_version, "version", "v", "", "--version '1.0.0'")
+	cmd.Flags().StringVarP(sdk_candidate_path, "path", "p", "", "--path '~/.devctl/sdks/java/adopt-jdk/16.1'")
+	cmd.Flags().StringArrayVarP(&sdk_candidates, "candidates", "c", []string{}, "--candidates ~/.devctl/sdks/java/adopt-jdk/16.1'")
+
+	return cmd
 }
 
 // newSdkRemoveCommand creates the `devenv sdk remove` command
@@ -147,14 +164,14 @@ func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 	removeSDK := args[0]
 	devEnvConfig := config2.LoadViperConfig()
 
-	filteredSdks := devEnvConfig.SDKConfig.SDKS[:0]
-	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
-		if sdkConfig.SDK != removeSDK {
-			filteredSdks = append(filteredSdks, sdkConfig)
+	filteredSdks := devEnvConfig.Sdks
+
+	for sdk, config := range devEnvConfig.Sdks {
+		if sdk != removeSDK {
+			filteredSdks[sdk] = config
 		}
 	}
-	devEnvConfig.SDKConfig.SDKS = filteredSdks
-
+	devEnvConfig.Sdks = filteredSdks
 	err := config2.UpdateDevEnvConfig(*devEnvConfig)
 	if err != nil {
 		cli.ExitWithError(1, err)
@@ -168,21 +185,56 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	}
 
 	addSDK := args[0]
-	devEnvConfig := config2.LoadViperConfig()
-	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
-		if sdkConfig.SDK == addSDK {
-			cli.ExitWithError(1, fmt.Errorf("SDK'%s' already configured. ", addSDK))
-			return
+
+	cfg := config2.LoadViperConfig()
+
+	// Determine whether or not the sdk is already already tracked
+	if sdk, ok := cfg.Sdks[addSDK]; ok {
+		// Add sdk-candidate path to sdk
+		sdk.Candidates = append(sdk.Candidates, config2.SDKCandidate{
+			Path:    *sdk_candidate_path,
+			Version: *sdk_version,
+		})
+		cfg.Sdks[addSDK] = sdk
+
+		err := config2.WriteDevEnvConfig("$HOME/.devctl2/ccc33.yaml", *cfg)
+		if err != nil {
+			err = errors.Wrapf(err, "failed to save config. sdk not added.\n")
+			cli.ExitWithError(constants.Failure, err)
 		}
-	}
 
-	devEnvConfig.SDKConfig.SDKS = append(devEnvConfig.SDKConfig.SDKS, config2.DevEnvSDKConfig{
-		SDK: addSDK,
-	})
+		// Quit
+		os.Exit(0)
+	} else {
+		// Add new sdk
+		newSDKConfig := config2.DevEnvSDKConfig{
+			Current:    "latest",
+			Candidates: []config2.SDKCandidate{},
+		}
 
-	err := config2.UpdateDevEnvConfig(*devEnvConfig)
-	if err != nil {
-		cli.ExitWithError(1, err)
+		*sdk_name = devctlpath.SDKsPath(addSDK)
+		sdk_candidate_dirs, err := ioutil.ReadDir(*sdk_name)
+		if err != nil {
+			panic(err)
+		}
+
+		for _, candidate_dir := range sdk_candidate_dirs {
+			if candidate_dir.IsDir() {
+				name := candidate_dir.Name()
+				newSDKConfig.Candidates = append(newSDKConfig.Candidates, config2.SDKCandidate{
+					Path:    name,
+					Version: filepath.Dir(name),
+				})
+			}
+			fmt.Printf("Candidate '%s' is not a directory.", candidate_dir.Name())
+		}
+
+		cfg.Sdks[addSDK] = newSDKConfig
+		err = config2.WriteDevEnvConfig("$HOME/.devctl2/ccc.yaml", *cfg)
+		if err != nil {
+			err = errors.Wrapf(err, "failed to save config. sdk not added.\n")
+			cli.ExitWithError(constants.Failure, err)
+		}
 	}
 }
 
@@ -195,8 +247,8 @@ func sdkListCommandfunc(cmd *cobra.Command, args []string) {
 
 func listSdks() (sdks []string) {
 	devenv := config2.LoadViperConfig()
-	for _, sdk := range devenv.SDKConfig.SDKS {
-		sdks = append(sdks, sdk.SDK)
+	for _, sdk := range devenv.Sdks {
+		sdks = append(sdks, sdk.Current)
 	}
 	return sdks
 }

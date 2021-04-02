@@ -26,16 +26,16 @@ func (l lLevel) ColorPrintf(format string, args ...interface{}) termenv.Style {
 }
 
 func (l lLevel) Color() termenv.Color {
-	var clr termenv.Color
+	var clr termenv.RGBColor = termenv.RGBColor("#17AFE1")
 	switch logrus.Level(l) {
 	case logrus.DebugLevel, logrus.TraceLevel:
-		clr = termenv.ANSIBrightBlack
+		clr = termenv.RGBColor("#17AFE1")
 	case logrus.InfoLevel:
-		clr = termenv.ANSIBrightCyan
+		clr = termenv.RGBColor("#17AFE1")
 	case logrus.WarnLevel:
-		clr = termenv.ANSIBrightYellow
+		clr = termenv.RGBColor("#F9FE00")
 	case logrus.ErrorLevel, logrus.FatalLevel, logrus.PanicLevel:
-		clr = termenv.ANSIBrightMagenta
+		clr = termenv.RGBColor("#FF3D6D")
 	default:
 		panic(fmt.Errorf("logrus.Level know supported"))
 	}

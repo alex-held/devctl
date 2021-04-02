@@ -13,7 +13,6 @@ import (
 
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
-	"github.com/sirupsen/logrus"
 
 	"github.com/alex-held/devctl/internal/system"
 
@@ -391,7 +390,7 @@ type GoblinG struct {
 	TestingTB testing.TB
 	*goblin.G
 	QuickCheckConfig *quick.Config
-	Logger           *logging.Logger
+	Logger           logging.Log
 }
 
 func TestPather_QuickCheck(t *testing.T) {
@@ -399,7 +398,7 @@ func TestPather_QuickCheck(t *testing.T) {
 		TestingTB:        t,
 		G:                goblin.Goblin(t),
 		QuickCheckConfig: NewQuickCheckConfig(5000, 100),
-		Logger:           logging.NewLogger(logging.WithOutputs(), logging.WithLevel(logrus.ErrorLevel)),
+		Logger:           logging.NewLogger(logging.WithOutputs(), logging.WithLevel(logging.LogLevelError)),
 	}
 
 	tt := map[string]struct {

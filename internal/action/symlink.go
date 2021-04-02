@@ -24,10 +24,7 @@ func (s *Symlink) LinkCurrentSDK(sdk, version string) (current string, err error
 	}
 
 	cmd := exec.Command("ln", "-Ffsn", versionPath, currentPath)
-	s.Options.Logger.Tracef("Command=%s\n", cmd.String())
-
-	cmd.Stdout = s.Options.Logger.Output
-	cmd.Stderr = s.Options.Logger.Error
+	s.Options.Logger.Debugf("Command=%s\n", cmd.String())
 
 	err = cmd.Run()
 	if err != nil {

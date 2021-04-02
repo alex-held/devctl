@@ -30,6 +30,14 @@ func WithBuffer(b *bytes.Buffer) Option {
 	}
 }
 
+func WithExitFn(exitFn func(int)) Option {
+	return func(l *Logger) *Logger {
+		l.logger.ExitFunc = exitFn
+		l.exitFn = exitFn
+		return l
+	}
+}
+
 func WithOutputs(w ...io.Writer) Option {
 	return func(l *Logger) *Logger {
 		l.OutWriter = io.MultiWriter(w...)

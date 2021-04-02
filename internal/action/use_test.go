@@ -21,7 +21,7 @@ func TestUse_UseSDKf(t *testing.T) {
 	g.Describe("UseSDK", func() {
 		var fs afero.Fs
 		var pather devctlpath.Pather
-		var logger *logging.Logger
+		var logger logging.Log
 		var fixture *ActionTestFixture
 		var sut *Use
 

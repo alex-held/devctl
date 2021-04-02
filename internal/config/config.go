@@ -39,7 +39,7 @@ type SdksConfig map[string]SdkConfig
 
 type Config struct {
 	Version string     `yaml:"version"`
-	Sdks    SdksConfig `yaml:"sdks"`
+	Sdks    SdksConfig `yaml:"Sdks"`
 }
 
 func NewBlankConfig() (c *Config) {

@@ -17,4 +17,3 @@ func (e *Executor) initCompletion() {
 	}
 	completionCmd.AddCommand(zshCmd)
 }
-

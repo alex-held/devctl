@@ -24,8 +24,9 @@ import (
 
 const baseURLPath = "/2"
 
-func setup() (client *Client, logger *logging.Logger, mux *http.ServeMux, teardown testutils.Teardown) {
-	logger = testutils.NewLogger()
+func setupNamed(name string) (client *Client, b *bytes.Buffer, logger logging.Log, mux *http.ServeMux, teardown testutils.Teardown) {
+	b = &bytes.Buffer{}
+	logger = logging.NewLogger(logging.WithBuffer(b), logging.WithLevel(logging.LogLevelDebug), logging.WithName(name))
 
 	mux = http.NewServeMux()
 	fs := afero.NewMemMapFs()
@@ -49,7 +50,11 @@ func setup() (client *Client, logger *logging.Logger, mux *http.ServeMux, teardo
 	teardown = func() {
 		server.Close()
 	}
-	return client, logger, mux, teardown
+	return client, b, logger, mux, teardown
+}
+
+func setup() (client *Client, b *bytes.Buffer, logger logging.Log, mux *http.ServeMux, teardown testutils.Teardown) {
+	return setupNamed("")
 }
 
 func testMethod(t testing.TB, r *http.Request, want string) {
@@ -65,19 +70,20 @@ func TestSdkmanClient_ListCandidates(t *testing.T) {
 
 	g.Describe("Client", func() {
 		var client *Client
-		var logger *logging.Logger
+		var b *bytes.Buffer
+		var logger logging.Log
 		var mux *http.ServeMux
 		var teardown testutils.Teardown
 		var ctx context.Context
 
 		g.Describe("Download", func() {
 			g.JustBeforeEach(func() {
-				client, logger, mux, teardown = setup()
+				client, b, logger, mux, teardown = setup()
 				ctx = context.Background()
 			})
 
 			g.AfterEach(func() {
-				logger.Output.Reset()
+				b.Reset()
 				teardown()
 			})
 
@@ -108,14 +114,14 @@ func TestClient_Download(t *testing.T) {
 			expectedTestDataPath := os.ExpandEnv("testdata/scala-1.8")
 
 			var client *Client
-			var logger *logging.Logger
+			var logger logging.Log
 			var mux *http.ServeMux
 			var _ bytes.Buffer
 			var teardown testutils.Teardown
 			var ctx context.Context
 
 			g.JustBeforeEach(func() {
-				client, logger, mux, teardown = setup()
+				client, _, logger, mux, teardown = setup()
 				ctx = context.Background()
 			})
 

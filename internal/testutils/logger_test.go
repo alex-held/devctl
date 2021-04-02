@@ -1,7 +1,7 @@
 package testutils
 
 import (
-	"errors"
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
@@ -9,80 +9,75 @@ import (
 
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
+	"github.com/pkg/errors"
 
-	"github.com/alex-held/devctl/pkg/logging"
+	. "github.com/alex-held/devctl/pkg/logging"
 )
 
 func TestLogger_Captures_LogMessages(t *testing.T) {
 	g := goblin.Goblin(t)
+	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 
 	g.Describe("Logger", func() {
-		RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
-		var logger *logging.Logger
+		var logger Log
 
 		g.Describe("GIVEN the go test -v (verbose) flag has not been set", func() {
+			var b *bytes.Buffer
+
 			g.JustBeforeEach(func() {
 				ToggleTestVerbose(false)
-				logger = logging.NewLogger()
+				b = &bytes.Buffer{}
+				logger = NewLogger(
+					WithBuffer(b),
+					WithLevel(LogLevelWarn),
+				)
 			})
 
 			g.It("WHEN loglevel is info --> THEN no log messages get captured", func() {
-				logger.
-					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
-					WithField("temp-dir-path", t.TempDir()).
-					Infof("To learn more about this cli visit our docs.")
-
-				Expect(logger.Output.String()).To(BeEmpty())
+				logger.Infof("To learn more about this cli visit our docs.")
+				output := b.String()
+				Expect(output).To(BeEmpty())
 			})
 
 			g.It("WHEN loglevel is debug --> THEN no log messages get captured", func() {
-				logger.
-					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
-					WithField("temp-dir-path", t.TempDir()).
-					Debugf("To learn more about this cli visit our docs.")
-				Expect(logger.Output.String()).To(BeEmpty())
+				logger.Debugf("To learn more about this cli visit our docs.")
+				output := b.String()
+				Expect(output).To(BeEmpty())
 			})
 
 			g.It("WHEN loglevel is warn --> THEN captures log message", func() {
-				logger.
-					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
-					WithField("temp-dir-path", t.TempDir()).
-					Warnf("To learn more about this cli visit our docs.")
-				Expect(logger.Output.String()).To(ContainSubstring("To learn more about this cli visit our docs."))
+				logger.Warnf("To learn more about this cli visit our docs.")
+				output := b.String()
+				Expect(output).To(ContainSubstring("To learn more about this cli visit our docs."))
 			})
 		})
 
 		g.Describe("GIVEN the go test -v (verbose) flag has been set", func() {
+			var b *bytes.Buffer
+
 			g.JustBeforeEach(func() {
 				ToggleTestVerbose(true)
-				logger = NewLogger()
+				b = &bytes.Buffer{}
+				logger = NewLogger(WithBuffer(b), WithLevel(LogLevelDebug))
 			})
 
 			g.It("WHEN loglevel is info --> THEN capture log messages", func() {
-				logger.
-					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
-					WithField("temp-dir-path", t.TempDir()).
-					Debugln("To learn more about this cli visit our docs.")
-				Expect(logger.Output.String()).To(ContainSubstring("To learn more about this cli visit our docs."))
-				Expect(logger.Output.Len()).To(Equal(logger.Output.Len()))
+				logger.Infof("To learn more about this cli visit our docs. devctl-path=%s; temp-dir-path=%s;\n", os.ExpandEnv("$HOME/.devctl"), t.TempDir())
+				output := b.String()
+				Expect(output).To(ContainSubstring("To learn more about this cli visit our docs."))
+				//	Expect(b.Len()).To(Equal(logger.(logging.Log).Output.Len()))
 			})
 
 			g.It("WHEN loglevel is debug --> THEN capture log messages", func() {
-				logger.
-					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
-					WithField("temp-dir-path", t.TempDir()).
-					Debugf("To learn more about this cli visit our docs.")
-				Expect(logger.Output.String()).To(ContainSubstring("To learn more about this cli visit our docs."))
-				Expect(logger.Output.Len()).To(Equal(logger.Output.Len()))
+				logger.Debugf("To learn more about this cli visit our docs. devctl-path=%s; temp-dir-path=%s\n", os.ExpandEnv("$HOME/.devctl"), t.TempDir())
+				output := b.String()
+				Expect(output).To(ContainSubstring("To learn more about this cli visit our docs."))
 			})
 
 			g.It("WHEN loglevel is warn --> THEN captures log messages", func() {
-				logger.
-					WithField("devctl-path", os.ExpandEnv("$HOME/.devctl")).
-					WithField("temp-dir-path", t.TempDir()).
-					Warnf("To learn more about this cli visit our docs.")
-				Expect(logger.Output.String()).To(ContainSubstring("To learn more about this cli visit our docs."))
-				Expect(logger.Output.Len()).To(Equal(logger.Output.Len()))
+				logger.Warnf("To learn more about this cli visit our docs. devctl-path=%s; temp-dir-path=%s\n", os.ExpandEnv("$HOME/.devctl"), t.TempDir())
+				output := b.String()
+				Expect(output).To(ContainSubstring("To learn more about this cli visit our docs."))
 			})
 		})
 	})
@@ -99,25 +94,34 @@ func ToggleTestVerbose(on bool) {
 func TestDefaultLogger_Captures_FailedState(t *testing.T) {
 	g := goblin.Goblin(t)
 
+	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
+
 	g.Describe("Logger", func() {
-		RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
-		var logger *logging.Logger
+		var logger Log
+		var b *bytes.Buffer
 		err := errors.New("fail this test")
 
 		g.JustBeforeEach(func() {
-			logger = NewLogger()
-			logger.ExitFunc = func(int) { /* ignore logger.Fatal exit codes for tests*/ }
+			b = &bytes.Buffer{}
+			logger = NewLogger(
+				WithBuffer(b),
+				WithLevel(LogLevelError),
+				WithExitFn(func(int) { /* ignore logger.Fatal exit codes for tests*/ }),
+			)
 		})
 
 		g.It("WHEN loglevel is error --> THEN captures error output", func() {
-			logger.WithError(err).Error()
-			Expect(logger.Error.String()).To(MatchRegexp("time=.*\\slevel=error error=.*fail this test\""))
-			Expect(logger.Error.Len()).To(Equal(logger.Error.Len()))
+			logger.Errorf("%v", err)
+			output := b.String()
+			Expect(output).To(ContainSubstring("fail this test"))
+			Expect(output).To(ContainSubstring("ERROR"))
 		})
 
 		g.It("WHEN loglevel is fatal --> THEN captures error output", func() {
-			logger.WithError(err).Fatal()
-			Expect(logger.Error.String()).To(MatchRegexp("time=.*\\slevel=fatal error=.*fail this test\""))
+			logger.Fatalf("%s", errors.Wrapf(err, "wrapping the failing error"))
+			output := b.String()
+			Expect(output).Should(ContainSubstring("FATAL"))
+			Expect(output).Should(ContainSubstring("wrapping the failing error: fail this test"))
 		})
 	})
 }
