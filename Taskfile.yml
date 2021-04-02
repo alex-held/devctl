@@ -4,6 +4,7 @@ version: '3'
 output: prefixed
 
 vars:
+  BIN_DIR: '{{.PWD}}/build/bin'
   PROJECT: devctl
   GIT_COMMIT:
     sh: git log -n 1 --format=%h
@@ -24,6 +25,7 @@ tasks:
     cmds:
       - go mod download
       - go get -u
+      - ./build/install-tools.sh -b {{.BIN_DIR}}
 
   install:
     desc: Installs {{.PROJECT}} into GOBIN
@@ -73,16 +75,22 @@ tasks:
   lint:
     desc: Lints & Fixes {{.PROJECT}}
     cmds:
-      - golangci-lint -v --color=always run ./...  --fix
+      - "{{.BIN_DIR}}/golangci-lint -v --color=always run ./...  --fix"
 
   lint:silently:
     desc: Lints & Fixes {{.PROJECT}}
     cmds:
-      - golangci-lint run ./... --fix
+      - "{{.BIN_DIR}}/golangci-lint run ./... --fix"
 
   lint:tool:
     desc: Lints & Fixes inside a given file {{.PROJECT}}
     vars:
       FILE:
     cmds:
-      - golangci-lint run --color=always {{.FILE}} --fix > out/lint || (cat out/lint && rm out/lint) && rm out/lint
+      - "{{.BIN_DIR}}/golangci-lint run --color=always {{.FILE}} --fix > out/lint || (cat out/lint && rm out/lint) && rm out/lint"
+
+  clean:
+    desc: Cleans temp files and folders
+    cmds:
+      - rm -rf out/
+      - rm -rf build/bin/
