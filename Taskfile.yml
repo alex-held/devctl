@@ -93,4 +93,4 @@ tasks:
     desc: Cleans temp files and folders
     cmds:
       - rm -rf out/
-      - rm -rf build/bin/
+      - rm $(find build/bin -type l -name "[a-z]*")
