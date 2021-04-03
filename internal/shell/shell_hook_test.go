@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/afero"
 	assert2 "github.com/stretchr/testify/assert"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 func setup(t *testing.T, content string) (filepath string, file afero.File, fs afero.Fs) {

@@ -5,5 +5,5 @@ type SDKPlugin interface {
 	ListVersions() []string
 	Download(version string)
 	Install(version string)
+	NewFunc() interface{ SDKPlugin }
 }
-

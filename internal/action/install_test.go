@@ -13,7 +13,7 @@ import (
 
 	"github.com/alex-held/devctl/internal/system"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 
 	"github.com/spf13/afero"
 )

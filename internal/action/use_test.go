@@ -10,7 +10,7 @@ import (
 
 	"github.com/alex-held/devctl/internal/config"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 	"github.com/alex-held/devctl/pkg/logging"
 )
 
