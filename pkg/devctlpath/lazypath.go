@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/alex-held/devctl/internal/devctlpath/xdg"
 	"github.com/alex-held/devctl/internal/system"
+	"github.com/alex-held/devctl/pkg/devctlpath/xdg"
 )
 
 const (

@@ -5,8 +5,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
 	"github.com/alex-held/devctl/internal/getter"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 // Entry

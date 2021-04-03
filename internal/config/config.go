@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/afero"
 	"gopkg.in/yaml.v2"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 var (

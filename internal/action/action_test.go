@@ -15,9 +15,9 @@ import (
 
 	"github.com/alex-held/devctl/pkg/logging"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
 	"github.com/alex-held/devctl/internal/sdkman"
 	"github.com/alex-held/devctl/internal/testutils"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 func testExists(g *goblin.G, fs afero.Fs, expected, msg string) {

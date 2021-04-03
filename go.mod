@@ -7,6 +7,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/bndr/gotabulate v1.1.2
+	github.com/codomatech/spluggy v0.0.0-20201012170228-ae9a2945c045 // indirect
 	github.com/coreos/etcd v3.3.25+incompatible
 	github.com/coreos/go-systemd v0.0.0-20191104093116-d3cd4ed1dbcf // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect

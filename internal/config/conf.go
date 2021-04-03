@@ -14,7 +14,7 @@ import (
 	"gopkg.in/yaml.v3"
 	yaml2 "sigs.k8s.io/yaml"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 // DefaultConfig creates a blank *DevEnvConfig

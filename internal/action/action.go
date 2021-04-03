@@ -9,8 +9,8 @@ import (
 
 	"github.com/alex-held/devctl/pkg/logging"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
 	"github.com/alex-held/devctl/internal/sdkman"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 // Options contains the configuration options for Actions

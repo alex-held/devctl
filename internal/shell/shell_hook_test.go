@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 	assert2 "github.com/stretchr/testify/assert"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 type ShellRC struct {
