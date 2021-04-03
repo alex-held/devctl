@@ -61,5 +61,36 @@ func TestGoSDKPlugin(t *testing.T) {
 			Expect(actual).Should(ContainElements(expected))
 			Expect(actual).Should(HaveLen(len(expected)))
 		})
+
+		g.It("NewFunc creates a valid instance of the plugin", func() {
+			actual := sut.NewFunc()
+			Expect(actual).Should(Equal("devctl-sdkplugin-go"))
+		})
+
+		g.It("NewFunc creates a valid instance of the plugin", func() {
+			actual := sut.NewFunc()
+			Expect(actual).Should(Equal("devctl-sdkplugin-go"))
+		})
+
+		g.It("WHEN Download(<version>) is called => THEN the correct version gets getting downloaded", func() {
+			sut.Download("1.16")
+			downloadPath := pathr.Download("go", "1.16")
+			dlDirExists, _ := afero.DirExists(fs, downloadPath)
+			artifactName := path.Join(downloadPath, "golang-1.16.tar.gz")
+			bytes, _ := afero.Exists(fs, artifactName)
+			Expect(dlDirExists).Should(BeTrue())
+			Expect(bytes).Should(BeNumerically(">=", 1))
+		})
+
+
+		g.It("WHEN Install(<version>) is called => THEN the correct version gets linked to current", func() {
+			sut.Download("1.16")
+			downloadPath := pathr.Download("go", "1.16")
+			dlDirExists, _ := afero.DirExists(fs, downloadPath)
+			artifactName := path.Join(downloadPath, "golang-1.16.tar.gz")
+			bytes, _ := afero.Exists(fs, artifactName)
+			Expect(dlDirExists).Should(BeTrue())
+			Expect(bytes).Should(BeNumerically(">=", 1))
+		})
 	})
 }
