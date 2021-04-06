@@ -7,8 +7,6 @@ import (
 
 	"github.com/pkg/errors"
 	assert2 "github.com/stretchr/testify/assert"
-
-	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 type ShellRC struct {
@@ -63,15 +61,3 @@ export DEVCTL_PATH=/homedir/.devctl
 	assert2.Equal(t, expected, actual)
 }
 
-type DevCtlInjector struct {
-	RC     *ShellRC
-	Pather devctlpath.Pather
-}
-
-func (i *DevCtlInjector) AddDevCtlSection() {
-
-}
-
-func AddDevCtlEnvVars() {
-
-}
