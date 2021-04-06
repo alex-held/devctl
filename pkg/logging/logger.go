@@ -37,11 +37,11 @@ func (l *Logger) Panic(args ...interface{})                     { l.logger.Panic
 func (l *Logger) Debugln(args ...interface{})                   { l.logger.Debugln(args...) }
 func (l *Logger) Infoln(args ...interface{})                    { l.logger.Infoln(args...) }
 func (l *Logger) Println(args ...interface{})                   { l.logger.Println(args...) }
-func (l *Logger) Warnln(args ...interface{})                    { l.Warnln(args...) }
-func (l *Logger) Warningln(args ...interface{})                 { l.Warningln(args...) }
-func (l *Logger) Errorln(args ...interface{})                   { l.Errorln(args...) }
-func (l *Logger) Fatalln(args ...interface{})                   { l.Fatalln(args...) }
-func (l *Logger) Panicln(args ...interface{})                   { l.Panicln(args...) }
+func (l *Logger) Warnln(args ...interface{})                    { l.logger.Warnln(args...) }
+func (l *Logger) Warningln(args ...interface{})                 { l.logger.Warningln(args...) }
+func (l *Logger) Errorln(args ...interface{})                   { l.logger.Errorln(args...) }
+func (l *Logger) Fatalln(args ...interface{})                   { l.logger.Fatalln(args...) }
+func (l *Logger) Panicln(args ...interface{})                   { l.logger.Panicln(args...) }
 
 var defaults = []Option{
 	WithFormatter(&DevCtlFormatter{}),

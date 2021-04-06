@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (s *Section) RootNode() (root ShellRootCfgNode) { return s.node.RootNode() }
+func (s *Section) RootNode() (root RootCfgNode) { return s.node.RootNode() }
 
 func (s *Section) Execute(w io.Writer, data interface{}) {
 	_, _ = fmt.Fprintf(w, "Root Node: %+v; Section Data: %+v", s.RootNode(), data)
@@ -31,7 +31,7 @@ func (s Section) Render() string {
 	cfg := s.getRootConfig()
 	t := cfg.Templates.Lookup(s.TemplateID)
 	if t == nil {
-		panic(fmt.Errorf("failed to lookup required template. template=%s; config=%+v;\n", s.TemplateID, *cfg))
+		panic(fmt.Errorf("failed to lookup required template. template=%s; config=%+v;\n ", s.TemplateID, *cfg))
 	}
 
 	err := s.Template.Execute(buf, s.Data)

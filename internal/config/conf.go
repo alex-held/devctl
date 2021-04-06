@@ -79,7 +79,7 @@ var ReadConfigFile = func(filename string) ([]byte, error) {
 }
 
 func parseConfigFile(filename string) (configuration *DevEnvConfig, err error) {
-	data, err := ReadConfigFile(filename)
+	data, _ := ReadConfigFile(filename)
 	configuration = DefaultConfig()
 	err = yaml.Unmarshal(data, configuration)
 
@@ -106,7 +106,10 @@ func LoadViperConfig() *DevEnvConfig {
 	if err := viper.ReadInConfig(); err != nil {
 		_ = fmt.Errorf("error reading config file, %s\n ", err)
 	}
-	err := viper.Unmarshal(configuration)
+	var err = viper.Unmarshal(configuration)
+	if err != nil {
+		_ = fmt.Errorf("unable to decode into struct, %v\n ", err)
+	}
 	devEnvConfigMap := &map[string]interface{}{}
 	err = mapstructure.Decode(&configuration, devEnvConfigMap)
 	if err != nil {

@@ -44,17 +44,31 @@ func TestSerializeConfig(t *testing.T) {
 	logger.Print(yaml)
 }
 
+// nolint: unused
 type pather struct {
 	DevEnvConfigPath string
 }
 
-func (p *pather) ConfigFilePath() string           { return p.DevEnvConfigPath }
+// nolint: unused
+func (p *pather) ConfigFilePath() string { return p.DevEnvConfigPath }
+
+// nolint: unused
 func (p *pather) ConfigRoot(elem ...string) string { return "" }
-func (p *pather) Config(elem ...string) string     { return "" }
-func (p *pather) Bin(elem ...string) string        { return "" }
-func (p *pather) Download(elem ...string) string   { return "" }
-func (p *pather) SDK(elem ...string) string        { return "" }
-func (p *pather) Cache(elem ...string) string      { return "" }
+
+// nolint: unused
+func (p *pather) Config(elem ...string) string { return "" }
+
+// nolint: unused
+func (p *pather) Bin(elem ...string) string { return "" }
+
+// nolint: unused
+func (p *pather) Download(elem ...string) string { return "" }
+
+// nolint: unused
+func (p *pather) SDK(elem ...string) string { return "" }
+
+// nolint: unused
+func (p *pather) Cache(elem ...string) string { return "" }
 
 func TestViperConfig(t *testing.T) {
 	g := goblin.Goblin(t)
