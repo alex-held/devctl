@@ -59,15 +59,15 @@ func (c DevCtlFormatter) Format(entry *logrus.Entry) (bytes []byte, err error) {
 		return []byte(normalizedString)
 	}
 
-	prefix_start := normalizeStr("[ ")
-	prefix_level := lvl
-	prefix_end := normalizeStr(" ]")
-	prefix_spacer := normalizeStr("\t")
+	prefixStart := normalizeStr("[ ")
+	prefixLevel := lvl
+	prefixnd := normalizeStr(" ]")
+	prefixSpacer := normalizeStr("\t")
 
-	sb.Write(prefix_start)
-	sb.Write([]byte(prefix_level))
-	sb.Write(prefix_end)
-	sb.Write(prefix_spacer)
+	sb.Write(prefixStart)
+	sb.Write([]byte(prefixLevel))
+	sb.Write(prefixnd)
+	sb.Write(prefixSpacer)
 	sb.Write([]byte(msg))
 	sb.Write([]byte("\n"))
 

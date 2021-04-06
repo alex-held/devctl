@@ -98,15 +98,13 @@ func newSdkVersionsListCommand() *cobra.Command {
 }
 
 func sdkVersionsListCommandfunc(cmd *cobra.Command, args []string) {
-	sdkArg := args[0]
-
-	versions := listSdkVersions(sdkArg)
+	versions := listSdkVersions()
 	for _, version := range versions {
 		fmt.Println(version)
 	}
 }
 
-func listSdkVersions(sdk string) (versions []string) {
+func listSdkVersions() (versions []string) {
 	cfg := config2.LoadViperConfig()
 
 	for _, sdkConfig := range cfg.Sdks {
@@ -117,11 +115,11 @@ func listSdkVersions(sdk string) (versions []string) {
 	return versions
 }
 
-var sdk_current_path *string
-var sdk_name *string
-var sdk_candidate_path *string
-var sdk_version *string
-var sdk_candidates []string
+var sdkCurrentPath *string
+var sdkName *string
+var sdkCandidatePath *string
+var sdkVersion *string
+var sdkCandidates []string
 
 // newSdkAddCommand creates the `devenv sdk add` command
 func newSdkAddCommand() *cobra.Command {
@@ -132,11 +130,11 @@ func newSdkAddCommand() *cobra.Command {
 		Run:   sdkAddCommandfunc,
 	}
 
-	cmd.Flags().StringVarP(sdk_current_path, "current", "c", "", "--current '~/.devctl/sdks/java/adopt-jdk/16.1'")
-	cmd.Flags().StringVarP(sdk_name, "name", "n", "", "--name 'java'")
-	cmd.Flags().StringVarP(sdk_version, "version", "v", "", "--version '1.0.0'")
-	cmd.Flags().StringVarP(sdk_candidate_path, "path", "p", "", "--path '~/.devctl/sdks/java/adopt-jdk/16.1'")
-	cmd.Flags().StringArrayVarP(&sdk_candidates, "candidates", "c", []string{}, "--candidates ~/.devctl/sdks/java/adopt-jdk/16.1'")
+	cmd.Flags().StringVarP(sdkCurrentPath, "current", "c", "", "--current '~/.devctl/sdks/java/adopt-jdk/16.1'")
+	cmd.Flags().StringVarP(sdkName, "name", "n", "", "--name 'java'")
+	cmd.Flags().StringVarP(sdkVersion, "version", "v", "", "--version '1.0.0'")
+	cmd.Flags().StringVarP(sdkCandidatePath, "path", "p", "", "--path '~/.devctl/sdks/java/adopt-jdk/16.1'")
+	cmd.Flags().StringArrayVarP(&sdkCandidates, "candidates", "c", []string{}, "--candidates ~/.devctl/sdks/java/adopt-jdk/16.1'")
 
 	return cmd
 }
@@ -178,6 +176,7 @@ func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 	}
 }
 
+// nolint: gocognit
 func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	if len(args) > 1 {
 		cli.ExitWithError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
@@ -189,11 +188,11 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	cfg := config2.LoadViperConfig()
 
 	// Determine whether or not the sdk is already already tracked
-	if sdk, ok := cfg.Sdks[addSDK]; ok {
+	if sdk, ok := cfg.Sdks[addSDK]; ok { //nolint:nestif
 		// Add sdk-candidate path to sdk
 		sdk.Candidates = append(sdk.Candidates, config2.SDKCandidate{
-			Path:    *sdk_candidate_path,
-			Version: *sdk_version,
+			Path:    *sdkCandidatePath,
+			Version: *sdkVersion,
 		})
 		cfg.Sdks[addSDK] = sdk
 
@@ -212,21 +211,21 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 			Candidates: []config2.SDKCandidate{},
 		}
 
-		*sdk_name = devctlpath.SDKsPath(addSDK)
-		sdk_candidate_dirs, err := ioutil.ReadDir(*sdk_name)
+		*sdkName = devctlpath.SDKsPath(addSDK)
+		sdkCandidateDirs, err := ioutil.ReadDir(*sdkName)
 		if err != nil {
 			panic(err)
 		}
 
-		for _, candidate_dir := range sdk_candidate_dirs {
-			if candidate_dir.IsDir() {
-				name := candidate_dir.Name()
+		for _, candidateDir := range sdkCandidateDirs {
+			if candidateDir.IsDir() {
+				name := candidateDir.Name()
 				newSDKConfig.Candidates = append(newSDKConfig.Candidates, config2.SDKCandidate{
 					Path:    name,
 					Version: filepath.Dir(name),
 				})
 			}
-			fmt.Printf("Candidate '%s' is not a directory.", candidate_dir.Name())
+			fmt.Printf("Candidate '%s' is not a directory.", candidateDir.Name())
 		}
 
 		cfg.Sdks[addSDK] = newSDKConfig

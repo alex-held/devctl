@@ -14,9 +14,9 @@ import (
 )
 
 type ShellHookFixture struct {
-	Cfg       *ShellHookConfig
+	Cfg       *HookConfig
 	Templates *template.Template
-	Gen       *ShellHookGenerator
+	Gen       *HookGenerator
 	Out       *bytes.Buffer
 	G         *goblin.G
 }
@@ -24,7 +24,7 @@ type ShellHookFixture struct {
 type SetupFixtureFn func(fixture *ShellHookFixture)
 type ShellHookGenerateAssertion struct {
 	Matchers []types.GomegaMatcher
-	Config   *ShellHookConfig
+	Config   *HookConfig
 }
 
 func assert(asserts ...types.GomegaMatcher) ShellHookGenerateAssertion {
@@ -35,24 +35,24 @@ func assert(asserts ...types.GomegaMatcher) ShellHookGenerateAssertion {
 	}
 }
 
-type Option func(*ShellHookConfig) *ShellHookConfig
+type Option func(*HookConfig) *HookConfig
 
 func WithTemplates(t *template.Template) Option {
-	return func(cfg *ShellHookConfig) *ShellHookConfig {
+	return func(cfg *HookConfig) *HookConfig {
 		cfg.Templates = t
 		return cfg
 	}
 }
 
 func WithSection(initializeSection UninitializedSection) Option {
-	return func(cfg *ShellHookConfig) *ShellHookConfig {
+	return func(cfg *HookConfig) *HookConfig {
 		initializedSection := initializeSection(cfg.root)
 		return cfg.AddOrUpdateSection(initializedSection)
 	}
 }
 
 func WithSections(sections ...UninitializedSection) Option {
-	return func(cfg *ShellHookConfig) *ShellHookConfig {
+	return func(cfg *HookConfig) *HookConfig {
 		for _, uninitializedSection := range sections {
 			cfg = WithSection(uninitializedSection)(cfg)
 		}
@@ -64,8 +64,8 @@ var defaults = []Option{
 	WithTemplates(template.Must(template.ParseGlob("templates/*.tmpl"))),
 }
 
-func NewShellHookConfig(opts ...Option) *ShellHookConfig {
-	cfg := &ShellHookConfig{
+func NewShellHookConfig(opts ...Option) *HookConfig {
+	cfg := &HookConfig{
 		Templates: nil,
 		Sections:  Sections{},
 	}
@@ -82,7 +82,7 @@ func NewShellHookConfig(opts ...Option) *ShellHookConfig {
 	return cfg
 }
 
-func NewShellHookRootNode(cfg *ShellHookConfig) *rootNode {
+func NewShellHookRootNode(cfg *HookConfig) *rootNode { // nolint: golint
 	root := &rootNode{config: cfg}
 	root.node = &node{
 		parent:   root.node,
@@ -131,7 +131,7 @@ func NewShellHookFixture(g *goblin.G) *ShellHookFixture {
 		Out:       &bytes.Buffer{},
 	}
 
-	fixture.Gen = &ShellHookGenerator{
+	fixture.Gen = &HookGenerator{
 		Out:       fixture.Out,
 		Templates: fixture.Templates,
 		//		OutputPath: "$DEVCTL_HOME/shell/hooks/zsh_hook",
@@ -144,7 +144,7 @@ func TestGenerate(t *testing.T) {
 	g := goblin.Goblin(t)
 	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 
-	var sut *ShellHookGenerator
+	var sut *HookGenerator
 	var fixture *ShellHookFixture
 
 	var data = map[string]ShellHookGenerateTestCase{

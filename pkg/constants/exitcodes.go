@@ -15,11 +15,10 @@ type ExitError struct {
 }
 
 // Code returns the ExitCode as int of the ExitError
-func (e ExitError) Code() int { return int(e.ExitCode)}
+func (e ExitError) Code() int { return int(e.ExitCode) }
 func (e ExitError) Error() string {
 	return e.Message
 }
-
 
 // ExitWithError  prints an error message and exits the application with ErrorCode: code
 func ExitWithError(code int, err error) {
@@ -33,24 +32,29 @@ func ExitWithError(code int, err error) {
 	os.Exit(code)
 }
 
-
 const (
-	OK                   ExitCode = 0
-	IssuesFound                   = 1
-	WarningInTest                 = 2
-	Failure                       = 3
-	Timeout                       = 4
-	NoGoFiles                     = 5
-	NoConfigFileDetected          = 6
-	ErrorWasLogged                = 7
-)
+	OK ExitCode = 0
 
+	IssuesFound = 1
+
+	WarningInTest = 2
+
+	Failure = 3
+
+	Timeout = 4
+
+	NoGoFiles = 5
+
+	NoConfigFileDetected = 6
+
+	ErrorWasLogged = 7
+)
 
 var (
 	// ErrNoGoFiles is the pre-defined ExitError NoGoFiles
 	ErrNoGoFiles = &ExitError{
-		Message: "no go files to analyze",
-		ExitCode:    NoGoFiles,
+		Message:  "no go files to analyze",
+		ExitCode: NoGoFiles,
 	}
 	// ErrFailure is the pre-defined ExitError Failure
 	ErrFailure = &ExitError{

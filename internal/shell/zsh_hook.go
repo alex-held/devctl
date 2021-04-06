@@ -23,10 +23,10 @@ func (s *Section) GetDefaultTemplate() *template.Template {
 	return cfg.LookupTemplate(s.TemplateID)
 }
 
-type UninitializedSection func(cfgNode ShellRootCfgNode) *Section
+type UninitializedSection func(cfgNode RootCfgNode) *Section
 
 func CreateUninitializedSection(section string, data interface{}) UninitializedSection {
-	return func(root ShellRootCfgNode) *Section {
+	return func(root RootCfgNode) *Section {
 		return newSection(section, data).InitializeWithRootNode(root)
 	}
 }
@@ -38,12 +38,11 @@ func NewSection(section string, data interface{}) (out *Section) {
 		Template:   template.Must(template.ParseGlob("templates/*.tmpl")),
 		Data:       data,
 	}
-	// todo: this node does not get initialized with a parent. maybe this cases issues at some point
 	out.node = nil
 	return out
 }
 
-func (s *Section) InitializeWithRootNode(r ShellRootCfgNode) *Section {
+func (s *Section) InitializeWithRootNode(r RootCfgNode) *Section {
 	root := r.(*rootNode)
 	s.node = &node{
 		parent:   root,
@@ -61,10 +60,10 @@ func (s *Section) initialize(root *rootNode) *Section {
 
 // Configurator provides an api to configure ShellHookConfig
 type Configurator interface {
-	Get() (root *ShellHookConfig)
+	Get() (root *HookConfig)
 	ListSections() (sections []string)
-	AddOrUpdateSection(name string, section Section) *ShellHookConfig
-	AddOrUpdateSections(sections Sections) *ShellHookConfig
+	AddOrUpdateSection(name string, section Section) *HookConfig
+	AddOrUpdateSections(sections Sections) *HookConfig
 	LookupTemplate(templateID string) *template.Template
 }
 
@@ -80,18 +79,18 @@ type SDKSectionConfig struct {
 	SDKs []SDK
 }
 
-type ShellHookConfig struct {
+type HookConfig struct {
 	root      *rootNode
 	Templates *template.Template
 	Sections  Sections
 }
 
-func (c *ShellHookConfig) GetTemplateForSection(section Section) *template.Template {
+func (c *HookConfig) GetTemplateForSection(section Section) *template.Template {
 	return c.Templates.Lookup(section.TemplateID)
 }
 
-func (c *ShellHookConfig) ApplyWithSelector(inSelector InSelectorApplyFn, mapFn MapFn, updateSelector UpdateConfigSelector) *ShellHookConfig { //nolint:lll
-	return c.Apply(func(c *ShellHookConfig) *ShellHookConfig {
+func (c *HookConfig) ApplyWithSelector(inSelector InSelectorApplyFn, mapFn MapFn, updateSelector UpdateConfigSelector) *HookConfig { //nolint:lll
+	return c.Apply(func(c *HookConfig) *HookConfig {
 		selectInput := inSelector(c)
 		mapped := mapFn(selectInput)
 		updateSelector(c, mapped)
@@ -99,32 +98,32 @@ func (c *ShellHookConfig) ApplyWithSelector(inSelector InSelectorApplyFn, mapFn 
 	})
 }
 
-func (c *ShellHookConfig) LookupTemplate(templateID string) *template.Template {
+func (c *HookConfig) LookupTemplate(templateID string) *template.Template {
 	return c.Templates.Lookup(templateID)
 }
 
-func (*ShellHookConfig) ListSections() (sections map[string]string) {
+func (*HookConfig) ListSections() (sections map[string]string) {
 	return map[string]string{
 		"devctl": "devctl",
 		"sdk":    "sdk",
 	}
 }
 
-func (c *ShellHookConfig) GetSection(title string) (section Section, ok bool) {
+func (c *HookConfig) GetSection(title string) (section Section, ok bool) {
 	v, o := c.Sections[title]
 	return v, o
 }
 
-func (c *ShellHookConfig) Get() (root *ShellHookConfig) { return c }
+func (c *HookConfig) Get() (root *HookConfig) { return c }
 
 // AddOrUpdateSection adds or replaces a section of ShellHookConfig
-func (c *ShellHookConfig) AddOrUpdateSection(section *Section) *ShellHookConfig {
+func (c *HookConfig) AddOrUpdateSection(section *Section) *HookConfig {
 	return c.AddOrUpdateSectionForKey(section.Title, *section)
 }
 
 // AddOrUpdateSectionForKey adds or replaces a section of ShellHookConfig
-func (c *ShellHookConfig) AddOrUpdateSectionForKey(name string, section Section) *ShellHookConfig {
-	return c.Apply(func(c *ShellHookConfig) *ShellHookConfig {
+func (c *HookConfig) AddOrUpdateSectionForKey(name string, section Section) *HookConfig {
+	return c.Apply(func(c *HookConfig) *HookConfig {
 		initializedSection := section.InitializeWithRootNode(c.root)
 		_ = fmt.Sprintf("intiialized section 1=\n%+v\n", *initializedSection)
 		c.Sections[name] = *initializedSection
@@ -145,50 +144,50 @@ func (c *ShellHookConfig) AddOrUpdateSectionForKey(name string, section Section)
 	})
 }
 
-type ShellRootCfgNode interface {
-	ShellCfgNode
+type RootCfgNode interface {
+	CfgNode
 }
 
-type ShellCfgNode interface {
+type CfgNode interface {
 	IsRooted() bool
-	Parent() ShellCfgNode
-	RootNode() ShellRootCfgNode
+	Parent() CfgNode
+	RootNode() RootCfgNode
 }
 
 type rootNode struct {
 	*node
-	config *ShellHookConfig
+	config *HookConfig
 }
 
 func (r *rootNode) NewChildNode() *node {
 	child := &node{
-		parent:   ShellRootCfgNode(r),
+		parent:   RootCfgNode(r),
 		isRooted: false,
 	}
 	return child
 }
 
-func (r *rootNode) Parent() ShellCfgNode       { return r }
-func (r *rootNode) RootNode() ShellRootCfgNode { return r }
-func (r rootNode) IsRooted() bool              { return true }
+func (r *rootNode) Parent() CfgNode       { return r }
+func (r *rootNode) RootNode() RootCfgNode { return r }
+func (r rootNode) IsRooted() bool         { return true }
 
 type node struct {
-	parent   ShellCfgNode
+	parent   CfgNode
 	isRooted bool
 }
 
-func (c *node) getRootConfig() (root *ShellHookConfig) {
+func (c *node) getRootConfig() (root *HookConfig) {
 	rootNode := c.RootNode().(*rootNode)
 	return rootNode.config
 }
 
-func (c *node) Map(selector func(*ShellHookConfig) (interface{}, error)) (out interface{}, err error) {
+func (c *node) Map(selector func(*HookConfig) (interface{}, error)) (out interface{}, err error) {
 	cfg := c.getRootConfig()
 	out, err = selector(cfg)
 	return out, err
 }
 
-func (c *node) RootNode() (root ShellRootCfgNode) {
+func (c *node) RootNode() (root RootCfgNode) {
 	parent := c.Parent()
 
 	for !parent.IsRooted() {
@@ -199,26 +198,26 @@ func (c *node) RootNode() (root ShellRootCfgNode) {
 	return rNode.RootNode()
 }
 
-func (c *node) Parent() ShellCfgNode { return c.parent }
-func (c *node) IsRooted() bool       { return c.isRooted }
+func (c *node) Parent() CfgNode { return c.parent }
+func (c *node) IsRooted() bool  { return c.isRooted }
 
-type ShellHookApplyFn func(*ShellHookConfig) *ShellHookConfig
+type HookApplyFn func(*HookConfig) *HookConfig
 
-type InSelectorApplyFn func(cfg *ShellHookConfig) (applyOn interface{})
+type InSelectorApplyFn func(cfg *HookConfig) (applyOn interface{})
 type MapFn func(in interface{}) (mappedOut interface{})
-type UpdateConfigSelector func(cfg *ShellHookConfig, mappedOut interface{}) (updatedConfig *ShellHookConfig)
-type ShellHookApplySelectorFn func(inSelector InSelectorApplyFn, mapFn MapFn, updateSelector UpdateConfigSelector)
+type UpdateConfigSelector func(cfg *HookConfig, mappedOut interface{}) (updatedConfig *HookConfig)
+type HookApplySelectorFn func(inSelector InSelectorApplyFn, mapFn MapFn, updateSelector UpdateConfigSelector)
 
-type ShellHookApplySelectorFn2 func(
-	inSelector func(cfg *ShellHookConfig) (applyOn interface{}),
+type HookApplySelectorFn2 func(
+	inSelector func(cfg *HookConfig) (applyOn interface{}),
 	mapFn func(in interface{}) (mappedOut interface{}),
-	updateConfigSelector func(cfg *ShellHookConfig, mappedOut interface{}) (updatedConfig *ShellHookConfig))
+	updateConfigSelector func(cfg *HookConfig, mappedOut interface{}) (updatedConfig *HookConfig))
 
-type ShellHookSubApplyFn func(config *ShellHookConfig, applySelectorFn ...ShellHookApplySelectorFn)
-type ShellHookSectionsApplyFn func(*Sections) *Sections
+type HookSubApplyFn func(config *HookConfig, applySelectorFn ...HookApplySelectorFn)
+type HookSectionsApplyFn func(*Sections) *Sections
 
-func (c *ShellHookConfig) AddOrUpdateSections(sections Sections) *ShellHookConfig {
-	return c.Apply(func(c *ShellHookConfig) *ShellHookConfig {
+func (c *HookConfig) AddOrUpdateSections(sections Sections) *HookConfig {
+	return c.Apply(func(c *HookConfig) *HookConfig {
 		for k, v := range sections {
 			c = c.AddOrUpdateSectionForKey(k, v)
 		}
@@ -226,7 +225,7 @@ func (c *ShellHookConfig) AddOrUpdateSections(sections Sections) *ShellHookConfi
 	})
 }
 
-func (c *ShellHookConfig) Apply(applyFns ...ShellHookApplyFn) *ShellHookConfig {
+func (c *HookConfig) Apply(applyFns ...HookApplyFn) *HookConfig {
 	result := c
 	for _, fn := range applyFns {
 		result = fn(result)
@@ -234,41 +233,41 @@ func (c *ShellHookConfig) Apply(applyFns ...ShellHookApplyFn) *ShellHookConfig {
 	return result
 }
 
-func (c *ShellHookConfig) Root() (root *ShellHookConfig) { return c }
+func (c *HookConfig) Root() (root *HookConfig) { return c }
 
-func (c *node) NextParent() (node ShellCfgNode, ok bool) {
+func (c *node) NextParent() (node CfgNode, ok bool) {
 	if c.parent == nil {
 		return c, true
 	}
 	return c.parent, false
 }
 
-type ShellHookGenerator struct {
+type HookGenerator struct {
 	Out       *bytes.Buffer
 	Templates *template.Template
 }
 
-func (g *ShellHookGenerator) Write(p []byte) (n int, err error) {
+func (g *HookGenerator) Write(p []byte) (n int, err error) {
 	println("[ShellHookGenerator] Write")
 	return g.Out.Write(p)
 }
 
-type ShellHook struct {
+type Hook struct {
 	string
 	ShellScriptString string
-	Config            ShellHookConfig
+	Config            HookConfig
 	Buffer            *bytes.Buffer
 }
 
-func (s *ShellHook) String() string {
+func (s *Hook) String() string {
 	return s.ShellScriptString
 }
 
-func (s *ShellHook) GoString() string {
+func (s *Hook) GoString() string {
 	return s.ShellScriptString
 }
 
-func (g *ShellHookGenerator) Generate(config ShellHookConfig) (hook *ShellHook, err error) {
+func (g *HookGenerator) Generate(config HookConfig) (hook *Hook, err error) {
 	err = g.Templates.ExecuteTemplate(g.Out, "zsh", &config)
 
 	if err != nil {
@@ -278,7 +277,7 @@ func (g *ShellHookGenerator) Generate(config ShellHookConfig) (hook *ShellHook, 
 
 	sh := g.Out.String()
 	fmt.Println("Output: " + sh)
-	hook = &ShellHook{
+	hook = &Hook{
 		string:            sh,
 		ShellScriptString: sh,
 		Buffer:            &bytes.Buffer{},
