@@ -1,3 +1,5 @@
+//+build !windows,!darwin
+
 package sdk
 
 import (
@@ -31,7 +33,7 @@ func (p *devctlSdkpluginGo) ListVersions() (versions []string) {
 	}
 	for _, fileInfo := range fileInfos {
 		dirname := fileInfo.Name()
-		if dirname == "current" || fileInfo.Mode().Type() == os.ModeSymlink {
+		if dirname == "current" {
 			continue
 		}
 
