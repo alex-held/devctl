@@ -8,22 +8,23 @@ import (
 	"github.com/spf13/afero"
 
 	"github.com/alex-held/devctl/pkg/devctlpath"
+	"github.com/alex-held/devctl/pkg/plugins"
 )
 
-type devctl_sdkplugin_go struct {
+type devctlSdkpluginGo struct {
 	FS     afero.Fs
 	Pather devctlpath.Pather
 }
 
-func (p *devctl_sdkplugin_go) NewFunc() interface{ SDKPlugin } { return &devctl_sdkplugin_go{} }
+func (p *devctlSdkpluginGo) NewFunc() plugins.SDKPlugin { return &devctlSdkpluginGo{} }
 
-func (p *devctl_sdkplugin_go) Name() string {
+func (p *devctlSdkpluginGo) Name() string {
 	return "devctl-sdkplugin-go"
 }
 
-func (p *devctl_sdkplugin_go) ListVersions() (versions []string) {
-	sdk_go_root := p.Pather.SDK("go")
-	fileInfos, err := afero.ReadDir(p.FS, sdk_go_root)
+func (p *devctlSdkpluginGo) ListVersions() (versions []string) {
+	sdkGoRoot := p.Pather.SDK("go")
+	fileInfos, err := afero.ReadDir(p.FS, sdkGoRoot)
 
 	if err != nil {
 		return versions
@@ -43,7 +44,7 @@ func (p *devctl_sdkplugin_go) ListVersions() (versions []string) {
 	return versions
 }
 
-func (p *devctl_sdkplugin_go) isValidVersion(dirname string) (version string, valid bool) {
+func (p *devctlSdkpluginGo) isValidVersion(dirname string) (version string, valid bool) {
 	_, err := semver.ParseTolerant(dirname)
 	if err != nil {
 		return "", false
@@ -51,10 +52,10 @@ func (p *devctl_sdkplugin_go) isValidVersion(dirname string) (version string, va
 	return dirname, true
 }
 
-func (p *devctl_sdkplugin_go) Download(version string) {
+func (p *devctlSdkpluginGo) Download(version string) {
 	fmt.Printf("downloading go sdk version %s;", version)
 }
 
-func (p *devctl_sdkplugin_go) Install(version string) {
+func (p *devctlSdkpluginGo) Install(version string) {
 	fmt.Printf("installing go sdk version %s;", version)
 }
