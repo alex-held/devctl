@@ -3,12 +3,10 @@ package plugins
 import (
 	"errors"
 	"plugin"
-
-	"github.com/alex-held/devctl/pkg/plugins/sdk"
 )
 
 type pluginRegistry struct {
-	SDKPlugins []sdk.SDKPlugin
+	SDKPlugins []SDKPlugin
 }
 
 // Plugin is a plugin loaded from a file

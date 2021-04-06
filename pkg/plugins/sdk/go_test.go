@@ -31,7 +31,7 @@ func TestGoSDKPlugin(t *testing.T) {
 	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 
 	g.Describe("devctl-sdkplugin-go", func() {
-		var sut *devctl_sdkplugin_go
+		var sut *devctlSdkpluginGo
 		var fs afero.Fs
 		var pathr devctlpath.Pather
 
@@ -41,7 +41,7 @@ func TestGoSDKPlugin(t *testing.T) {
 				DevEnvConfigPath: "/some/path/to/config.yaml",
 				SDKRoot:          "/some/path/to/sdks",
 			}
-			sut = &devctl_sdkplugin_go{
+			sut = &devctlSdkpluginGo{
 				FS:     fs,
 				Pather: pathr,
 			}
@@ -81,7 +81,6 @@ func TestGoSDKPlugin(t *testing.T) {
 			Expect(dlDirExists).Should(BeTrue())
 			Expect(bytes).Should(BeNumerically(">=", 1))
 		})
-
 
 		g.It("WHEN Install(<version>) is called => THEN the correct version gets linked to current", func() {
 			sut.Download("1.16")

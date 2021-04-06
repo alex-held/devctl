@@ -8,20 +8,18 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/alex-held/devctl/pkg/plugins/sdk"
 )
 
 func TestRegistryLoadsPlugins(t *testing.T) {
 	reg := pluginRegistry{
-		SDKPlugins: []sdk.SDKPlugin{},
+		SDKPlugins: []SDKPlugin{},
 	}
 
 	gopath := os.Getenv("GOPATH")
 	pluginDir := path.Join(gopath, "github.com/alex-held/devctl-sdkplugin-go")
 
 	plugins := []string{}
-	filepath.Walk(pluginDir, func(p string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(pluginDir, func(p string, info fs.FileInfo, err error) error {
 		if path.Ext(p) == ".so" {
 			plugins = append(plugins, p)
 			println(p)
@@ -32,9 +30,11 @@ func TestRegistryLoadsPlugins(t *testing.T) {
 		}
 		return err
 	})
-
-	for _, plugin_path := range plugins {
-		plugin, err := reg.Load(plugin_path)
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+	for _, pluginPath := range plugins {
+		plugin, err := reg.Load(pluginPath)
 		if err != nil {
 			t.Fatalf(err.Error())
 		}
