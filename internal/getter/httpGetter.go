@@ -43,7 +43,7 @@ func (g *HTTPGetter) httpClient() (*http.Client, error) {
 	if g.opts.insecureSkipVerifyTLS {
 		if transport.TLSClientConfig == nil {
 			transport.TLSClientConfig = &tls.Config{
-				InsecureSkipVerify: true, //nolint:gosec
+				InsecureSkipVerify: true,
 			}
 		} else {
 			transport.TLSClientConfig.InsecureSkipVerify = true
