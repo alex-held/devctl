@@ -3,6 +3,7 @@ package sdk
 import (
 	"archive/tar"
 	"compress/gzip"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -25,8 +26,9 @@ import (
 type devctlSdkpluginGo struct {
 	FS                afero.Fs
 	Pather            devctlpath.Pather
-	HttpClient        http.Client
-	BaseUri           string
+	HTTPClient        http.Client
+	BaseURI           string
+	Context           context.Context
 	RuntimeInfoGetter plugins.RuntimeInfoGetter
 }
 
@@ -34,8 +36,9 @@ func (p *devctlSdkpluginGo) NewFunc() plugins.SDKPlugin {
 	return &devctlSdkpluginGo{
 		FS:                afero.NewOsFs(),
 		Pather:            devctlpath.DefaultPather(),
-		HttpClient:        http.Client{},
-		BaseUri:           "https://golang.org",
+		HTTPClient:        http.Client{},
+		BaseURI:           "https://golang.org",
+		Context:           context.Background(),
 		RuntimeInfoGetter: plugins.OSRuntimeInfoGetter{},
 	}
 }
@@ -81,8 +84,12 @@ func (p *devctlSdkpluginGo) Download(version string) (err error) {
 		return errors.Wrapf(err, "failed creating go sdk download path; version=%s; err=%v", version, err)
 	}
 	filename := fmt.Sprintf("go%s.darwin-amd64.tar.gz", version)
-	dlURI := fmt.Sprintf("%s/dl/%s", p.BaseUri, filename)
-	response, err := p.HttpClient.Get(dlURI)
+	dlURI := fmt.Sprintf("%s/dl/%s", p.BaseURI, filename)
+	req, err := http.NewRequestWithContext(p.Context, http.MethodGet, dlURI, http.NoBody)
+	if err != nil {
+		return errors.Wrapf(err, "failed downloading go sdk archive; version=%s; err=%v", version, err)
+	}
+	response, err := p.HTTPClient.Do(req)
 	if err != nil {
 		return errors.Wrapf(err, "failed downloading go sdk archive; version=%s; err=%v", version, err)
 	}
@@ -177,7 +184,8 @@ func (p *devctlSdkpluginGo) Install(version string) {
 
 type Renamer func(p string) string
 
-func UnTarGzip(file afero.File, target string, renamer Renamer) error {
+//nolint:gocognit
+func UnTarGzip(file io.Reader, target string, renamer Renamer) error {
 	gr, _ := gzip.NewReader(file)
 	tr := tar.NewReader(gr)
 
@@ -194,12 +202,12 @@ func UnTarGzip(file afero.File, target string, renamer Renamer) error {
 			filename = renamer(filename)
 		}
 
-		p := filepath.Join(target, filename)
+		p := filepath.Join(target, filename) //nolint:gosec
 		fi := header.FileInfo()
 
 		if fi.IsDir() {
-			if err = os.MkdirAll(p, fi.Mode()); err != nil {
-				return err
+			if e := os.MkdirAll(p, fi.Mode()); e != nil {
+				return e
 			}
 			continue
 		}
@@ -208,7 +216,7 @@ func UnTarGzip(file afero.File, target string, renamer Renamer) error {
 			return err
 		}
 		defer file.Close()
-		_, err = io.Copy(file, tr)
+		_, err = io.Copy(file, tr) //nolint:gosec
 		if err != nil {
 			return err
 		}
