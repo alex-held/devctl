@@ -38,7 +38,9 @@ func (l *GoListerCmd) List(ctx context.Context, root string, args []string) erro
 		return err
 	}
 	for _, fi := range fis {
-		fmt.Println(fi.Name())
+		if fi.Name() != "current" {
+			fmt.Println(fi.Name())
+		}
 	}
 
 	return nil
