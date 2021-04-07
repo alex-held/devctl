@@ -55,7 +55,7 @@ tasks:
       It will test your project and collects the coverage.
       The coverage gets saved to out/coverage.out
     cmds:
-      - go test -v -cover  -coverprofile=out/coverage.out  ./... > out/test-report.out
+      - go test -v ./...
 
   test-quiet:
     desc: Tests {{.PROJECT}} quietly
