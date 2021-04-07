@@ -60,4 +60,3 @@ export DEVCTL_PATH=/homedir/.devctl
 	}
 	assert2.Equal(t, expected, actual)
 }
-

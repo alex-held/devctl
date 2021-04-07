@@ -24,13 +24,13 @@ type RuntimeInfoGetter interface {
 type OSRuntimeInfoGetter struct{}
 
 func (OSRuntimeInfoGetter) Get() (info RuntimeInfo) {
-	osId := runtime.GOOS
-	archId := runtime.GOARCH
-	if archId == "arm" {
-		archId = "arm64"
+	osID := runtime.GOOS
+	archID := runtime.GOARCH
+	if archID == "arm" {
+		archID = "arm64"
 	}
 	return RuntimeInfo{
-		OS:   osId,
-		Arch: archId,
+		OS:   osID,
+		Arch: archID,
 	}
 }

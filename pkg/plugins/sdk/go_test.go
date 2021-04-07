@@ -1,7 +1,7 @@
 package sdk
 
 import (
-	"fmt"
+	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -12,11 +12,12 @@ import (
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
-	"github.com/stretchr/testify/assert"
 
 	"github.com/alex-held/devctl/pkg/devctlpath"
 	"github.com/alex-held/devctl/pkg/plugins"
 )
+
+const defaultArchiveName = "go1.16.darwin-amd64.tar.gz"
 
 type testRuntimeInfoGetter struct {
 	RuntimeInfo plugins.RuntimeInfo
@@ -42,29 +43,9 @@ func (p *testPather) Download(elem ...string) string {
 func (p *testPather) SDK(elem ...string) string   { return path.Join(p.SDKRoot, path.Join(elem...)) }
 func (p *testPather) Cache(elem ...string) string { return "" }
 
-func TestName(t *testing.T) {
-	mux := http.NewServeMux()
-	ts := httptest.NewServer(mux)
-
-	mux.HandleFunc("/dl/go1.16.darwin-amd64.tar.gz", func(w http.ResponseWriter, req *http.Request) {
-		_, _ = io.WriteString(w, "go1.16")
-		w.WriteHeader(http.StatusOK)
-	})
-
-	uri := ts.URL
-	fmt.Println(uri)
-
-	client := http.Client{}
-	resp, _ := client.Get(uri + "/dl/go1.16.darwin-amd64.tar.gz")
-	assert.Equal(t, 200, resp.StatusCode)
-	defer ts.Close()
-}
-
+//nolint:gocognit
 func TestGoSDKPlugin(t *testing.T) {
-	//	os.Args = append(os.Args, "-goblin.timeout=10000ms")
-
 	g := goblin.Goblin(t)
-
 	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 
 	g.Describe("devctl-sdkplugin-go", func() {
@@ -94,8 +75,9 @@ func TestGoSDKPlugin(t *testing.T) {
 			sut = &devctlSdkpluginGo{
 				FS:         fs,
 				Pather:     pathr,
-				HttpClient: http.Client{},
-				BaseUri:    server.URL,
+				HTTPClient: http.Client{},
+				BaseURI:    server.URL,
+				Context:    context.TODO(),
 				RuntimeInfoGetter: testRuntimeInfoGetter{RuntimeInfo: plugins.RuntimeInfo{
 					OS:   "darwin",
 					Arch: "amd64",
@@ -128,7 +110,7 @@ func TestGoSDKPlugin(t *testing.T) {
 
 		g.It("WHEN Download(<version>) is called => THEN the correct version gets getting downloaded", func() {
 			downloadPath := pathr.Download("go", "1.16")
-			artifactName := "go1.16.darwin-amd64.tar.gz"
+			artifactName := defaultArchiveName
 			artifactPath := path.Join(downloadPath, artifactName)
 
 			mux.HandleFunc("/dl/"+artifactName, func(w http.ResponseWriter, req *http.Request) {
@@ -149,7 +131,7 @@ func TestGoSDKPlugin(t *testing.T) {
 
 		g.It("WHEN Extract(<version>) is called => THEN the go sdk tarball gets extracted to the correct dir", func() {
 			dlDir := pathr.Download("go", "1.16")
-			archiveName := "go1.16.darwin-amd64.tar.gz"
+			archiveName := defaultArchiveName
 			err := fs.MkdirAll(dlDir, fileutil.PrivateDirMode)
 			if err != nil {
 				t.Fatal(err)
@@ -200,7 +182,7 @@ func TestGoSDKPlugin(t *testing.T) {
 		})
 
 		g.It("WHEN Install(<version>) is called => THEN the correct version gets linked to current", func() {
-			artifactName := "go1.16.darwin-amd64.tar.gz"
+			artifactName := defaultArchiveName
 			mux.HandleFunc("/dl/"+artifactName, func(w http.ResponseWriter, req *http.Request) {
 				bytes, _ := afero.ReadFile(fs, "testdata/go1.16.darwin-amd64.tar.gz")
 				_, _ = w.Write(bytes)

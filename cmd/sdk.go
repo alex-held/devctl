@@ -83,6 +83,11 @@ func newSdkVersionsCommand() *cobra.Command {
 	return cmd
 }
 
+var (
+	sdkVersion       string
+	sdkCandidatePath string
+)
+
 // newSdkVersionsListCommand creates the `devenv sdk list` command
 func newSdkVersionsListCommand() *cobra.Command {
 	return &cobra.Command{
@@ -115,12 +120,6 @@ func listSdkVersions() (versions []string) {
 	return versions
 }
 
-var sdkCurrentPath *string
-var sdkName *string
-var sdkCandidatePath *string
-var sdkVersion *string
-var sdkCandidates []string
-
 // newSdkAddCommand creates the `devenv sdk add` command
 func newSdkAddCommand() *cobra.Command {
 	cmd := &cobra.Command{
@@ -129,12 +128,6 @@ func newSdkAddCommand() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Run:   sdkAddCommandfunc,
 	}
-
-//	cmd.Flags().StringVarP(sdkCurrentPath, "current", "c", "", "--current '~/.devctl/sdks/java/adopt-jdk/16.1'")
-//	cmd.Flags().StringVarP(sdkName, "name", "n", "", "--name 'java'")
-//	cmd.Flags().StringVarP(sdkVersion, "version", "v", "", "--version '1.0.0'")
-//	cmd.Flags().StringVarP(sdkCandidatePath, "path", "p", "", "--path '~/.devctl/sdks/java/adopt-jdk/16.1'")
-//	cmd.Flags().StringArrayVarP(&sdkCandidates, "candidates", "c", []string{}, "--candidates ~/.devctl/sdks/java/adopt-jdk/16.1'")
 
 	return cmd
 }
@@ -191,8 +184,8 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	if sdk, ok := cfg.Sdks[addSDK]; ok { //nolint:nestif
 		// Add sdk-candidate path to sdk
 		sdk.Candidates = append(sdk.Candidates, config2.SDKCandidate{
-			Path:    *sdkCandidatePath,
-			Version: *sdkVersion,
+			Path:    sdkCandidatePath,
+			Version: sdkVersion,
 		})
 		cfg.Sdks[addSDK] = sdk
 
@@ -211,8 +204,8 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 			Candidates: []config2.SDKCandidate{},
 		}
 
-		*sdkName = devctlpath.SDKsPath(addSDK)
-		sdkCandidateDirs, err := ioutil.ReadDir(*sdkName)
+		sdkName := devctlpath.SDKsPath(addSDK)
+		sdkCandidateDirs, err := ioutil.ReadDir(sdkName)
 		if err != nil {
 			panic(err)
 		}
