@@ -31,5 +31,8 @@ func configHome() func(lazypath) string {
 //
 // If $XDG_CACHE_HOME is either not set or empty, a default equal to $HOME/.cache is used.
 func cacheHome() string {
+	if cachehome := os.Getenv("XDG_CACHE_HOME") ; cachehome != "" {
+		return cachehome
+	}
 	return filepath.Join(userHome(), ".cache")
 }
