@@ -202,7 +202,7 @@ func UnTarGzip(file io.Reader, target string, renamer Renamer) error {
 			filename = renamer(filename)
 		}
 
-		p := filepath.Join(target, filename) //nolint:gosec
+		p := filepath.Join(target, filename)
 		fi := header.FileInfo()
 
 		if fi.IsDir() {
@@ -216,7 +216,7 @@ func UnTarGzip(file io.Reader, target string, renamer Renamer) error {
 			return err
 		}
 		defer file.Close()
-		_, err = io.Copy(file, tr) //nolint:gosec
+		_, err = io.Copy(file, tr)
 		if err != nil {
 			return err
 		}
