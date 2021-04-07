@@ -23,7 +23,7 @@ func TestList(t *testing.T) {
 	mockPather.EXPECT().SDK(gomock.Any()).Return(sdkpath).AnyTimes()
 
 	g.Describe("ListSDK", func() {
-		var sut SDKActions
+		var sut Actions
 		var fs afero.Fs
 
 		g.BeforeEach(func() {
@@ -32,7 +32,7 @@ func TestList(t *testing.T) {
 			if err != nil {
 				g.Fail(err)
 			}
-			sut = SDKActions{
+			sut = Actions{
 				Pather: mockPather,
 				FS:     fs,
 			}
@@ -59,6 +59,7 @@ func TestList(t *testing.T) {
 	})
 }
 
+//nolint:gocognit
 func TestListVersions(t *testing.T) {
 	g := goblin.Goblin(t)
 	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
@@ -67,7 +68,7 @@ func TestListVersions(t *testing.T) {
 	mockPather.EXPECT().SDK(gomock.Eq("go")).Return(path.Join(sdkpath, "go")).AnyTimes()
 
 	g.Describe("ListSDKVersions", func() {
-		var sut SDKActions
+		var sut Actions
 		var fs afero.Fs
 		var gosdkPath string
 		g.BeforeEach(func() {
@@ -76,7 +77,7 @@ func TestListVersions(t *testing.T) {
 			if err != nil {
 				g.Fail(err)
 			}
-			sut = SDKActions{
+			sut = Actions{
 				Pather: mockPather,
 				FS:     fs,
 			}
@@ -90,6 +91,9 @@ func TestListVersions(t *testing.T) {
 
 		g.It("WHEN no sdk version installed => THEN returns no versions", func() {
 			sdks, err := sut.ListVersions("go")
+			if err != nil {
+				g.Fail(err)
+			}
 			gosdkPath = path.Join(sdkpath, "go")
 			err = fs.MkdirAll(gosdkPath, fileutil.PrivateDirMode)
 			if err != nil {
@@ -107,7 +111,7 @@ func TestListVersions(t *testing.T) {
 				g.Fail(err)
 			}
 			for _, sdk := range expectedVersions {
-				err := fs.MkdirAll(path.Join(gosdkPath, sdk), fileutil.PrivateDirMode)
+				err = fs.MkdirAll(path.Join(gosdkPath, sdk), fileutil.PrivateDirMode)
 				if err != nil {
 					g.Fail(err)
 				}

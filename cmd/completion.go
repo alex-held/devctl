@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/alex-held/devctl/internal/cli"
+	"github.com/alex-held/devctl/internal/app"
 )
 
 // NewCompletionCommand Creates new Completion cobra.Command
@@ -53,13 +53,13 @@ PS> yourprogram completion powershell > yourprogram.ps1
 			switch args[0] {
 			case "bash":
 				err := cmd.Root().GenBashCompletion(os.Stdout)
-				cli.ExitWithError(1, err)
+				app.ExitWhenError(1, err)
 			case "zsh":
 				err := cmd.Root().GenZshCompletion(os.Stdout)
-				cli.ExitWithError(1, err)
+				app.ExitWhenError(1, err)
 			case "powershell":
 				err := cmd.Root().GenPowerShellCompletion(os.Stdout)
-				cli.ExitWithError(1, err)
+				app.ExitWhenError(1, err)
 			}
 		},
 	}

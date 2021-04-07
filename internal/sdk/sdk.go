@@ -7,12 +7,12 @@ import (
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
-type SDKActions struct {
+type Actions struct {
 	Pather devctlpath.Pather
 	FS     afero.Fs
 }
 
-func (a *SDKActions) List() (sdks []string, err error) {
+func (a *Actions) List() (sdks []string, err error) {
 	sdkDir := a.Pather.SDK()
 	return GetSubdirNames(a.FS, sdkDir, NoOpExcluder)
 }
@@ -23,7 +23,7 @@ var NoOpExcluder Excluder = func(s string) bool {
 
 type Excluder func(s string) bool
 
-func (a *SDKActions) ListVersions(sdk string) (sdks []string, err error) {
+func (a *Actions) ListVersions(sdk string) (sdks []string, err error) {
 	sdkDir := a.Pather.SDK(sdk)
 	if exists, _ := afero.DirExists(a.FS, sdkDir); !exists {
 		return sdks, nil

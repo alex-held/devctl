@@ -34,21 +34,21 @@ func TestLogger_Captures_LogMessages(t *testing.T) {
 			})
 
 			g.It("WHEN loglevel is info --> THEN no log messages get captured", func() {
-				logger.Infof("To learn more about this cli visit our docs.")
+				logger.Infof("To learn more about this app visit our docs.")
 				output := b.String()
 				Expect(output).To(BeEmpty())
 			})
 
 			g.It("WHEN loglevel is debug --> THEN no log messages get captured", func() {
-				logger.Debugf("To learn more about this cli visit our docs.")
+				logger.Debugf("To learn more about this app visit our docs.")
 				output := b.String()
 				Expect(output).To(BeEmpty())
 			})
 
 			g.It("WHEN loglevel is warn --> THEN captures log message", func() {
-				logger.Warnf("To learn more about this cli visit our docs.")
+				logger.Warnf("To learn more about this app visit our docs.")
 				output := b.String()
-				Expect(output).To(ContainSubstring("To learn more about this cli visit our docs."))
+				Expect(output).To(ContainSubstring("To learn more about this app visit our docs."))
 			})
 		})
 
@@ -62,22 +62,22 @@ func TestLogger_Captures_LogMessages(t *testing.T) {
 			})
 
 			g.It("WHEN loglevel is info --> THEN capture log messages", func() {
-				logger.Infof("To learn more about this cli visit our docs. devctl-path=%s; temp-dir-path=%s;\n", os.ExpandEnv("$HOME/.devctl"), t.TempDir())
+				logger.Infof("To learn more about this app visit our docs. devctl-path=%s; temp-dir-path=%s;\n", os.ExpandEnv("$HOME/.devctl"), t.TempDir())
 				output := b.String()
-				Expect(output).To(ContainSubstring("To learn more about this cli visit our docs."))
+				Expect(output).To(ContainSubstring("To learn more about this app visit our docs."))
 				//	Expect(b.Len()).To(Equal(logger.(logging.Log).Output.Len()))
 			})
 
 			g.It("WHEN loglevel is debug --> THEN capture log messages", func() {
-				logger.Debugf("To learn more about this cli visit our docs. devctl-path=%s; temp-dir-path=%s\n", os.ExpandEnv("$HOME/.devctl"), t.TempDir())
+				logger.Debugf("To learn more about this app visit our docs. devctl-path=%s; temp-dir-path=%s\n", os.ExpandEnv("$HOME/.devctl"), t.TempDir())
 				output := b.String()
-				Expect(output).To(ContainSubstring("To learn more about this cli visit our docs."))
+				Expect(output).To(ContainSubstring("To learn more about this app visit our docs."))
 			})
 
 			g.It("WHEN loglevel is warn --> THEN captures log messages", func() {
-				logger.Warnf("To learn more about this cli visit our docs. devctl-path=%s; temp-dir-path=%s\n", os.ExpandEnv("$HOME/.devctl"), t.TempDir())
+				logger.Warnf("To learn more about this app visit our docs. devctl-path=%s; temp-dir-path=%s\n", os.ExpandEnv("$HOME/.devctl"), t.TempDir())
 				output := b.String()
-				Expect(output).To(ContainSubstring("To learn more about this cli visit our docs."))
+				Expect(output).To(ContainSubstring("To learn more about this app visit our docs."))
 			})
 		})
 	})

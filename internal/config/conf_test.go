@@ -12,7 +12,7 @@ import (
 	"github.com/alex-held/devctl/pkg/logging"
 )
 
-var expectedConfig = &DevEnvConfig{
+var expectedConfig = &DevCtlConfig{
 	GlobalConfig: DevEnvGlobalConfig{Version: "v1"},
 	Sdks: map[string]DevEnvSDKConfig{
 		"java": {
@@ -53,7 +53,7 @@ func TestViperConfig(t *testing.T) {
 		const testdataPath = "testdata/config.yaml"
 		var b *bytes.Buffer
 		var logger logging.Log
-		var cfg *DevEnvConfig
+		var cfg *DevCtlConfig
 
 		g.BeforeEach(func() {
 			b = &bytes.Buffer{}
@@ -76,10 +76,6 @@ func TestViperConfig(t *testing.T) {
 				g.Failf("could not read config file. ")
 			}
 			logger.Warnf("%+v", cfg)
-
-			//			Expect(cfg.GlobalConfig).To(Equal(DevEnvGlobalConfig{Version: "v1"}))
-			//	Expect(cfg.Sdks["java"]).Should(Not(BeEmpty()))
-			//		Expect(cfg.Sdks["haskell"]).Should(Not(BeEmpty()))
 			Expect(*cfg).To(Equal(*expectedConfig))
 		})
 	})

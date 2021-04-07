@@ -23,11 +23,11 @@ func NewInitCommand() (cmd *cobra.Command) {
 
 func newZshInitCommand() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
-		Use:  "zsh",
-		Long: "zsh",
-		Example:   "devctl init zsh",
+		Use:     "zsh",
+		Long:    "zsh",
+		Example: "devctl init zsh",
 		Run: func(c *cobra.Command, args []string) {
-			source := shell.ShellSource()
+			source := shell.Source()
 			fmt.Println(source)
 		},
 	}

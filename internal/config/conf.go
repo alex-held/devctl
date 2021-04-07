@@ -1,26 +1,22 @@
 package config
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
 
 	"github.com/coreos/etcd/pkg/fileutil"
-	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
-	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
 	yaml2 "sigs.k8s.io/yaml"
 
-	"github.com/alex-held/devctl/pkg/devctlpath"
+	"github.com/alex-held/devctl/pkg/constants"
 )
 
-// DefaultConfig creates a blank *DevEnvConfig
-func DefaultConfig() *DevEnvConfig {
-	return &DevEnvConfig{
-		GlobalConfig: DevEnvGlobalConfig{Version: VersionV1},
+// DefaultConfig creates a blank *DevCtlConfig
+func DefaultConfig() *DevCtlConfig {
+	return &DevCtlConfig{
+		GlobalConfig: DevEnvGlobalConfig{Version: constants.VersionV1},
 		Sdks:         map[string]DevEnvSDKConfig{},
 	}
 }
@@ -39,28 +35,17 @@ type SDKCandidate struct {
 	Version string `yaml:"version,omitempty" json:"version,omitempty" mapstructure:"version,omitempty"`
 }
 
-type DevEnvConfig struct {
+type DevCtlConfig struct {
 	GlobalConfig DevEnvGlobalConfig         `yaml:"global,omitempty" json:"global,omitempty" mapstructure:"global,omitempty"`
 	Sdks         map[string]DevEnvSDKConfig `yaml:"sdks,omitempty" json:"sdks,omitempty" mapstructure:"sdks,omitempty"`
 }
 
-func (d *DevEnvConfig) GoString() string {
+func (d *DevCtlConfig) GoString() string {
 	b, e := yaml.Marshal(d)
 	if e != nil {
 		return e.Error()
 	}
 	return fmt.Sprintf("%+v", string(b))
-}
-
-var initialized bool = false
-
-func InitViper(filename string) {
-	dir := path.Dir(filename)
-	config := path.Base(filename)
-	viper.AddConfigPath(dir)
-	viper.SetConfigName(config)
-	viper.SetConfigType("yaml")
-	initialized = true
 }
 
 var ReadConfigFile = func(filename string) ([]byte, error) {
@@ -78,7 +63,11 @@ var ReadConfigFile = func(filename string) ([]byte, error) {
 	return data, nil
 }
 
-func parseConfigFile(filename string) (configuration *DevEnvConfig, err error) {
+func ParseConfigFile(filename string) (configuration *DevCtlConfig, err error) {
+	return parseConfigFile(filename)
+}
+
+func parseConfigFile(filename string) (configuration *DevCtlConfig, err error) {
 	data, _ := ReadConfigFile(filename)
 	configuration = DefaultConfig()
 	err = yaml.Unmarshal(data, configuration)
@@ -96,32 +85,10 @@ func parseConfigFile(filename string) (configuration *DevEnvConfig, err error) {
 	return configuration, nil
 }
 
-func LoadViperConfig() *DevEnvConfig {
-	if !initialized {
-		cfgPath := devctlpath.DevCtlConfigFilePath()
-		InitViper(cfgPath)
-	}
-
-	configuration := DefaultConfig()
-	if err := viper.ReadInConfig(); err != nil {
-		_ = fmt.Errorf("error reading config file, %s\n ", err)
-	}
-	var err = viper.Unmarshal(configuration)
-	if err != nil {
-		_ = fmt.Errorf("unable to decode into struct, %v\n ", err)
-	}
-	devEnvConfigMap := &map[string]interface{}{}
-	err = mapstructure.Decode(&configuration, devEnvConfigMap)
-	if err != nil {
-		_ = fmt.Errorf("unable to decode into struct, %v\n ", err)
-	}
-	return configuration
-}
-
-func WriteDevEnvConfig(filepath string, cfg DevEnvConfig) error {
+func WriteDevEnvConfig(filepath string, cfg DevCtlConfig) error {
 	data, err := yaml2.Marshal(&cfg)
 	if err != nil {
-		return errors.Wrapf(err, "failed to marshal the DevEnvConfig. %+v\n", cfg)
+		return errors.Wrapf(err, "failed to marshal the DevCtlConfig. %+v\n", cfg)
 	}
 
 	err = ioutil.WriteFile(filepath, data, fileutil.PrivateFileMode)
@@ -129,25 +96,4 @@ func WriteDevEnvConfig(filepath string, cfg DevEnvConfig) error {
 		return errors.Wrapf(err, "failed to write config file to disk")
 	}
 	return nil
-}
-
-func UpdateDevEnvConfig(cfg DevEnvConfig) error {
-	err := viper.ReadInConfig()
-	if err != nil {
-		return err
-	}
-
-	devEnvConfigMap := &map[string]interface{}{}
-	err = mapstructure.Decode(&cfg, devEnvConfigMap)
-	if err != nil {
-		return err
-	}
-
-	b, _ := yaml.Marshal(devEnvConfigMap)
-	err = viper.MergeConfig(bytes.NewReader(b))
-	if err != nil {
-		return err
-	}
-
-	return viper.WriteConfig()
 }

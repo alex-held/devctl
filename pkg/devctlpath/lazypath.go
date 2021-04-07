@@ -10,7 +10,6 @@ import (
 	"github.com/alex-held/devctl/pkg/devctlpath/xdg"
 )
 
-
 const (
 	ConfigHomeRootEnvVar = "DEVCTL_CONFIG_HOME"
 	CacheHomeEnvVar      = "DEVCTL_CACHE_HOME"
