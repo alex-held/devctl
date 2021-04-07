@@ -7,6 +7,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/bndr/gotabulate v1.1.2
+	github.com/codeclysm/extract v2.2.0+incompatible // indirect
 	github.com/codomatech/spluggy v0.0.0-20201012170228-ae9a2945c045 // indirect
 	github.com/coreos/etcd v3.3.25+incompatible
 	github.com/coreos/go-systemd v0.0.0-20191104093116-d3cd4ed1dbcf // indirect
@@ -17,8 +18,11 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-openapi/errors v0.20.0 // indirect
 	github.com/go-openapi/strfmt v0.20.1 // indirect
+	github.com/gorilla/mux v1.8.0 // indirect
+	github.com/h2non/filetype v1.1.1 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible
 	github.com/json-iterator/go v1.1.10 // indirect
+	github.com/juju/errors v0.0.0-20200330140219-3fe23663418f // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mattn/go-colorable v0.1.8
 	github.com/mattn/go-runewidth v0.0.12 // indirect

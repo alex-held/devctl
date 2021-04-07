@@ -130,11 +130,11 @@ func newSdkAddCommand() *cobra.Command {
 		Run:   sdkAddCommandfunc,
 	}
 
-	cmd.Flags().StringVarP(sdkCurrentPath, "current", "c", "", "--current '~/.devctl/sdks/java/adopt-jdk/16.1'")
-	cmd.Flags().StringVarP(sdkName, "name", "n", "", "--name 'java'")
-	cmd.Flags().StringVarP(sdkVersion, "version", "v", "", "--version '1.0.0'")
-	cmd.Flags().StringVarP(sdkCandidatePath, "path", "p", "", "--path '~/.devctl/sdks/java/adopt-jdk/16.1'")
-	cmd.Flags().StringArrayVarP(&sdkCandidates, "candidates", "c", []string{}, "--candidates ~/.devctl/sdks/java/adopt-jdk/16.1'")
+//	cmd.Flags().StringVarP(sdkCurrentPath, "current", "c", "", "--current '~/.devctl/sdks/java/adopt-jdk/16.1'")
+//	cmd.Flags().StringVarP(sdkName, "name", "n", "", "--name 'java'")
+//	cmd.Flags().StringVarP(sdkVersion, "version", "v", "", "--version '1.0.0'")
+//	cmd.Flags().StringVarP(sdkCandidatePath, "path", "p", "", "--path '~/.devctl/sdks/java/adopt-jdk/16.1'")
+//	cmd.Flags().StringArrayVarP(&sdkCandidates, "candidates", "c", []string{}, "--candidates ~/.devctl/sdks/java/adopt-jdk/16.1'")
 
 	return cmd
 }

@@ -3,8 +3,6 @@ package constants
 import (
 	"fmt"
 	"os"
-
-	"github.com/coreos/etcd/client"
 )
 
 type ExitCode int
@@ -26,9 +24,6 @@ func ExitWithError(code int, err error) {
 		return
 	}
 	_, _ = fmt.Fprintln(os.Stderr, "Error:", err)
-	if cerr, ok := err.(*client.ClusterError); ok {
-		_, _ = fmt.Fprintln(os.Stderr, cerr.Detail())
-	}
 	os.Exit(code)
 }
 
