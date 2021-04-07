@@ -1,0 +1,2 @@
+export GOPATH="${BASH_SOURCE%.bash}:$GOPATH"
+export GOROOT="${BASH_SOURCE%.bash}:$GOROOT"

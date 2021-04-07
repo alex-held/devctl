@@ -20,12 +20,13 @@ on:
   pull_request:
 
 jobs:
-  
+
   golangci:
     runs-on: ubuntu-latest
     name: lint
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:
@@ -33,9 +34,7 @@ jobs:
           # we always use the latest patch version.
           version: v1.29
           args: --color=always -v ./...
-  
-  
-  
+
   tasks:
     name: test
     strategy:
@@ -43,14 +42,11 @@ jobs:
         os: [ macos-latest, ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Check out code into the Go module directory
+      - name: Checkout
         uses: actions/checkout@v2
-      
       - name: Install Task
         run: sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
-
-        run: ./bin/task cover
-      - name: Run Tests & Coverage
-
       - name: Build
         run: ./bin/task build
+      - name: Run Tests & Coverage
+        run: ./bin/task test:cover

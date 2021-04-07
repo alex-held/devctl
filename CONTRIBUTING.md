@@ -5,6 +5,13 @@ Hi there! We're thrilled that you'd like to contribute to this project. Your hel
 This project adheres to the [Open Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold
 this code.
 
+
+## Development Guide
+
+Install the recommended tooling described in [Development Guide](./docs/development.md).
+
+
+
 ## Submitting a pull request
 
 0. [Fork](https://github.com/alex-held/devctl/fork) and clone the repository

@@ -4,11 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sync"
 
-	"github.com/sirupsen/logrus"
-
-	"github.com/alex-held/devctl/internal/logging"
+	"github.com/alex-held/devctl/pkg/logging"
 
 	"github.com/coreos/etcd/client"
 	"github.com/mitchellh/go-homedir"
@@ -20,7 +17,6 @@ var (
 )
 
 type CLI interface {
-	GetHomeFinder() HomeFinder
 	Name() string
 	ConfigFileName() string
 	ConfigDir() string
@@ -29,10 +25,6 @@ type CLI interface {
 type app struct {
 	staticConfig *staticConfig
 	context      Contextified
-}
-
-func (a *app) GetHomeFinder() HomeFinder {
-	return a.context.g.Env.HomeFinder
 }
 
 func (a *app) Name() string {
@@ -88,20 +80,12 @@ func newApp(option ...StaticOption) (cli *app) {
 		c = o(c)
 	}
 
-	l := logging.NewLogger(func(l *logrus.Logger) *logrus.Logger {
-		l.SetOutput(os.Stdout)
-		return l
-	})
+	l := logging.NewLogger()
 
 	cli = &app{
 		staticConfig: c,
 		context: NewContextified(&GlobalContext{
-			Log: l,
-			VDL: NewVDebugLog(l),
-			Env: &Env{
-				RWMutex:    sync.RWMutex{},
-				HomeFinder: DefaultHomeFinder(c.cliName),
-			},
+			Log: &l,
 		}),
 	}
 

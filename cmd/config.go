@@ -2,11 +2,13 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
+	"github.com/alex-held/devctl/internal/config"
+
 	"github.com/alex-held/devctl/internal/cli"
-	config2 "github.com/alex-held/devctl/internal/config/config"
 )
 
 func NewConfigCommand() *cobra.Command {
@@ -42,9 +44,17 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		Args: cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			devEnvConfig := config2.LoadViperConfig()
-			configString := fmt.Sprintf("%+v\n", *devEnvConfig)
-			fmt.Println(configString)
+			cfg := config.LoadViperConfig()
+			err := printConfig(cfg)
+			if err != nil {
+				cli.ExitWithError(1, err)
+			}
+			os.Exit(0)
 		},
 	}
+}
+
+func printConfig(cfg *config.DevEnvConfig) (err error) {
+	_, err = fmt.Fprintf(os.Stdout, "%#v", cfg)
+	return err
 }

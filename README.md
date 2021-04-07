@@ -38,13 +38,13 @@
 ```sh
 GO111MODULE=off go get github.com/alex-held/devctl 
 cd $GOPATH/src/github.com/alex-held/devctl
-task install
+go install
 ```
 
 ## Usage
 
 ```sh
-devctl --help
+devctl help
 ```
 
 ## Author

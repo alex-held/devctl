@@ -141,6 +141,7 @@ linters-settings:
     max-func-lines: 30
   lll:
     line-length: 120
+
   whitespace:
     auto-fix: true
   maligned:
@@ -175,12 +176,11 @@ linters:
     - golint
     - gomnd
     - goprintffuncname
-    - gosec
+    #- gosec
     - gosimple
     - govet
     - ineffassign
     - interfacer
-    - lll
     - misspell
     - nakedret
     - noctx
@@ -210,6 +210,23 @@ linters:
     # - prealloc
     # - testpackage
     # - wsl
+
+
+issues:
+  exclude-rules:
+    # Exclude lll issues for long lines with go:generate
+    - linters:
+        - lll
+      source: "^//go:generate "
+
+    - path: _test\.go
+      linters:
+        - lll
+        - dupl
+        - gocritic
+  fix: true
+
+
 
   #severity:
   # Default value is empty string.

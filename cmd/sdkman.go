@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/blang/semver"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
@@ -86,7 +85,7 @@ func NewSdkManDefaultCommand() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
 		Use:       "default",
 		Short:     "Displays the latest (default) version of a given  sdk ",
-		ValidArgs: strings.Split("ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm", ","), //nolint: lll
+		ValidArgs: strings.Split("ant,asciidoctorj,ballerina,bpipe,btrace,ceylon,concurnas,crash,cuba,cxf,doctoolchain,dotty,gaiden,glide,gradle,gradleprofiler,grails,groovy,groovyserv,http4k,infrastructor,java,jbake,jbang,karaf,kotlin,kscript,layrry,lazybones,leiningen,maven,micronaut,mulefd,mvnd,sbt,scala,spark,springboot,sshoogr,test,tomcat,vertx,visualvm", ","), // nolint: lll
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			client := sdkman.NewSdkManClient()
@@ -135,30 +134,24 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			client := sdkman.NewSdkManClient()
-			app := cli.GetOrCreateCLI()
 
 			switch len(args) {
 			case 0:
 				cli.ExitWithError(1, os.ErrInvalid)
 			case 1:
 				sdk := args[0]
+
 				version, err := client.Version.Default(ctx, sdk)
 				cli.ExitWithError(1, err)
-
-				dlPath := app.GetHomeFinder().SDKDir(sdk, version)
-				dl, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version, system.DarwinX64)
+				_, err = client.Download.DownloadSDK(ctx, sdk, version, system.GetCurrent())
 				cli.ExitWithError(1, err)
-				fmt.Printf("Downloaded sdk to path: %s", dl.Path)
 				os.Exit(0)
-			case 2: //nolint: gomnd
+			case 2: // nolint: gomnd
 				sdk := args[0]
-				version, err := semver.ParseTolerant(args[1])
-				cli.ExitWithError(1, err)
-				dlPath := app.GetHomeFinder().SDKDir(sdk, version.String())
+				version := args[1]
 
-				dl, err := client.Download.DownloadSDK(ctx, dlPath, sdk, version.String(), system.DarwinX64)
+				_, err := client.Download.DownloadSDK(ctx, sdk, version, system.GetCurrent())
 				cli.ExitWithError(1, err)
-				fmt.Printf("Downloaded sdk to path: %s", dl.Path)
 				os.Exit(0)
 			default:
 				cli.ExitWithError(1, errors.New("sdkman download called with too many arguments"))
