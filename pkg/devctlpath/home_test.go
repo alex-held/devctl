@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"strings"
 	"testing"
 	"testing/quick"
@@ -80,7 +81,10 @@ func TestHomeFinder(t *testing.T) {
 	/* CacheDir */
 	g.Describe("Cache", func() {
 		g.It("WHEN no pathFn set", func() {
-			_ = os.Setenv("XDG_CACHE_HOME", "/tmp/cache")
+			if runtime.GOOS == "linux" {
+				_ = os.Setenv("XDG_CACHE_HOME", "/tmp/cache")
+			}
+
 			cacheDir, _ := os.UserCacheDir()
 			expected := filepath.Join(cacheDir, "io.alexheld.test_devctl")
 			lazyFinder = NewPather(WithAppPrefix(testAppPrefix))
