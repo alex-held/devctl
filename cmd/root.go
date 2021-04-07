@@ -58,6 +58,7 @@ func init() {
 		NewSdkCommand(),
 		NewSdkManCommand(),
 		NewPrefixCommand(),
+		NewInitCommand(),
 	)
 
 	// Here you will define your flags and configuration settings.
