@@ -177,7 +177,7 @@ func (f lazypathFinder) cachePath(elem ...string) string {
 		return filepath.Join(p, filepath.Join(elem...))
 	}
 
-	p = os.Getenv(xdg.ConfigHomeEnvVar)
+	p = os.Getenv(xdg.CacheHomeEnvVar)
 	if p != "" {
 		p = filepath.Join(p, fqrdn)
 		return filepath.Join(p, filepath.Join(elem...))
