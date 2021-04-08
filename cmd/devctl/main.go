@@ -4,7 +4,8 @@ import (
 	"context"
 	"log"
 	"os"
-	"os/exec"
+
+	"github.com/alex-held/devctl/internal/plugins/exec"
 )
 
 func main() {
