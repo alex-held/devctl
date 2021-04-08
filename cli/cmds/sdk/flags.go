@@ -6,7 +6,7 @@ import (
 	"github.com/gobuffalo/plugins/plugflag"
 	"github.com/spf13/pflag"
 
-	"github.com/alex-held/devctl/internal/flagger"
+	"github.com/alex-held/devctl/internal/plugins/flagger"
 )
 
 func (cmd *Cmd) Flags() *pflag.FlagSet {

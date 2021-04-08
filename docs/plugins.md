@@ -11,8 +11,9 @@ A plugin may have as many plugins as you like.
 ```puml
 @startuml
 
-"User"  -> garlic.run
-garlic.run -> devctl
+"User"  -> main
+main ->  plugins.exec.run
+plugins.exec.run -> devctl
 
 
 devctl -> command

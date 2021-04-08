@@ -1,6 +1,7 @@
 package golang
 
 import (
+	"fmt"
 	"path"
 	"strings"
 
@@ -26,6 +27,7 @@ func FindSubcommand(name string, plugs []plugins.Plugin) plugins.Plugin {
 		}
 
 		if n, ok := c.(Namer); ok {
+			fmt.Println("searching subcommand; name=" + n.CmdName())
 			if n.CmdName() == name {
 				return c
 			}

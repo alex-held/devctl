@@ -1,9 +1,7 @@
-package garlic
+package exec
 
 import (
-	"bytes"
 	"context"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,19 +10,6 @@ import (
 
 	"github.com/alex-held/devctl/cli"
 )
-
-func isDevctl(mod string) bool {
-	if _, err := os.Stat(mod); err != nil {
-		return false
-	}
-
-	b, err := ioutil.ReadFile(mod)
-	if err != nil {
-		return false
-	}
-
-	return bytes.Contains(b, []byte("github.com/alex-held/devctl"))
-}
 
 func Run(ctx context.Context, root string, args []string) error {
 	main := filepath.Join(root, "cmd", "devctl")

@@ -5,8 +5,19 @@ import (
 	"fmt"
 
 	"github.com/gobuffalo/plugins"
+	"github.com/gobuffalo/plugins/plugcmd"
+	"github.com/gobuffalo/plugins/plugprint"
 	"github.com/spf13/pflag"
+
+	"github.com/alex-held/devctl/cli/internal/golang/download"
+	"github.com/alex-held/devctl/cli/internal/golang/list"
 )
+
+var _ plugcmd.SubCommander = &Cmd{}
+var _ Namer = &Cmd{}
+var _ plugins.Plugin = &Cmd{}
+var _ plugins.Scoper = &Cmd{}
+var _ plugprint.Describer = &Cmd{}
 
 type Cmd struct {
 	Plugins   []plugins.Plugin
@@ -15,6 +26,18 @@ type Cmd struct {
 	help      bool
 }
 
+func (c *Cmd) Description() string {
+	return "manages the installations of the go sdk"
+}
+
+func (c *Cmd) SubCommands() []plugins.Plugin {
+	return []plugins.Plugin{
+		&list.GoListerCmd{},
+		&download.GoDownloadCmd{},
+	}
+}
+
+// ScopedPlugins
 func (c *Cmd) ScopedPlugins() []plugins.Plugin {
 	var plugs []plugins.Plugin
 
