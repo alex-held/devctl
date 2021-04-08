@@ -9,7 +9,17 @@ import (
 
 func Plugins() []plugins.Plugin {
 	return []plugins.Plugin{
-		&list.GoListerCmd{},
-		&download.GoDownloadCmd{},
+		&Cmd{
+			Plugins: []plugins.Plugin{
+				&download.GoDownloadCmd{},
+				&list.GoListerCmd{},
+			},
+			pluginsFn: func() []plugins.Plugin {
+				return []plugins.Plugin{
+					&download.GoDownloadCmd{},
+					&list.GoListerCmd{},
+				}
+			},
+		},
 	}
 }

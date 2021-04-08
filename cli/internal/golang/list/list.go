@@ -20,7 +20,7 @@ type GoListerCmd struct {
 }
 
 func (l *GoListerCmd) CmdName() string {
-	return "go"
+	return "list"
 }
 
 func (l *GoListerCmd) Sdk(ctx context.Context, root string, args []string) error {

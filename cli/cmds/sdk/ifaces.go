@@ -16,6 +16,7 @@ type Installer interface {
 
 type Downloader interface {
 	plugins.Plugin
+	Download(ctx context.Context, root string, args []string) error
 }
 
 type Lister interface {

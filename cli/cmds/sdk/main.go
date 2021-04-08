@@ -9,6 +9,7 @@ import (
 )
 
 func (cmd *Cmd) Main(ctx context.Context, root string, args []string) error {
+
 	plugs := cmd.ScopedPlugins()
 
 	if p := FindSdkerFromArgs(args, plugs); p != nil {
