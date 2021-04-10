@@ -108,10 +108,21 @@ func NewConsoleOutput() (out *output) {
 	return out
 }
 
+func (cmd *GoDownloadCmd) artifactCached() (exists bool) {
+	downloadArtifactPath := cmd.DownloadArtifactPath()
+	_, err := cmd.fs.Stat(downloadArtifactPath)
+	return err == nil
+}
+
 func (cmd *GoDownloadCmd) Download(ctx context.Context, root string, args []string) error {
 	err := cmd.Init(ctx, root, args[0:])
 	if err != nil {
 		return errors.Wrapf(err, "failed to initialize %T", *cmd)
+	}
+
+	if cmd.artifactCached() {
+		_, err := cmd.Out().Write([]byte(fmt.Sprintf("go sdk %s already downloaded\n", cmd.version)))
+		return err
 	}
 
 	err = cmd.fs.MkdirAll(cmd.DownloadDir(), fileutil.PrivateDirMode)

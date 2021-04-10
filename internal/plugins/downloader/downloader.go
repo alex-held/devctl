@@ -34,19 +34,25 @@ func (d downloader) Download(ctx context.Context) (err error) {
 	if err != nil {
 		return err
 	}
-
 	defer resp.Body.Close()
 
-	headers := resp.Header
-	cl := headers.Get("Content-Length")
-	size, err := strconv.Atoi(cl)
+	size, err := getContentSize(resp, err)
 	if err != nil {
 		return err
 	}
 
 	var progressBar = plugins.NewProgress(d.ProgressWriter, size, d.DownloadDesc)
-
 	var multi = io.MultiWriter(progressBar, d.DlWriter)
 	_, err = io.Copy(multi, resp.Body)
 	return err
+}
+
+func getContentSize(resp *http.Response, err error) (int, error) {
+	headers := resp.Header
+	cl := headers.Get("Content-Length")
+	size, err := strconv.Atoi(cl)
+	if err != nil {
+		return 0, err
+	}
+	return size, nil
 }
