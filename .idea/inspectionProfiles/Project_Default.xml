@@ -3,7 +3,6 @@
     <option name="myName" value="Project Default" />
     <inspection_tool class="ComposeMissingKeys" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="GoCommentLeadingSpace" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="GoCommentStart" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="GoExportedElementShouldHaveComment" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="GoNameStartsWithPackageName" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="GoUnhandledErrorResult" enabled="true" level="WARNING" enabled_by_default="true">
@@ -15,6 +14,8 @@
         <function importPath="fmt" name="Print" />
         <function importPath="testing/quick" name="Check" />
         <function importPath="io" name="Copy" />
+        <function importPath="fmt" name="Fprintf" />
+        <function importPath="io" name="WriteString" />
       </functions>
       <methods>
         <method importPath="hash" receiver="Hash" name="Write" />
@@ -35,6 +36,5 @@
     <inspection_tool class="InconsistentLineSeparators" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="ProblematicWhitespace" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RegExpAnonymousGroup" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="Stylelint" enabled="true" level="ERROR" enabled_by_default="true" />
   </profile>
 </component>

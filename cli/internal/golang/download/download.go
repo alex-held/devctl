@@ -3,7 +3,9 @@ package download
 import (
 	"context"
 	"fmt"
-	"net/http"
+	"io"
+	"io/ioutil"
+	"os"
 	"path"
 
 	"github.com/coreos/etcd/pkg/fileutil"
@@ -12,6 +14,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 
+	"github.com/alex-held/devctl/internal/plugins/downloader"
+	plugins2 "github.com/alex-held/devctl/pkg/plugins"
+
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
@@ -19,44 +24,132 @@ var _ plugcmd.Namer = &GoDownloadCmd{}
 var _ plugins.Plugin = &GoDownloadCmd{}
 
 type GoDownloadCmd struct {
+	*goSDKCore
+	*dlOptions
 	pluginsFn plugins.Feeder
 }
 
-func (l *GoDownloadCmd) CmdName() string {
+func (cmd *GoDownloadCmd) CmdName() string {
 	return "download"
 }
 
-func (l *GoDownloadCmd) PluginName() string {
+func (cmd *GoDownloadCmd) PluginName() string {
 	return "sdk/go/download"
 }
 
-func (l *GoDownloadCmd) Download(ctx context.Context, root string, args []string) error {
-	version := args[1]
-	fmt.Println(version)
-	httpClient := http.Client{}
-	baseURI := "https://golang.org"
+type dlOptions struct {
+	version string
+	baseURI string
+}
 
-	fs := afero.NewOsFs()
-	dlPath := devctlpath.DownloadPath("go", version)
-	err := fs.MkdirAll(dlPath, fileutil.PrivateDirMode)
-	if err != nil {
-		return errors.Wrapf(err, "failed creating go sdk download path; version=%s; err=%v", version, err)
+type goSDKCore struct {
+	sdk               string
+	runtimeInfoGetter plugins2.OSRuntimeInfoGetter
+	fs                afero.Fs
+	pather            devctlpath.Pather
+	out               *output
+}
+
+func (cmd *GoDownloadCmd) DownloadDir() string {
+	return devctlpath.DownloadPath(cmd.sdk, cmd.version)
+}
+
+func (cmd *GoDownloadCmd) DownloadUri() (uri string) {
+	artifact := cmd.DownloadArtifactName()
+	uri = cmd.runtimeInfoGetter.Format("%s/dl/%s", cmd.baseURI, artifact)
+	return uri
+}
+
+func (cmd *GoDownloadCmd) DownloadArtifactPath() string {
+	return path.Join(cmd.DownloadDir(), cmd.DownloadArtifactName())
+}
+
+func (cmd *GoDownloadCmd) DownloadProgressDesc() string {
+	return fmt.Sprintf("downloading sdk: %s %s", cmd.sdk, cmd.version)
+}
+
+func (cmd *GoDownloadCmd) DownloadArtifactName() string {
+	artifactName := cmd.runtimeInfoGetter.Format("go%s.[os]-[arch].tar.gz", cmd.dlOptions.version)
+	return artifactName
+}
+
+type output struct {
+	out io.Writer
+	err io.Writer
+	in  io.Reader
+}
+
+type nopReader struct{}
+
+func (r *nopReader) Read(_ []byte) (n int, err error) {
+	return 0, nil
+}
+
+func NewOutput(out, err io.Writer, in io.Reader) (o *output) {
+	if out == nil {
+		out = ioutil.Discard
 	}
-	filename := fmt.Sprintf("go%s.darwin-amd64.tar.gz", version)
-	dlURI := fmt.Sprintf("%s/dl/%s", baseURI, filename)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, dlURI, http.NoBody)
-	if err != nil {
-		return errors.Wrapf(err, "failed downloading go sdk archive; version=%s; err=%v", version, err)
+	if err == nil {
+		err = ioutil.Discard
 	}
-	response, err := httpClient.Do(req)
-	if err != nil {
-		return errors.Wrapf(err, "failed downloading go sdk archive; version=%s; err=%v", version, err)
+	if in == nil {
+		in = &nopReader{}
 	}
-	defer response.Body.Close()
-	filePath := path.Join(dlPath, filename)
-	err = afero.WriteReader(fs, filePath, response.Body)
+	o = &output{
+		out: out,
+		err: err,
+		in:  in,
+	}
+	return o
+}
+
+func NewConsoleOutput() (out *output) {
+	out = NewOutput(os.Stdout, os.Stderr, os.Stdin)
+	return out
+}
+
+func (cmd *GoDownloadCmd) Download(ctx context.Context, root string, args []string) error {
+	err := cmd.Init(ctx, root, args[0:])
 	if err != nil {
-		return errors.Wrapf(err, "failed writing go sdk archive; version=%s; err=%v", version, err)
+		return errors.Wrapf(err, "failed to initialize %T", *cmd)
+	}
+
+	err = cmd.fs.MkdirAll(cmd.DownloadDir(), fileutil.PrivateDirMode)
+	if err != nil {
+		return errors.Wrapf(err, "failed creating go sdk download path; version=%s", cmd.dlOptions.version)
+	}
+	artifactFile, err := cmd.fs.Create(cmd.DownloadArtifactPath())
+	if err != nil {
+		return errors.Wrapf(err, "failed creating / opening file handle for the download")
+	}
+
+	dl := downloader.NewDownloader(cmd.DownloadUri(), cmd.DownloadProgressDesc(), artifactFile, cmd.Out())
+	err = dl.Download(ctx)
+	if err != nil {
+		return errors.Wrapf(err, "failed downloading go sdk %v from the remote server %s", cmd.version, cmd.baseURI)
 	}
 	return nil
+}
+
+func (cmd *GoDownloadCmd) Init(_ context.Context, _ string, args []string) error {
+	cmd.goSDKCore = DefaultSDKCore()
+	cmd.dlOptions = &dlOptions{
+		version: args[1],
+		baseURI: "https://golang.org",
+	}
+	return nil
+}
+
+func (cmd *GoDownloadCmd) Out() io.Writer {
+	return cmd.out.out
+}
+
+func DefaultSDKCore() *goSDKCore {
+	return &goSDKCore{
+		runtimeInfoGetter: plugins2.OSRuntimeInfoGetter{},
+		fs:                afero.NewOsFs(),
+		pather:            devctlpath.DefaultPather(),
+		out:               NewConsoleOutput(),
+		sdk:               "go",
+	}
 }

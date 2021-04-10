@@ -163,7 +163,6 @@ func hasPluginPrefix(base string) bool {
 
 func LoadPlugins() (err error) {
 	oncer.Do(constants.LoadPluginsEvent, func() {
-
 		// don't send plugins events during testing
 		if envy.Get(constants.DevctlEnvKey, "development") == "test" {
 			return

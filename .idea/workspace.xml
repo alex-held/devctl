@@ -1,10 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
+    <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1fd713f-acc3-492c-a19a-d5ca7a04ee53" name="clipboardPatchFile" comment="clipboardPatchFile" />
+    <list default="true" id="e1fd713f-acc3-492c-a19a-d5ca7a04ee53" name="clipboardPatchFile" comment="clipboardPatchFile">
+      <change afterPath="$PROJECT_DIR$/internal/plugins/cli/kinds.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/plugins/cli/sdk.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/plugins/downloader/downloader.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/plugins/downloader/downloader_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/plugins/progress.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/plugins/runtime.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/plugins/runtime_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/devctl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/devctl.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/templateLanguages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/templateLanguages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.run/go build github.com_alex-held_devctl_cmd_devctl version.run.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/cmds/cmds.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/cmds/cmds.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/ifaces.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/ifaces.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/download/download.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/download/download.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/gosdker.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/gosdker.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/completion.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/completion.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/plugins/plugins.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/plugins/plugins.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/plugins/types.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/plugins/types.go" afterDir="false" />
+    </list>
     <list id="aea304bd-0598-4e74-bed6-096426656119" name="Default Changelist" comment="ci(deps): bump actions/checkout@v2" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,19 +64,32 @@
     <option name="CREATE_PULL_REQUEST_DEFAULT_REPO_NAME" value="devctl" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/google/go-cmp@v0.5.2/cmp/export_unsafe.go" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.devctl/sdks/go/1.16/src/go/types/check.go" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/franela/goblin@v0.0.0-20210113153425-413781f5e6c8/reporting.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/gobuffalo/plugins@v0.0.0-20200405155620-289cda9b5190/plugcmd/find.go" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.devctl/sdks/go/1.16/src/go/types/api.go" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$USER_HOME$/.devctl/sdks/go/1.16/src/go/types/type.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/gobuffalo/plugins@v0.0.0-20200405155620-289cda9b5190/ifaces.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/gobuffalo/plugins@v0.0.0-20200405155620-289cda9b5190/ifaces_test.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/gobuffalo/plugins@v0.0.0-20200405155620-289cda9b5190/plugins.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/franela/goblin@v0.0.0-20210113153425-413781f5e6c8/reporting.go" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.devctl/sdks/go/1.16/src/reflect/type.go" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$USER_HOME$/.devctl/sdks/go/1.16/src/builtin/builtin.go" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.devctl/sdks/go/1.16/src/unsafe/unsafe.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/gobuffalo/plugins@v0.0.0-20200405155620-289cda9b5190/errors_test.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/google/go-cmp@v0.5.2/cmp/export_unsafe.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/gobuffalo/plugins@v0.0.0-20200405155620-289cda9b5190/errors.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/internal/plugins/cli/kinds.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/cli/devctl.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/cli/ifaces.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/cli/main.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/.devctl/sdks/go/1.16/src/go/types/type.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/.devctl/sdks/go/1.16/src/builtin/builtin.go" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="JsBowerSettings">
-    <node-interpreter value="project" />
     <bower-package value="" />
     <bower.json value="" />
+  </component>
+  <component name="KubernetesApiPersistence">
+    <option name="context" value="docker-desktop" />
+    <option name="namespace" value="default" />
   </component>
   <component name="ProjectId" id="1ojLp8G4ww8EqWJccKwSHBFh6rp" />
   <component name="ProjectLevelVcsManager">
@@ -72,14 +109,14 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="add_unversioned_files" value="$PROJECT_DIR$/vendor/manifest&#10;/Users/dev/go/src/github.com/alex-held/devctl/vendor/modules.txt&#10;/Users/dev/go/src/github.com/alex-held/devctl/vendor/github.com/alex-held/go-types/collection.go&#10;/Users/dev/go/src/github.com/alex-held/devctl/vendor/github.com/alex-held/go-types/pkg/Greeter.go&#10;/Users/dev/go/src/github.com/alex-held/devctl/cmd/devctl/main.go" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Shell Script&#10;go" />
+    <property name="com.intellij.openapi.externalSystem.service.settings.ExternalSystemGroupConfigurable" value="ALL" />
     <property name="configurable..is.expanded" value="true" />
     <property name="configurable.GoLibrariesConfigurable.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
     <property name="go.vendoring.notification.had.been.shown" value="true" />
-    <property name="javascript.nodejs.core.library.configured.version" value="15.12.0" />
-    <property name="javascript.nodejs.core.library.typings.version" value="14.14.37" />
+    <property name="last.edited.regexp" value="[1/1] downloading go sdk 1.16.3 100% [========================================] (4.8/4.8 MB, 175.409 MB/s)" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
@@ -96,7 +133,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="go.sdk" />
+    <property name="settings.editor.selected.configurable" value="preference.GoLinterConfigurable" />
     <property name="typescript.add.unambiguous.imports.on.the.fly" value="true" />
   </component>
   <component name="ReaderModeSettings">
@@ -106,6 +143,7 @@
   </component>
   <component name="RecentsManager">
     <key name="GoMoveDeclarationDialog.RECENT_KEY">
+      <recent name="$PROJECT_DIR$/pkg/plugins/progress" />
       <recent name="$PROJECT_DIR$/pkg/plugins" />
       <recent name="$PROJECT_DIR$/internal/logging" />
       <recent name="$PROJECT_DIR$/internal/devctlpath" />
@@ -118,25 +156,27 @@
       <recent name="$PROJECT_DIR$/internal/devctlpath" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal/plugins/downloader" />
+      <recent name="$PROJECT_DIR$/internal/plugins/cli/progress" />
+      <recent name="$PROJECT_DIR$/internal/plugins/cli" />
       <recent name="$PROJECT_DIR$/internal/plugins" />
       <recent name="$PROJECT_DIR$/internal/plugins/exec" />
-      <recent name="$PROJECT_DIR$/cli/internal/golang/list" />
-      <recent name="$PROJECT_DIR$/cli/internal" />
-      <recent name="$PROJECT_DIR$/cmd/devctl" />
     </key>
   </component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
+        <option value="GoApplicationRunConfiguration" />
         <option value="GoTestRunConfiguration" />
       </set>
     </option>
     <option name="openRunningConfigInTab" value="true" />
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/alex-held/devctl/cmd/devctl version">
+  <component name="RunManager" selected="Go Build.go build github.com/alex-held/devctl/cmd/devctl">
     <configuration name="go build github.com/alex-held/devctl/cmd/devctl" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="devctl" />
-      <working_directory value="$PROJECT_DIR$" />
+      <working_directory value="$PROJECT_DIR$/cmd/devctl" />
+      <parameters value="sdk go download 1.13" />
       <EXTENSION ID="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
         <option name="IS_SUBST" value="false" />
@@ -148,69 +188,85 @@
         </ENTRIES>
       </EXTENSION>
       <kind value="PACKAGE" />
-      <filePath value="$PROJECT_DIR$/cmd/devctl/main.go" />
       <package value="github.com/alex-held/devctl/cmd/devctl" />
       <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/cmd/devctl/main.go" />
       <method v="2" />
     </configuration>
-    <configuration name="TestEvent_GoStringer in github.com/alex-held/devctl/pkg/constants" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestDownloader_Cancels_Download_When_Context_Is_Done in github.com/alex-held/devctl/internal/plugins/downloader" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="devctl" />
-      <working_directory value="$PROJECT_DIR$/pkg/constants" />
-      <framework value="gotest" />
+      <working_directory value="$PROJECT_DIR$/internal/plugins/downloader" />
+      <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/alex-held/devctl/pkg/constants" />
+      <package value="github.com/alex-held/devctl/internal/plugins/downloader" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <pattern value="^\QTestEvent_GoStringer\E$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestDownloader_Cancels_Download_When_Context_Is_Done\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestEvent_Stringer in github.com/alex-held/devctl/pkg/constants" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestDownloader_Download_Reports_Progress in github.com/alex-held/devctl/internal/plugins/downloader" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="devctl" />
-      <working_directory value="$PROJECT_DIR$/pkg/constants" />
-      <framework value="gotest" />
+      <working_directory value="$PROJECT_DIR$/internal/plugins/downloader" />
+      <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/alex-held/devctl/pkg/constants" />
+      <package value="github.com/alex-held/devctl/internal/plugins/downloader" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <pattern value="^\QTestEvent_Stringer\E$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestDownloader_Download_Reports_Progress\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestSerializeConfig in github.com/alex-held/devctl/internal/config" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestDownloader_Writes_Bytes_Into_Output in github.com/alex-held/devctl/internal/plugins/downloader" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="devctl" />
-      <working_directory value="$PROJECT_DIR$/internal/config" />
-      <framework value="gotest" />
+      <working_directory value="$PROJECT_DIR$/internal/plugins/downloader" />
+      <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/alex-held/devctl/internal/config" />
+      <package value="github.com/alex-held/devctl/internal/plugins/downloader" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <pattern value="^\QTestSerializeConfig\E$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestDownloader_Writes_Bytes_Into_Output\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestViperConfig in github.com/alex-held/devctl/internal/config" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestRuntimeInfo_Format in github.com/alex-held/devctl/pkg/plugins" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="devctl" />
-      <working_directory value="$PROJECT_DIR$/internal/config" />
-      <framework value="gotest" />
+      <working_directory value="$PROJECT_DIR$/pkg/plugins" />
+      <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/alex-held/devctl/internal/config" />
+      <package value="github.com/alex-held/devctl/pkg/plugins" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <pattern value="^\QTestViperConfig\E$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestRuntimeInfo_Format\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="downloader_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="devctl" />
+      <working_directory value="$PROJECT_DIR$/internal/plugins/downloader" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="github.com/alex-held/devctl" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/internal/plugins/downloader/downloader_test.go" />
+      <framework value="gotest" />
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Go Build.go build github.com/alex-held/devctl/cmd/devctl" />
-      <item itemvalue="Go Build.go build github.com/alex-held/devctl/cmd/devctl version" />
-      <item itemvalue="Go Test.TestViperConfig in github.com/alex-held/devctl/internal/config" />
-      <item itemvalue="Go Test.TestSerializeConfig in github.com/alex-held/devctl/internal/config" />
-      <item itemvalue="Go Test.TestEvent_Stringer in github.com/alex-held/devctl/pkg/constants" />
-      <item itemvalue="Go Test.TestEvent_GoStringer in github.com/alex-held/devctl/pkg/constants" />
+      <item itemvalue="Go Test.TestDownloader_Writes_Bytes_Into_Output in github.com/alex-held/devctl/internal/plugins/downloader" />
+      <item itemvalue="Go Test.downloader_test.go" />
+      <item itemvalue="Go Test.TestDownloader_Cancels_Download_When_Context_Is_Done in github.com/alex-held/devctl/internal/plugins/downloader" />
+      <item itemvalue="Go Test.TestDownloader_Download_Reports_Progress in github.com/alex-held/devctl/internal/plugins/downloader" />
+      <item itemvalue="Go Test.TestRuntimeInfo_Format in github.com/alex-held/devctl/pkg/plugins" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.TestEvent_GoStringer in github.com/alex-held/devctl/pkg/constants" />
-        <item itemvalue="Go Test.TestEvent_Stringer in github.com/alex-held/devctl/pkg/constants" />
-        <item itemvalue="Go Test.TestViperConfig in github.com/alex-held/devctl/internal/config" />
-        <item itemvalue="Go Test.TestSerializeConfig in github.com/alex-held/devctl/internal/config" />
+        <item itemvalue="Go Test.TestRuntimeInfo_Format in github.com/alex-held/devctl/pkg/plugins" />
+        <item itemvalue="Go Test.TestDownloader_Download_Reports_Progress in github.com/alex-held/devctl/internal/plugins/downloader" />
+        <item itemvalue="Go Test.TestDownloader_Cancels_Download_When_Context_Is_Done in github.com/alex-held/devctl/internal/plugins/downloader" />
+        <item itemvalue="Go Test.TestDownloader_Writes_Bytes_Into_Output in github.com/alex-held/devctl/internal/plugins/downloader" />
+        <item itemvalue="Go Test.downloader_test.go" />
       </list>
     </recent_temporary>
   </component>
@@ -867,11 +923,6 @@
           <option name="timeStamp" value="967" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/pkg/plugins/types.go</url>
-          <line>19</line>
-          <option name="timeStamp" value="977" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/plugins/sdk/go.go</url>
           <line>130</line>
           <option name="timeStamp" value="1038" />
@@ -922,54 +973,229 @@
           <option name="timeStamp" value="1056" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/devctl.go</url>
-          <line>26</line>
-          <option name="timeStamp" value="1057" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/cmds/sdk/main.go</url>
-          <line>34</line>
-          <option name="timeStamp" value="1060" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/cmds/sdk/main.go</url>
-          <line>11</line>
-          <option name="timeStamp" value="1061" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/cmds/sdk/main.go</url>
-          <line>13</line>
-          <option name="timeStamp" value="1071" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/cmds/sdk/cmd.go</url>
-          <line>39</line>
-          <option name="timeStamp" value="1072" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/cmds/sdk/cmd.go</url>
-          <line>49</line>
-          <option name="timeStamp" value="1073" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/cli/cmds/sdk/main.go</url>
           <line>35</line>
           <option name="timeStamp" value="1074" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/cmds/sdk/cmd.go</url>
-          <line>33</line>
-          <option name="timeStamp" value="1075" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>33</line>
+          <line>115</line>
           <option name="timeStamp" value="1080" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdker.go</url>
-          <line>63</line>
-          <option name="timeStamp" value="1083" />
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>104</line>
+          <option name="timeStamp" value="1086" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>108</line>
+          <option name="timeStamp" value="1087" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>117</line>
+          <option name="timeStamp" value="1088" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>120</line>
+          <option name="timeStamp" value="1089" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>124</line>
+          <option name="timeStamp" value="1090" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>128</line>
+          <option name="timeStamp" value="1091" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>131</line>
+          <option name="timeStamp" value="1092" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>136</line>
+          <option name="timeStamp" value="1093" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>141</line>
+          <option name="timeStamp" value="1094" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>84</line>
+          <option name="timeStamp" value="1095" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>93</line>
+          <option name="timeStamp" value="1096" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>89</line>
+          <option name="timeStamp" value="1097" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>90</line>
+          <option name="timeStamp" value="1098" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>86</line>
+          <option name="timeStamp" value="1099" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>62</line>
+          <option name="timeStamp" value="1100" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>47</line>
+          <option name="timeStamp" value="1103" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>65</line>
+          <option name="timeStamp" value="1106" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>67</line>
+          <option name="timeStamp" value="1107" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>69</line>
+          <option name="timeStamp" value="1108" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>71</line>
+          <option name="timeStamp" value="1109" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/kinds.go</url>
+          <line>77</line>
+          <option name="timeStamp" value="1110" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/progress/progress.go</url>
+          <line>36</line>
+          <option name="timeStamp" value="1119" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/progress/io.go</url>
+          <line>69</line>
+          <option name="timeStamp" value="1120" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/progress/io.go</url>
+          <line>74</line>
+          <option name="timeStamp" value="1123" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/progress/progress.go</url>
+          <line>107</line>
+          <option name="timeStamp" value="1149" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/progress/io.go</url>
+          <line>20</line>
+          <option name="timeStamp" value="1167" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/progress/io.go</url>
+          <line>22</line>
+          <option name="timeStamp" value="1168" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/progress/io.go</url>
+          <line>29</line>
+          <option name="timeStamp" value="1169" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/cli/progress/io.go</url>
+          <line>27</line>
+          <option name="timeStamp" value="1170" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/downloader/downloader_test.go</url>
+          <line>123</line>
+          <option name="timeStamp" value="1206" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/downloader/downloader_test.go</url>
+          <line>124</line>
+          <option name="timeStamp" value="1207" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>57</line>
+          <option name="timeStamp" value="1211" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>59</line>
+          <option name="timeStamp" value="1212" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>71</line>
+          <option name="timeStamp" value="1213" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>128</line>
+          <option name="timeStamp" value="1214" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>125</line>
+          <option name="timeStamp" value="1215" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>111</line>
+          <option name="timeStamp" value="1229" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>118</line>
+          <option name="timeStamp" value="1230" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>122</line>
+          <option name="timeStamp" value="1231" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>126</line>
+          <option name="timeStamp" value="1232" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>127</line>
+          <option name="timeStamp" value="1233" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>130</line>
+          <option name="timeStamp" value="1234" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
+          <line>134</line>
+          <option name="timeStamp" value="1236" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -977,26 +1203,35 @@
       </default-breakpoints>
     </breakpoint-manager>
   </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand>
+      <path>
+        <item name="devctl" type="b2602c69:ProjectViewProjectNode" />
+        <item name="devctl" type="462c0819:PsiDirectoryNode" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/devctl$TestDefaultLogger_Captures_FailedState_in_github_com_alex_held_devctl_internal_testutils.out" NAME="TestDefaultLogger_Captures_FailedState in github.com/alex-held/devctl/internal/testutils Coverage Results" MODIFIED="1617386168151" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$logger_test_go.out" NAME="logger_test.go Coverage Results" MODIFIED="1617376211862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$go_test_devctlpath.out" NAME="go test devctlpath Coverage Results" MODIFIED="1613864622585" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$go_test_github_com_alex_held_devctl_internal_devctlpath.out" NAME="go test github.com/alex-held/devctl/internal/devctlpath Coverage Results" MODIFIED="1613864637019" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$TestIndexFile_in_github_com_alex_held_devctl_internal_repo.out" NAME="TestIndexFile in github.com/alex-held/devctl/internal/repo Coverage Results" MODIFIED="1613857675545" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$TestPather_QuickCheck_in_github_com_alex_held_devctl_internal_devctlpath.out" NAME="TestPather_QuickCheck in github.com/alex-held/devctl/internal/devctlpath Coverage Results" MODIFIED="1613902823278" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/devctl$gobench_devctl.out" NAME="gobench devctl Coverage Results" MODIFIED="1613903028814" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$go_test_action.out" NAME="go test action Coverage Results" MODIFIED="1614501178277" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$go_test_devctl.out" NAME="go test devctl Coverage Results" MODIFIED="1617392080876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/devctl$TestConfig_SetCurrentSDK_in_github_com_alex_held_devctl_internal_action.out" NAME="TestConfig_SetCurrentSDK in github.com/alex-held/devctl/internal/action Coverage Results" MODIFIED="1614511068504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/devctl$TestFormatLogMessage_in_github_com_alex_held_devctl_pkg_logging.out" NAME="TestFormatLogMessage in github.com/alex-held/devctl/pkg/logging Coverage Results" MODIFIED="1617372244425" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$TestIndexFile_in_github_com_alex_held_devctl_internal_repo.out" NAME="TestIndexFile in github.com/alex-held/devctl/internal/repo Coverage Results" MODIFIED="1613857675545" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$go_test_github_com_alex_held_devctl_internal_action.out" NAME="go test github.com/alex-held/devctl/internal/action Coverage Results" MODIFIED="1614490423706" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/devctl$TestIndexFile_MustAdd_in_github_com_alex_held_devctl_internal_repo.out" NAME="TestIndexFile_MustAdd in github.com/alex-held/devctl/internal/repo Coverage Results" MODIFIED="1613856125083" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$TestNewIndexFile_in_github_com_alex_held_devctl_internal_repo.out" NAME="TestNewIndexFile in github.com/alex-held/devctl/internal/repo Coverage Results" MODIFIED="1613854104300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/devctl$go_test_github_com_alex_held_devctl_internal_repo.out" NAME="go test github.com/alex-held/devctl/internal/repo Coverage Results" MODIFIED="1613858348954" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$go_test_config.out" NAME="go test config Coverage Results" MODIFIED="1613903796084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$TestPather_QuickCheck_in_github_com_alex_held_devctl_internal_devctlpath.out" NAME="TestPather_QuickCheck in github.com/alex-held/devctl/internal/devctlpath Coverage Results" MODIFIED="1613902823278" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$gobench_github_com_alex_held_devctl_internal_repo.out" NAME="gobench github.com/alex-held/devctl/internal/repo Coverage Results" MODIFIED="1613902966003" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$TestViperConfig_in_github_com_alex_held_devctl_internal_config.out" NAME="TestViperConfig in github.com/alex-held/devctl/internal/config Coverage Results" MODIFIED="1617398541916" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$go_test_github_com_alex_held_devctl_internal_devctlpath.out" NAME="go test github.com/alex-held/devctl/internal/devctlpath Coverage Results" MODIFIED="1613864637019" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$TestDefaultLogger_Captures_FailedState_in_github_com_alex_held_devctl_internal_testutils.out" NAME="TestDefaultLogger_Captures_FailedState in github.com/alex-held/devctl/internal/testutils Coverage Results" MODIFIED="1617386168151" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$go_test_devctlpath.out" NAME="go test devctlpath Coverage Results" MODIFIED="1613864622585" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$go_test_shell.out" NAME="go test shell Coverage Results" MODIFIED="1615073199122" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/devctl$logger_test_go.out" NAME="logger_test.go Coverage Results" MODIFIED="1617376211862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/devctl$reporter_test_go.out" NAME="reporter_test.go Coverage Results" MODIFIED="1615100294504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$go_test_devctl.out" NAME="go test devctl Coverage Results" MODIFIED="1617392080876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$go_test_action.out" NAME="go test action Coverage Results" MODIFIED="1614501178277" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$TestViperConfig_in_github_com_alex_held_devctl_internal_config.out" NAME="TestViperConfig in github.com/alex-held/devctl/internal/config Coverage Results" MODIFIED="1617398541916" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$go_test_config.out" NAME="go test config Coverage Results" MODIFIED="1613903796084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$go_test_github_com_alex_held_devctl_internal_action.out" NAME="go test github.com/alex-held/devctl/internal/action Coverage Results" MODIFIED="1614490423706" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$go_test_shell.out" NAME="go test shell Coverage Results" MODIFIED="1615073199122" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$gobench_github_com_alex_held_devctl_internal_repo.out" NAME="gobench github.com/alex-held/devctl/internal/repo Coverage Results" MODIFIED="1613902966003" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/devctl$TestNewIndexFile_in_github_com_alex_held_devctl_internal_repo.out" NAME="TestNewIndexFile in github.com/alex-held/devctl/internal/repo Coverage Results" MODIFIED="1613854104300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

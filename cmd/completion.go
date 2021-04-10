@@ -40,7 +40,7 @@ $ dev-env completion zsh > "${fpath[1]}/_dev-env"
 
 Powershell:
 
-PS> yourprogram completion powershell | Out-String | Invoke-Expression
+PS> yourprogram completion powershell | DlWriter-String | Invoke-Expression
 
 # To load completions for every new session, run:
 PS> yourprogram completion powershell > yourprogram.ps1

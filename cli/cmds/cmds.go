@@ -3,10 +3,11 @@ package cmds
 import (
 	"github.com/gobuffalo/plugins"
 
+	"github.com/alex-held/devctl/meta"
+
 	"github.com/alex-held/devctl/cli/cmds/sdk"
 	"github.com/alex-held/devctl/cli/cmds/version"
 	"github.com/alex-held/devctl/cli/internal/golang"
-	"github.com/alex-held/devctl/meta"
 )
 
 func Plugins() []plugins.Plugin {
