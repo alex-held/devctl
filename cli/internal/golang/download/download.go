@@ -114,7 +114,7 @@ func (cmd *GoDownloadCmd) artifactCached() (exists bool) {
 	return err == nil
 }
 
-func (cmd *GoDownloadCmd) Download(ctx context.Context, root string, args []string) error {
+func (cmd *GoDownloadCmd) ExecuteCommand(ctx context.Context, root string, args []string) error {
 	err := cmd.Init(ctx, root, args[0:])
 	if err != nil {
 		return errors.Wrapf(err, "failed to initialize %T", *cmd)

@@ -45,9 +45,7 @@ func (c *Cmd) ScopedPlugins() []plugins.Plugin {
 	plugs = append(plugs, c.Plugins...)
 	for _, p := range c.pluginsFn() {
 		switch p.(type) {
-		case Lister:
-			plugs = append(plugs, p)
-		case Downloader:
+		case GoSDKCommander:
 			plugs = append(plugs, p)
 		}
 	}
@@ -68,18 +66,7 @@ func (c *Cmd) PluginName() string {
 
 func (c *Cmd) Sdk(ctx context.Context, root string, args []string) error {
 	plugs := c.ScopedPlugins()
-
-	for _, plugin := range plugs {
-		switch p := plugin.(type) {
-		case Lister:
-			if args[0] == "list" {
-				return p.List(ctx, root, args)
-			}
-		case Downloader:
-			if args[0] == "download" {
-				return p.Download(ctx, root, args)
-			}
-		}
-	}
-	return nil
+	subcommand := FindSubcommandFromArgs(args, plugs)
+	err := subcommand.ExecuteCommand(ctx, root, args)
+	return err
 }

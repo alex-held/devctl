@@ -8,8 +8,8 @@ import (
 	"github.com/alex-held/devctl/cli/cmds/sdk"
 )
 
-type GoSdker interface {
-	sdk.Sdker
+type GoSDKCommander interface {
+	sdk.Command
 }
 
 type Stdouter = plugio.Outer

@@ -5,29 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e1fd713f-acc3-492c-a19a-d5ca7a04ee53" name="clipboardPatchFile" comment="clipboardPatchFile">
-      <change afterPath="$PROJECT_DIR$/internal/plugins/cli/kinds.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/plugins/cli/sdk.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/plugins/downloader/downloader_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/plugins/progress.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/plugins/runtime.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/plugins/runtime_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/devctl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/devctl.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/templateLanguages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/templateLanguages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.run/go build github.com_alex-held_devctl_cmd_devctl version.run.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cli/cmds/cmds.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/cmds/cmds.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cli/ifaces.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/ifaces.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/cmds/sdk/cmd.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/cmds/sdk/cmd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/cmds/sdk/ifaces.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/cmds/sdk/ifaces.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cli/internal/golang/download/download.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/download/download.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/find.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/find.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cli/internal/golang/gosdker.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/gosdker.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/completion.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/completion.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/plugins/downloader/downloader.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/plugins/downloader/downloader.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/plugins/plugins.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/plugins/plugins.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/plugins/types.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/plugins/types.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/ifaces.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/ifaces.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/list/list.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/list/list.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/plugins.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/plugins.go" afterDir="false" />
     </list>
     <list id="aea304bd-0598-4e74-bed6-096426656119" name="Default Changelist" comment="ci(deps): bump actions/checkout@v2" />
     <option name="SHOW_DIALOG" value="false" />
@@ -974,12 +960,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/cli/cmds/sdk/main.go</url>
-          <line>35</line>
+          <line>30</line>
           <option name="timeStamp" value="1074" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>126</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>106</line>
           <option name="timeStamp" value="1080" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
@@ -1138,64 +1124,129 @@
           <option name="timeStamp" value="1207" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>57</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>45</line>
           <option name="timeStamp" value="1211" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>59</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>47</line>
           <option name="timeStamp" value="1212" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>71</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>59</line>
           <option name="timeStamp" value="1213" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>139</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>120</line>
           <option name="timeStamp" value="1214" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>136</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>117</line>
           <option name="timeStamp" value="1215" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>117</line>
-          <option name="timeStamp" value="1229" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>129</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>110</line>
           <option name="timeStamp" value="1230" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>133</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>114</line>
           <option name="timeStamp" value="1231" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>137</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>118</line>
           <option name="timeStamp" value="1232" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>138</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>119</line>
           <option name="timeStamp" value="1233" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>141</line>
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/download/download.go</url>
+          <line>122</line>
           <option name="timeStamp" value="1234" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/download/download.go</url>
-          <line>145</line>
-          <option name="timeStamp" value="1236" />
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/gosdker.go</url>
+          <line>31</line>
+          <option name="timeStamp" value="1239" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/gosdker.go</url>
+          <line>79</line>
+          <option name="timeStamp" value="1240" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/gosdker.go</url>
+          <line>82</line>
+          <option name="timeStamp" value="1241" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/pkg/golang/gosdker.go</url>
+          <line>83</line>
+          <option name="timeStamp" value="1242" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/plugins/exec/run.go</url>
+          <line>16</line>
+          <option name="timeStamp" value="1247" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
+          <line>26</line>
+          <option name="timeStamp" value="1248" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
+          <line>27</line>
+          <option name="timeStamp" value="1249" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdker.go</url>
+          <line>67</line>
+          <option name="timeStamp" value="1252" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdker.go</url>
+          <line>68</line>
+          <option name="timeStamp" value="1253" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdker.go</url>
+          <line>69</line>
+          <option name="timeStamp" value="1254" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdker.go</url>
+          <line>70</line>
+          <option name="timeStamp" value="1256" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
+          <line>12</line>
+          <option name="timeStamp" value="1257" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
+          <line>14</line>
+          <option name="timeStamp" value="1258" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
+          <line>16</line>
+          <option name="timeStamp" value="1259" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
+          <line>21</line>
+          <option name="timeStamp" value="1262" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

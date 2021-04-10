@@ -1,14 +1,13 @@
 package golang
 
 import (
-	"fmt"
 	"path"
 	"strings"
 
 	"github.com/gobuffalo/plugins"
 )
 
-func FindSubcommandFromArgs(args []string, plugs []plugins.Plugin) plugins.Plugin {
+func FindSubcommandFromArgs(args []string, plugs []plugins.Plugin) GoSDKCommander {
 	for _, a := range args {
 		if strings.HasPrefix(a, "-") {
 			continue
@@ -18,23 +17,15 @@ func FindSubcommandFromArgs(args []string, plugs []plugins.Plugin) plugins.Plugi
 	return nil
 }
 
-func FindSubcommand(name string, plugs []plugins.Plugin) plugins.Plugin {
-	// Find wraps the other cmd finders into a mega finder for cmds
+func FindSubcommand(name string, plugs []plugins.Plugin) GoSDKCommander {
 	for _, p := range plugs {
-		c, ok := p.(GoSdker)
-		if !ok {
-			continue
-		}
-
-		if n, ok := c.(Namer); ok {
-			fmt.Println("searching subcommand; name=" + n.CmdName())
-			if n.CmdName() == name {
-				return c
+		if cmd, ok := p.(GoSDKCommander); ok {
+			if cmd.CmdName() == name {
+				return cmd
 			}
 		}
-
-		if name == path.Base(c.PluginName()) {
-			return c
+		if name == path.Base(p.PluginName()) {
+			return p.(GoSDKCommander)
 		}
 	}
 	return nil
