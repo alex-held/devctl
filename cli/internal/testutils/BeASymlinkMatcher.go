@@ -9,8 +9,6 @@ import (
 	"github.com/onsi/gomega/types"
 )
 
-
-
 //BeASymlink succeeds if a file exists and is a directory.
 //Actual must be a string representing the abs path to the file being checked.
 func BeASymlink(fs vfs.VFS) types.GomegaMatcher {
@@ -18,7 +16,6 @@ func BeASymlink(fs vfs.VFS) types.GomegaMatcher {
 		Fs: fs,
 	}
 }
-
 
 type notASymlinkError struct {
 	VFS      vfs.VFS
@@ -33,9 +30,8 @@ func (t notASymlinkError) Error() string {
 }
 
 type BeASymlinkMatcher struct {
-	Fs       vfs.VFS
-	expected interface{}
-	err      error
+	Fs  vfs.VFS
+	err error
 }
 
 func (matcher *BeASymlinkMatcher) Match(actual interface{}) (success bool, err error) {
@@ -67,9 +63,9 @@ func (matcher *BeASymlinkMatcher) Match(actual interface{}) (success bool, err e
 }
 
 func (matcher *BeASymlinkMatcher) FailureMessage(actual interface{}) (message string) {
-	return format.Message(actual, fmt.Sprintf("to be a symlink: %s", matcher.err))
+	return format.Message(actual, fmt.Sprintf("to be a symlink: %+v\n", matcher.err))
 }
 
 func (matcher *BeASymlinkMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return format.Message(actual, fmt.Sprintf("not be a symlink"))
+	return format.Message(actual, fmt.Sprintf("not be a symlink: %v\n", matcher.err))
 }

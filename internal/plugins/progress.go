@@ -14,7 +14,7 @@ func NewProgress(out io.Writer, size int, description string, opts ...progressba
 		progressbar.OptionEnableColorCodes(true),
 		progressbar.OptionSetPredictTime(true),
 		progressbar.OptionShowCount(),
-		progressbar.OptionSetWidth(40),
+		progressbar.OptionSetWidth(40), //nolint:gomnd
 		progressbar.OptionSpinnerType(1),
 		progressbar.OptionSetDescription(fmt.Sprintf("[cyan][1/1][reset] %s", description)),
 		progressbar.OptionSetTheme(progressbar.Theme{

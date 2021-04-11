@@ -26,53 +26,53 @@ type Cmd struct {
 	stdout io.Writer
 }
 
-func (c *Cmd) SetStdout(w io.Writer) error {
-	c.stdout = w
+func (cmd *Cmd) SetStdout(w io.Writer) error {
+	cmd.stdout = w
 	return nil
 }
 
-func (vc *Cmd) PrintFlags(w io.Writer) error {
-	flags := vc.Flags()
+func (cmd *Cmd) PrintFlags(w io.Writer) error {
+	flags := cmd.Flags()
 	flags.SetOutput(w)
 	flags.PrintDefaults()
 	return nil
 }
 
-func (vc *Cmd) PluginName() string {
+func (cmd *Cmd) PluginName() string {
 	return "version"
 }
 
-func (vc *Cmd) Description() string {
+func (cmd *Cmd) Description() string {
 	return "Print the version information"
 }
 
-func (i Cmd) String() string {
-	return i.PluginName()
+func (cmd Cmd) String() string {
+	return cmd.PluginName()
 }
 
-func (vc *Cmd) Flags() *pflag.FlagSet {
-	flags := pflag.NewFlagSet(vc.String(), pflag.ContinueOnError)
+func (cmd *Cmd) Flags() *pflag.FlagSet {
+	flags := pflag.NewFlagSet(cmd.String(), pflag.ContinueOnError)
 	flags.SetOutput(ioutil.Discard)
-	flags.BoolVarP(&vc.help, "help", "h", false, "print this help")
-	flags.BoolVarP(&vc.json, "json", "j", false, "Print information in json format")
+	flags.BoolVarP(&cmd.help, "help", "h", false, "print this help")
+	flags.BoolVarP(&cmd.json, "json", "j", false, "Print information in json format")
 	return flags
 }
 
-func (vc *Cmd) Main(ctx context.Context, root string, args []string) error {
-	flags := vc.Flags()
+func (cmd *Cmd) Main(ctx context.Context, root string, args []string) error {
+	flags := cmd.Flags()
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
 
-	out := vc.stdout
-	if vc.stdout == nil {
+	out := cmd.stdout
+	if cmd.stdout == nil {
 		out = os.Stdout
 	}
-	if vc.help {
-		return plugprint.Print(out, vc)
+	if cmd.help {
+		return plugprint.Print(out, cmd)
 	}
 
-	if !vc.json {
+	if !cmd.json {
 		fmt.Fprintln(out, Version)
 		return nil
 	}

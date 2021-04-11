@@ -30,9 +30,8 @@ func (t notADirError) Error() string {
 }
 
 type BeADirMatcher struct {
-	Fs       vfs.VFS
-	expected interface{}
-	err      error
+	Fs  vfs.VFS
+	err error
 }
 
 func (matcher *BeADirMatcher) Match(actual interface{}) (success bool, err error) {
@@ -64,9 +63,9 @@ func (matcher *BeADirMatcher) Match(actual interface{}) (success bool, err error
 }
 
 func (matcher *BeADirMatcher) FailureMessage(actual interface{}) (message string) {
-	return format.Message(actual, fmt.Sprintf("to be a directory: %s", matcher.err))
+	return format.Message(actual, fmt.Sprintf("to be a directory: %+v\n", matcher.err))
 }
 
 func (matcher *BeADirMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return format.Message(actual, fmt.Sprintf("not be a directory"))
+	return format.Message(actual, fmt.Sprintf("not be a directory: %+v\n", matcher.err))
 }

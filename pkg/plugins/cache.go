@@ -37,7 +37,8 @@ var cacheOn = envy.Get(constants.DevctlEnvPluginCacheKey, "on")
 
 var cache = func() cachedPlugins {
 	m := cachedPlugins{}
-	if cacheOn != "on" {
+	if //goland:noinspection GoLinterLocal
+	cacheOn != "on" {
 		return m
 	}
 	f, err := os.Open(CachePath)
@@ -65,7 +66,7 @@ func saveCache() error {
 	}
 	cacheMoot.Lock()
 	defer cacheMoot.Unlock()
-	os.MkdirAll(filepath.Dir(CachePath), 0744)
+	_ = os.MkdirAll(filepath.Dir(CachePath), 0744)
 	f, err := os.Create(CachePath)
 	if err != nil {
 		return err

@@ -89,8 +89,7 @@ func setup(t *testing.T, w io.Writer, args ...interface{}) (data []byte, fs afer
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	sut = NewDownloader(s.URL+handlerPath, file, w)
+	sut = NewDownloader(s.URL+handlerPath, "testing ...", file, w)
 
 	return data, fs, file, sut, ctx
 }

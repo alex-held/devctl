@@ -34,8 +34,7 @@ func NewFromRoot(root string) (*Devctl, error) {
 	pfn := b.ScopedPlugins
 
 	for _, p := range b.Plugins {
-		switch t := p.(type) {
-		case plugins.Needer:
+		if t, ok := p.(plugins.Needer); ok {
 			t.WithPlugins(pfn)
 		}
 	}
@@ -47,8 +46,7 @@ func (b Devctl) ScopedPlugins() []plugins.Plugin {
 	root := b.root
 	plugs := make([]plugins.Plugin, 0, len(b.Plugins))
 	for _, p := range b.Plugins {
-		switch t := p.(type) {
-		case AvailabilityChecker:
+		if t, ok := p.(AvailabilityChecker); ok {
 			if !t.PluginAvailable(root) {
 				continue
 			}
@@ -68,15 +66,10 @@ func (b Devctl) SubCommands() []plugins.Plugin {
 	return plugs
 }
 
-func (Devctl) PluginName() string {
-	return "devctl"
-}
+func (Devctl) PluginName() string { return "devctl" }
 
-func (Devctl) String() string {
-	return "devctl"
-}
+func (Devctl) String() string { return "devctl" }
 
-// Description ...
 func (Devctl) Description() string {
 	return "Tools for working with devctl applications"
 }

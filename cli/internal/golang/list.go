@@ -19,26 +19,26 @@ type GoListerCmd struct {
 	path devctlpath.Pather
 }
 
-func (c *GoListerCmd) Init() {
-	if c.path == nil {
-		c.path = devctlpath.DefaultPather()
+func (cmd *GoListerCmd) Init() {
+	if cmd.path == nil {
+		cmd.path = devctlpath.DefaultPather()
 	}
-	if c.fs == nil {
-		c.fs = afero.NewOsFs()
+	if cmd.fs == nil {
+		cmd.fs = afero.NewOsFs()
 	}
 }
 
-func (l *GoListerCmd) CmdName() string {
+func (cmd *GoListerCmd) CmdName() string {
 	return "list"
 }
 
-func (l *GoListerCmd) PluginName() string {
+func (cmd *GoListerCmd) PluginName() string {
 	return "sdk/go/list"
 }
 
-func (l *GoListerCmd) ExecuteCommand(_ context.Context, _ string, _ []string) error {
-	l.Init()
-	fis, err := afero.ReadDir(l.fs, l.path.SDK("go"))
+func (cmd *GoListerCmd) ExecuteCommand(_ context.Context, _ string, _ []string) error {
+	cmd.Init()
+	fis, err := afero.ReadDir(cmd.fs, cmd.path.SDK("go"))
 	if err != nil {
 		return err
 	}

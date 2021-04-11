@@ -28,45 +28,45 @@ type GoInstallCmd struct {
 	Fs      vfs.VFS
 }
 
-func (g *GoInstallCmd) PluginName() string {
+func (cmd *GoInstallCmd) PluginName() string {
 	return "sdk/go/install"
 }
 
-func (g *GoInstallCmd) CmdName() string {
+func (cmd *GoInstallCmd) CmdName() string {
 	return "install"
 }
 
-func (g *GoInstallCmd) Init() {
-	if g.path == nil {
-		g.path = devctlpath.DefaultPather()
+func (cmd *GoInstallCmd) Init() {
+	if cmd.path == nil {
+		cmd.path = devctlpath.DefaultPather()
 	}
-	if g.Fs == nil {
-		g.Fs = vfs.New(osfs.New())
+	if cmd.Fs == nil {
+		cmd.Fs = vfs.New(osfs.New())
 	}
-	if g.runtime == nil {
-		g.runtime = plugins.OSRuntimeInfoGetter{}
+	if cmd.runtime == nil {
+		cmd.runtime = plugins.OSRuntimeInfoGetter{}
 	}
 }
 
-func (g *GoInstallCmd) ExecuteCommand(ctx context.Context, root string, args []string) (err error) {
-	g.Init()
+func (cmd *GoInstallCmd) ExecuteCommand(ctx context.Context, root string, args []string) (err error) {
+	cmd.Init()
 
 	version := args[1]
 	fmt.Printf("executing: install; version=%s\n", version)
-	dlDir := g.path.Download("go", version)
-	filename := g.runtime.Get().Format("go%s.[os]-[arch].tar.gz", version)
+	dlDir := cmd.path.Download("go", version)
+	filename := cmd.runtime.Get().Format("go%s.[os]-[arch].tar.gz", version)
 	archivePath := path.Join(dlDir, filename)
 	println(archivePath)
 
-	sdkDir := g.path.SDK("go", version)
+	sdkDir := cmd.path.SDK("go", version)
 	println(sdkDir)
 
-	_ = g.Fs.MkdirAll(dlDir, os.ModePerm)
-	if exists, err := g.Fs.Exists(archivePath); !exists || err == nil {
+	_ = cmd.Fs.MkdirAll(dlDir, os.ModePerm)
+	if exists, err := cmd.Fs.Exists(archivePath); !exists || err == nil { //nolint:govet
 		downloadCmd := &GoDownloadCmd{
-			Fs:      g.Fs,
-			Pather:  g.path,
-			Runtime: g.runtime,
+			Fs:      cmd.Fs,
+			Pather:  cmd.path,
+			Runtime: cmd.runtime,
 			Output:  NewConsoleOutput(),
 			dlOptions: &dlOptions{
 				version: version,
@@ -82,16 +82,16 @@ func (g *GoInstallCmd) ExecuteCommand(ctx context.Context, root string, args []s
 		}
 	}
 
-	_ = g.Fs.MkdirAll(g.path.Download("go", version), os.ModePerm)
-	archive, err := g.Fs.OpenFile(archivePath, os.O_CREATE|os.O_RDWR, os.ModePerm)
+	_ = cmd.Fs.MkdirAll(cmd.path.Download("go", version), os.ModePerm)
+	archive, err := cmd.Fs.OpenFile(archivePath, os.O_CREATE|os.O_RDWR, os.ModePerm)
 	if err != nil {
 		return errors.Wrapf(err, "failed to open go sdk archive=%s\n", archivePath)
 	}
-	err = g.Fs.MkdirAll(sdkDir, fileutil.PrivateDirMode)
+	err = cmd.Fs.MkdirAll(sdkDir, fileutil.PrivateDirMode)
 	if err != nil {
 		return errors.Wrapf(err, "failed to Extract go sdk %s; dest=%s; archive=%s\n", version, sdkDir, archivePath)
 	}
-	err = UnTarGzip(archive, sdkDir, GoSDKUnarchiveRenamer(), g.Fs)
+	err = UnTarGzip(archive, sdkDir, GoSDKUnarchiveRenamer(), cmd.Fs)
 	if err != nil {
 		return errors.Wrapf(err, "failed to Extract go sdk %s; dest=%s; archive=%s\n", version, sdkDir, archivePath)
 	}
@@ -99,8 +99,8 @@ func (g *GoInstallCmd) ExecuteCommand(ctx context.Context, root string, args []s
 	return nil
 }
 
-func (p *GoInstallCmd) Link(version string) (err error) {
-	return SymLink(p.path, p.Fs, version)
+func (cmd *GoInstallCmd) Link(version string) (err error) {
+	return SymLink(cmd.path, cmd.Fs, version)
 }
 
 //nolint:gocognit

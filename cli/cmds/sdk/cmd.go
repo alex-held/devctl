@@ -48,8 +48,7 @@ func (cmd *Cmd) SubCommands() []plugins.Plugin {
 	var plugs []plugins.Plugin
 
 	for _, p := range cmd.ScopedPlugins() {
-		switch p.(type) {
-		case Sdker:
+		if _, ok := p.(Sdker); ok {
 			plugs = append(plugs, p)
 		}
 	}

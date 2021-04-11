@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,10 +11,8 @@ import (
 	"time"
 
 	"github.com/gobuffalo/envy"
-	"github.com/gobuffalo/events"
 	"github.com/karrick/godirwalk"
 	"github.com/markbates/oncer"
-	"github.com/markbates/safe"
 	"github.com/sirupsen/logrus"
 
 	"github.com/alex-held/devctl/pkg/constants"
@@ -28,14 +25,14 @@ var _list List
 func Available() (available List, err error) {
 	oncer.Do("plugins.Available", func() {
 		defer func() {
-			if err := saveCache(); err != nil {
+			if err = saveCache(); err != nil {
 				logrus.Error(err)
 			}
 		}()
 
 		paths := []string{"plugins"}
 
-		from, err := envy.MustGet(constants.DevctlEnvRootKey)
+		from, err := envy.MustGet(constants.DevctlEnvRootKey) //nolint:govet
 		if err != nil {
 			logrus.Error(err)
 		}
@@ -43,11 +40,11 @@ func Available() (available List, err error) {
 
 		list := List{}
 		for _, p := range paths {
-			if _, err := os.Stat(p); err != nil {
+			if _, err = os.Stat(p); err != nil {
 				continue
 			}
 
-			err := godirwalk.Walk(p, &godirwalk.Options{
+			err = godirwalk.Walk(p, &godirwalk.Options{
 				FollowSymbolicLinks: true,
 				Callback: func(path string, info *godirwalk.Dirent) error {
 					if err != nil {
@@ -159,57 +156,4 @@ func hasPluginPrefix(base string) bool {
 		}
 	}
 	return false
-}
-
-func LoadPlugins() (err error) {
-	oncer.Do(constants.LoadPluginsEvent, func() {
-		// don't send plugins events during testing
-		if envy.Get(constants.DevctlEnvKey, "development") == "test" {
-			return
-		}
-
-		plugs, err := Available()
-		if err != nil {
-			return
-		}
-
-		for _, commands := range plugs {
-			for _, c := range commands {
-				if c.DevCtlCommand != "events" {
-					continue
-				}
-
-				err := func(c Command) error {
-					return safe.RunE(func() error {
-						n := fmt.Sprintf("[PLUGIN] %s %s", c.Binary, c.Name)
-						fn := func(e events.Event) {
-							b, err := json.Marshal(e)
-							if err != nil {
-								fmt.Println("error trying to marshal event", e, err)
-								return
-							}
-							cmd := exec.Command(c.Binary, c.UseCommand, string(b))
-							cmd.Stderr = os.Stderr
-							cmd.Stdout = os.Stdout
-							cmd.Stdin = os.Stdin
-							if err := cmd.Run(); err != nil {
-								fmt.Println("error trying to send event", strings.Join(cmd.Args, " "), err)
-							}
-						}
-
-						_, err := events.NamedListen(n, events.Filter(c.ListenFor, fn))
-						if err != nil {
-							return err
-						}
-						return nil
-					})
-				}(c)
-				if err != nil {
-					err = err
-					return
-				}
-			}
-		}
-	})
-	return err
 }

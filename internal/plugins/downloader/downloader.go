@@ -47,7 +47,7 @@ func (d downloader) Download(ctx context.Context) (err error) {
 	return err
 }
 
-func getContentSize(resp *http.Response, err error) (int, error) {
+func getContentSize(resp *http.Response, _ error) (int, error) {
 	headers := resp.Header
 	cl := headers.Get("Content-Length")
 	size, err := strconv.Atoi(cl)

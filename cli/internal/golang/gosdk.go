@@ -6,7 +6,6 @@ import (
 	"github.com/gobuffalo/plugins"
 	"github.com/gobuffalo/plugins/plugcmd"
 	"github.com/gobuffalo/plugins/plugprint"
-	"github.com/spf13/pflag"
 
 	"github.com/alex-held/devctl/cli/cmds/sdk"
 )
@@ -20,8 +19,6 @@ var _ plugprint.Describer = &GoSDKCmd{}
 type GoSDKCmd struct {
 	Plugins   []plugins.Plugin
 	pluginsFn plugins.Feeder
-	flags     *pflag.FlagSet
-	help      bool
 }
 
 func (c *GoSDKCmd) ExecuteCommand(ctx context.Context, root string, args []string) error {
@@ -57,8 +54,7 @@ func (c *GoSDKCmd) ScopedPlugins() []plugins.Plugin {
 
 	plugs = append(plugs, c.Plugins...)
 	for _, p := range c.pluginsFn() {
-		switch p.(type) {
-		case sdk.Sdker:
+		if _, ok := p.(sdk.Sdker); ok {
 			plugs = append(plugs, p)
 		}
 	}

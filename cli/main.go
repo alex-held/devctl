@@ -14,7 +14,7 @@ func (b *Devctl) Main(ctx context.Context, root string, args []string) error {
 	var help bool
 	flags := pflag.NewFlagSet(b.String(), pflag.ContinueOnError)
 	flags.BoolVarP(&help, "help", "h", false, "print this help")
-	flags.Parse(args)
+	_ = flags.Parse(args)
 	pfn := func() []plugins.Plugin {
 		return b.Plugins
 	}

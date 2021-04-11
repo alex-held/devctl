@@ -25,10 +25,9 @@ var _ plugcmd.Namer = &GoDownloadCmd{}
 var _ plugins.Plugin = &GoDownloadCmd{}
 
 type GoDownloadCmd struct {
-	Fs        vfs.VFS
-	Pather    devctlpath.Pather
-	Runtime   plugins2.RuntimeInfoGetter
-	pluginsFn plugins.Feeder
+	Fs      vfs.VFS
+	Pather  devctlpath.Pather
+	Runtime plugins2.RuntimeInfoGetter
 	*dlOptions
 	Output *output
 }
@@ -50,7 +49,7 @@ func (cmd *GoDownloadCmd) DownloadDir() string {
 	return devctlpath.DownloadPath("go", cmd.version)
 }
 
-func (cmd *GoDownloadCmd) DownloadUri() (uri string) {
+func (cmd *GoDownloadCmd) downloadURI() (uri string) {
 	artifact := cmd.DownloadArtifactName()
 	uri = cmd.Runtime.Get().Format("%s/dl/%s", cmd.baseURI, artifact)
 	return uri
@@ -99,9 +98,8 @@ func NewOutput(out, err io.Writer, in io.Reader) (o *output) {
 	return o
 }
 
-func NewConsoleOutput() (out *output) {
-	out = NewOutput(os.Stdout, os.Stderr, os.Stdin)
-	return out
+func NewConsoleOutput() *output {
+	return NewOutput(os.Stdout, os.Stderr, os.Stdin)
 }
 
 func (cmd *GoDownloadCmd) artifactCached() (exists bool) {
@@ -129,7 +127,7 @@ func (cmd *GoDownloadCmd) ExecuteCommand(ctx context.Context, root string, args 
 		return errors.Wrapf(err, "failed creating / opening file handle for the download")
 	}
 
-	dl := downloader.NewDownloader(cmd.DownloadUri(), cmd.DownloadProgressDesc(), artifactFile, cmd.Out())
+	dl := downloader.NewDownloader(cmd.downloadURI(), cmd.DownloadProgressDesc(), artifactFile, cmd.Out())
 	err = dl.Download(ctx)
 	if err != nil {
 		return errors.Wrapf(err, "failed downloading go sdk %v from the remote server %s", version, cmd.baseURI)

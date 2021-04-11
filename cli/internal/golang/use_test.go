@@ -63,9 +63,9 @@ var _ = Describe("go-plugin USE", func() {
 		When("@current has already a sdk configured", func() {
 
 			BeforeEach(func() {
-				vs.MkdirAll(pp.SDK("go"), os.ModePerm)
-				vs.MkdirAll(pp.Download("go"), os.ModePerm)
-				vs.MkdirAll(expectedCurrent, os.ModePerm)
+				_ = vs.MkdirAll(pp.SDK("go"), os.ModePerm)
+				_ = vs.MkdirAll(pp.Download("go"), os.ModePerm)
+				_ = vs.MkdirAll(expectedCurrent, os.ModePerm)
 			})
 
 			It("replaces @current symlink with which links to <version>", func() {
@@ -127,14 +127,14 @@ func TestGoUseCmd_Link(t *testing.T) {
 	Context("Go SDK Plugin - Use", func() {
 		When("no 'current' symlink in go sdk directory", func() {
 			BeforeEach(func() {
-				fs.MkdirAll(goSdkDir, os.ModePerm)
-				fs.MkdirAll(path.Join(versionSdkDir, "bin"), os.ModePerm)
-				fs.MkdirAll(path.Join(versionSdkDir, "src"), os.ModePerm)
-				fs.MkdirAll(path.Join(versionSdkDir, "doc"), os.ModePerm)
+				_ = fs.MkdirAll(goSdkDir, os.ModePerm)
+				_ = fs.MkdirAll(path.Join(versionSdkDir, "bin"), os.ModePerm)
+				_ = fs.MkdirAll(path.Join(versionSdkDir, "src"), os.ModePerm)
+				_ = fs.MkdirAll(path.Join(versionSdkDir, "doc"), os.ModePerm)
 			})
 
 			It("The new GOROOT is symlinked to $SDKPATH/go/current", func() {
-				var err = sut.ExecuteCommand(nil, "devctl", []string{version})
+				var err = sut.ExecuteCommand(context.Background(), "devctl", []string{version})
 				Expect(err).Should(BeNil())
 				ExpectFolders(fs, path.Join(goSdkDir, "current"), []string{"bin", "src", "doc"}, nil)
 			})
