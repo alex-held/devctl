@@ -1,19 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SCOPE_TYPE" value="3" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e1fd713f-acc3-492c-a19a-d5ca7a04ee53" name="clipboardPatchFile" comment="clipboardPatchFile">
+      <change afterPath="$PROJECT_DIR$/.run/devctl sdk go use _version_.run.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/internal/golang/install.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/internal/golang/shared.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/internal/golang/use.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/internal/golang/use_bak.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/internal/golang/use_suite_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/internal/golang/use_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/internal/testutils/BeASymlinkMatcher.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cli/cmds/sdk/cmd.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/cmds/sdk/cmd.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cli/cmds/sdk/ifaces.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/cmds/sdk/ifaces.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cli/internal/golang/download/download.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/download/download.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/cmds/sdk/lister.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/cmds/sdk/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/cmds/sdk/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/download/download.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/download.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/download/ifaces.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cli/internal/golang/find.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/find.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cli/internal/golang/gosdker.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/gosdker.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/gosdker.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/gosdk.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cli/internal/golang/ifaces.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/ifaces.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cli/internal/golang/list/list.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/list/list.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/list/ifaces.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/list/list.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/list.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/internal/golang/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cli/internal/golang/plugins.go" beforeDir="false" afterPath="$PROJECT_DIR$/cli/internal/golang/plugins.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/constants/env.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/constants/env.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/devctlpath/lazypath_unix.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/devctlpath/lazypath_unix.go" afterDir="false" />
     </list>
     <list id="aea304bd-0598-4e74-bed6-096426656119" name="Default Changelist" comment="ci(deps): bump actions/checkout@v2" />
     <option name="SHOW_DIALOG" value="false" />
@@ -77,6 +99,9 @@
     <option name="context" value="docker-desktop" />
     <option name="namespace" value="default" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedIndex" value="3" />
+  </component>
   <component name="ProjectId" id="1ojLp8G4ww8EqWJccKwSHBFh6rp" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -103,7 +128,7 @@
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
     <property name="go.vendoring.notification.had.been.shown" value="true" />
     <property name="last.edited.regexp" value="[1/1] downloading go sdk 1.16.3 100% [========================================] (4.8/4.8 MB, 175.409 MB/s)" />
-    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/cli/internal/golang" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.stylelint" value="true" />
@@ -119,7 +144,8 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preference.GoLinterConfigurable" />
+    <property name="service.view.auto.scroll.from.source" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
     <property name="typescript.add.unambiguous.imports.on.the.fly" value="true" />
   </component>
   <component name="ReaderModeSettings">
@@ -136,17 +162,18 @@
       <recent name="$PROJECT_DIR$/internal/meta" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cli/internal/golang" />
       <recent name="$PROJECT_DIR$/hack" />
       <recent name="$PROJECT_DIR$/internal/config/config/testdata" />
       <recent name="$PROJECT_DIR$/internal/action" />
       <recent name="$PROJECT_DIR$/internal/devctlpath" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cli/internal/golang" />
       <recent name="$PROJECT_DIR$/internal/plugins/downloader" />
       <recent name="$PROJECT_DIR$/internal/plugins/cli/progress" />
       <recent name="$PROJECT_DIR$/internal/plugins/cli" />
       <recent name="$PROJECT_DIR$/internal/plugins" />
-      <recent name="$PROJECT_DIR$/internal/plugins/exec" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -158,7 +185,7 @@
     </option>
     <option name="openRunningConfigInTab" value="true" />
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/alex-held/devctl/cmd/devctl">
+  <component name="RunManager" selected="Go Test.use_test.go">
     <configuration name="go build github.com/alex-held/devctl/cmd/devctl" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="devctl" />
       <working_directory value="$PROJECT_DIR$/cmd/devctl" />
@@ -179,80 +206,79 @@
       <filePath value="$PROJECT_DIR$/cmd/devctl/main.go" />
       <method v="2" />
     </configuration>
-    <configuration name="TestDownloader_Cancels_Download_When_Context_Is_Done in github.com/alex-held/devctl/internal/plugins/downloader" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="go build scratch.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="devctl" />
-      <working_directory value="$PROJECT_DIR$/internal/plugins/downloader" />
+      <working_directory value="$PROJECT_DIR$" />
+      <envs>
+        <env name="GO111MODULE" value="off" />
+      </envs>
+      <kind value="FILE" />
+      <package value="github.com/alex-held/devctl" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$APPLICATION_CONFIG_DIR$/scratches/scratch.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestGoUseCmd_Link in github.com/alex-held/devctl/cli/internal/golang" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="devctl" />
+      <working_directory value="$PROJECT_DIR$/cli/internal/golang" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/alex-held/devctl/internal/plugins/downloader" />
+      <package value="github.com/alex-held/devctl/cli/internal/golang" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestDownloader_Cancels_Download_When_Context_Is_Done\E$" />
+      <pattern value="^\QTestGoUseCmd_Link\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestDownloader_Download_Reports_Progress in github.com/alex-held/devctl/internal/plugins/downloader" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestNodes in github.com/alex-held/devctl/cli/internal/golang" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="devctl" />
-      <working_directory value="$PROJECT_DIR$/internal/plugins/downloader" />
+      <working_directory value="$PROJECT_DIR$/cli/internal/golang" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/alex-held/devctl/internal/plugins/downloader" />
+      <package value="github.com/alex-held/devctl/cli/internal/golang" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestDownloader_Download_Reports_Progress\E$" />
+      <pattern value="^\QTestNodes\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestDownloader_Writes_Bytes_Into_Output in github.com/alex-held/devctl/internal/plugins/downloader" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="go test devctl" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="devctl" />
-      <working_directory value="$PROJECT_DIR$/internal/plugins/downloader" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="github.com/alex-held/devctl/internal/plugins/downloader" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="DIRECTORY" />
+      <package value="github.com/alex-held/devctl" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestDownloader_Writes_Bytes_Into_Output\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestRuntimeInfo_Format in github.com/alex-held/devctl/pkg/plugins" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="use_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="devctl" />
-      <working_directory value="$PROJECT_DIR$/pkg/plugins" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="github.com/alex-held/devctl/pkg/plugins" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestRuntimeInfo_Format\E$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="downloader_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="devctl" />
-      <working_directory value="$PROJECT_DIR$/internal/plugins/downloader" />
+      <working_directory value="$PROJECT_DIR$/cli/internal/golang" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
       <package value="github.com/alex-held/devctl" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/internal/plugins/downloader/downloader_test.go" />
+      <filePath value="$PROJECT_DIR$/cli/internal/golang/use_test.go" />
       <framework value="gotest" />
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Go Build.go build github.com/alex-held/devctl/cmd/devctl" />
-      <item itemvalue="Go Test.TestDownloader_Writes_Bytes_Into_Output in github.com/alex-held/devctl/internal/plugins/downloader" />
-      <item itemvalue="Go Test.downloader_test.go" />
-      <item itemvalue="Go Test.TestDownloader_Cancels_Download_When_Context_Is_Done in github.com/alex-held/devctl/internal/plugins/downloader" />
-      <item itemvalue="Go Test.TestDownloader_Download_Reports_Progress in github.com/alex-held/devctl/internal/plugins/downloader" />
-      <item itemvalue="Go Test.TestRuntimeInfo_Format in github.com/alex-held/devctl/pkg/plugins" />
+      <item itemvalue="Go Build.go build scratch.go" />
+      <item itemvalue="Go Test.TestGoUseCmd_Link in github.com/alex-held/devctl/cli/internal/golang" />
+      <item itemvalue="Go Test.TestNodes in github.com/alex-held/devctl/cli/internal/golang" />
+      <item itemvalue="Go Test.use_test.go" />
+      <item itemvalue="Go Test.go test devctl" />
+      <item itemvalue="Go Build.devctl sdk go use &lt;version&gt;" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.TestRuntimeInfo_Format in github.com/alex-held/devctl/pkg/plugins" />
-        <item itemvalue="Go Test.TestDownloader_Download_Reports_Progress in github.com/alex-held/devctl/internal/plugins/downloader" />
-        <item itemvalue="Go Test.TestDownloader_Cancels_Download_When_Context_Is_Done in github.com/alex-held/devctl/internal/plugins/downloader" />
-        <item itemvalue="Go Test.TestDownloader_Writes_Bytes_Into_Output in github.com/alex-held/devctl/internal/plugins/downloader" />
-        <item itemvalue="Go Test.downloader_test.go" />
+        <item itemvalue="Go Test.use_test.go" />
+        <item itemvalue="Go Test.go test devctl" />
+        <item itemvalue="Go Test.TestGoUseCmd_Link in github.com/alex-held/devctl/cli/internal/golang" />
+        <item itemvalue="Go Test.TestNodes in github.com/alex-held/devctl/cli/internal/golang" />
+        <item itemvalue="Go Build.go build scratch.go" />
       </list>
     </recent_temporary>
   </component>
@@ -284,11 +310,6 @@
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
-    <environment>
-      <map>
-        <entry key="GOPROXY" value="https://proxy.golang.org/" />
-      </map>
-    </environment>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1194,65 +1215,355 @@
           <option name="timeStamp" value="1242" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/plugins/exec/run.go</url>
-          <line>16</line>
-          <option name="timeStamp" value="1247" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
-          <line>26</line>
-          <option name="timeStamp" value="1248" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
-          <line>27</line>
+          <line>34</line>
           <option name="timeStamp" value="1249" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdker.go</url>
-          <line>67</line>
+          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdk.go</url>
+          <line>65</line>
           <option name="timeStamp" value="1252" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdker.go</url>
-          <line>68</line>
+          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdk.go</url>
+          <line>66</line>
           <option name="timeStamp" value="1253" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdker.go</url>
-          <line>69</line>
-          <option name="timeStamp" value="1254" />
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>106</line>
+          <option name="timeStamp" value="1264" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/gosdker.go</url>
-          <line>70</line>
-          <option name="timeStamp" value="1256" />
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>155</line>
+          <option name="timeStamp" value="1266" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
-          <line>12</line>
-          <option name="timeStamp" value="1257" />
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>137</line>
+          <option name="timeStamp" value="1268" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
-          <line>14</line>
-          <option name="timeStamp" value="1258" />
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>151</line>
+          <option name="timeStamp" value="1269" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
-          <line>16</line>
-          <option name="timeStamp" value="1259" />
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>152</line>
+          <option name="timeStamp" value="1270" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cli/internal/golang/find.go</url>
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>141</line>
+          <option name="timeStamp" value="1272" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>142</line>
+          <option name="timeStamp" value="1273" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>144</line>
+          <option name="timeStamp" value="1274" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>148</line>
+          <option name="timeStamp" value="1275" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>19</line>
+          <option name="timeStamp" value="1277" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
           <line>21</line>
-          <option name="timeStamp" value="1262" />
+          <option name="timeStamp" value="1278" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>25</line>
+          <option name="timeStamp" value="1279" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>45</line>
+          <option name="timeStamp" value="1336" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>42</line>
+          <option name="timeStamp" value="1338" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>109</line>
+          <option name="timeStamp" value="1349" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>129</line>
+          <option name="timeStamp" value="1356" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>127</line>
+          <option name="timeStamp" value="1357" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>120</line>
+          <option name="timeStamp" value="1372" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>117</line>
+          <option name="timeStamp" value="1373" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>125</line>
+          <option name="timeStamp" value="1374" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/shared.go</url>
+          <line>122</line>
+          <option name="timeStamp" value="1376" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$USER_HOME$/.devctl/sdks/go/1.16/src/sync/mutex.go</url>
+          <line>30</line>
+          <option name="timeStamp" value="1454" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_suite_test.go</url>
+          <line>16</line>
+          <option name="timeStamp" value="1455" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_suite_test.go</url>
+          <line>18</line>
+          <option name="timeStamp" value="1456" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_suite_test.go</url>
+          <line>21</line>
+          <option name="timeStamp" value="1457" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_suite_test.go</url>
+          <line>17</line>
+          <option name="timeStamp" value="1458" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_test.go</url>
+          <line>66</line>
+          <option name="timeStamp" value="1460" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/testutils/BeASymlinkMatcher.go</url>
+          <line>43</line>
+          <option name="timeStamp" value="1462" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/testutils/BeASymlinkMatcher.go</url>
+          <line>47</line>
+          <option name="timeStamp" value="1463" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_test.go</url>
+          <line>50</line>
+          <option name="timeStamp" value="1468" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_test.go</url>
+          <line>183</line>
+          <option name="timeStamp" value="1472" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_test.go</url>
+          <line>260</line>
+          <option name="timeStamp" value="1474" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use.go</url>
+          <line>20</line>
+          <option name="timeStamp" value="1485" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use.go</url>
+          <line>23</line>
+          <option name="timeStamp" value="1487" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_test.go</url>
+          <line>80</line>
+          <option name="timeStamp" value="1499" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_test.go</url>
+          <line>83</line>
+          <option name="timeStamp" value="1500" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use_test.go</url>
+          <line>86</line>
+          <option name="timeStamp" value="1503" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use.go</url>
+          <line>54</line>
+          <option name="timeStamp" value="1505" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use.go</url>
+          <line>51</line>
+          <option name="timeStamp" value="1521" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use.go</url>
+          <line>39</line>
+          <option name="timeStamp" value="1528" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/use.go</url>
+          <line>45</line>
+          <option name="timeStamp" value="1530" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>75</line>
+          <option name="timeStamp" value="1531" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>77</line>
+          <option name="timeStamp" value="1532" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>79</line>
+          <option name="timeStamp" value="1533" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download.go</url>
+          <line>136</line>
+          <option name="timeStamp" value="1535" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download.go</url>
+          <line>132</line>
+          <option name="timeStamp" value="1536" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download.go</url>
+          <line>126</line>
+          <option name="timeStamp" value="1537" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download.go</url>
+          <line>122</line>
+          <option name="timeStamp" value="1538" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download.go</url>
+          <line>120</line>
+          <option name="timeStamp" value="1542" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/download.go</url>
+          <line>117</line>
+          <option name="timeStamp" value="1544" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>62</line>
+          <option name="timeStamp" value="1545" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>83</line>
+          <option name="timeStamp" value="1546" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>85</line>
+          <option name="timeStamp" value="1547" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>88</line>
+          <option name="timeStamp" value="1548" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>97</line>
+          <option name="timeStamp" value="1549" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>92</line>
+          <option name="timeStamp" value="1550" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>136</line>
+          <option name="timeStamp" value="1551" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>131</line>
+          <option name="timeStamp" value="1553" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>125</line>
+          <option name="timeStamp" value="1554" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>126</line>
+          <option name="timeStamp" value="1555" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>129</line>
+          <option name="timeStamp" value="1556" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>142</line>
+          <option name="timeStamp" value="1557" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>139</line>
+          <option name="timeStamp" value="1558" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>119</line>
+          <option name="timeStamp" value="1559" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cli/internal/golang/install.go</url>
+          <line>122</line>
+          <option name="timeStamp" value="1560" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint suspend="NONE" type="DlvErrorBreakpoint" />
       </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="GoTestRunConfiguration">
+        <watch expression="*(*&quot;github.com/mandelsoft/vfs/pkg/memoryfs.DirectoryEntries&quot;)(824635299088)" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand>

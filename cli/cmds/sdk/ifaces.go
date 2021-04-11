@@ -14,22 +14,9 @@ type Installer interface {
 	Install(sdk string) error
 }
 
-type Command interface {
-	Namer
-	ExecuteCommand(ctx context.Context, root string, args []string) error
-}
-
-type Downloader interface {
-	Command
-}
-
-type Lister interface {
-	Command
-}
-
 type Sdker interface {
 	plugins.Plugin
-	Sdk(ctx context.Context, root string, args []string) error
+	ExecuteCommand(ctx context.Context, root string, args []string) error
 }
 
 type Namer interface {

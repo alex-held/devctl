@@ -12,7 +12,7 @@ func (cmd *Cmd) Main(ctx context.Context, root string, args []string) error {
 	plugs := cmd.ScopedPlugins()
 
 	if p := FindSdkerFromArgs(args, plugs); p != nil {
-		return p.Sdk(ctx, root, args[1:])
+		return p.ExecuteCommand(ctx, root, args[1:])
 	}
 
 	flags := cmd.Flags()
@@ -34,7 +34,7 @@ func (cmd *Cmd) run(ctx context.Context, root string, args []string) error {
 
 	for _, p := range plugs {
 		if s, ok := p.(Sdker); ok {
-			if err := s.Sdk(ctx, root, args); err != nil {
+			if err := s.ExecuteCommand(ctx, root, args); err != nil {
 				return plugins.Wrap(s, err)
 			}
 		}

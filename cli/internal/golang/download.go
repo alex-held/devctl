@@ -1,4 +1,4 @@
-package download
+package golang
 
 import (
 	"context"
@@ -11,8 +11,9 @@ import (
 	"github.com/coreos/etcd/pkg/fileutil"
 	"github.com/gobuffalo/plugins"
 	"github.com/gobuffalo/plugins/plugcmd"
+	"github.com/mandelsoft/vfs/pkg/osfs"
+	"github.com/mandelsoft/vfs/pkg/vfs"
 	"github.com/pkg/errors"
-	"github.com/spf13/afero"
 
 	"github.com/alex-held/devctl/internal/plugins/downloader"
 	plugins2 "github.com/alex-held/devctl/pkg/plugins"
@@ -24,9 +25,12 @@ var _ plugcmd.Namer = &GoDownloadCmd{}
 var _ plugins.Plugin = &GoDownloadCmd{}
 
 type GoDownloadCmd struct {
-	*goSDKCore
-	*dlOptions
+	Fs        vfs.VFS
+	Pather    devctlpath.Pather
+	Runtime   plugins2.RuntimeInfoGetter
 	pluginsFn plugins.Feeder
+	*dlOptions
+	Output *output
 }
 
 func (cmd *GoDownloadCmd) CmdName() string {
@@ -42,21 +46,13 @@ type dlOptions struct {
 	baseURI string
 }
 
-type goSDKCore struct {
-	sdk               string
-	runtimeInfoGetter plugins2.OSRuntimeInfoGetter
-	fs                afero.Fs
-	pather            devctlpath.Pather
-	out               *output
-}
-
 func (cmd *GoDownloadCmd) DownloadDir() string {
-	return devctlpath.DownloadPath(cmd.sdk, cmd.version)
+	return devctlpath.DownloadPath("go", cmd.version)
 }
 
 func (cmd *GoDownloadCmd) DownloadUri() (uri string) {
 	artifact := cmd.DownloadArtifactName()
-	uri = cmd.runtimeInfoGetter.Format("%s/dl/%s", cmd.baseURI, artifact)
+	uri = cmd.Runtime.Get().Format("%s/dl/%s", cmd.baseURI, artifact)
 	return uri
 }
 
@@ -65,11 +61,11 @@ func (cmd *GoDownloadCmd) DownloadArtifactPath() string {
 }
 
 func (cmd *GoDownloadCmd) DownloadProgressDesc() string {
-	return fmt.Sprintf("downloading sdk: %s %s", cmd.sdk, cmd.version)
+	return fmt.Sprintf("downloading sdk: %s %s", "go", cmd.version)
 }
 
 func (cmd *GoDownloadCmd) DownloadArtifactName() string {
-	artifactName := cmd.runtimeInfoGetter.Format("go%s.[os]-[arch].tar.gz", cmd.dlOptions.version)
+	artifactName := cmd.Runtime.Get().Format("go%s.[os]-[arch].tar.gz", cmd.dlOptions.version)
 	return artifactName
 }
 
@@ -110,26 +106,25 @@ func NewConsoleOutput() (out *output) {
 
 func (cmd *GoDownloadCmd) artifactCached() (exists bool) {
 	downloadArtifactPath := cmd.DownloadArtifactPath()
-	_, err := cmd.fs.Stat(downloadArtifactPath)
+	_, err := cmd.Fs.Stat(downloadArtifactPath)
 	return err == nil
 }
 
 func (cmd *GoDownloadCmd) ExecuteCommand(ctx context.Context, root string, args []string) error {
-	err := cmd.Init(ctx, root, args[0:])
-	if err != nil {
-		return errors.Wrapf(err, "failed to initialize %T", *cmd)
-	}
+	cmd.Init()
+	version := args[1]
+	cmd.version = version
 
 	if cmd.artifactCached() {
-		_, err := cmd.Out().Write([]byte(fmt.Sprintf("go sdk %s already downloaded\n", cmd.version)))
-		return err
+		cmd.Out().Write([]byte(fmt.Sprintf("go sdk %s already downloaded\n", version)))
+		return nil
 	}
 
-	err = cmd.fs.MkdirAll(cmd.DownloadDir(), fileutil.PrivateDirMode)
+	err := cmd.Fs.MkdirAll(cmd.DownloadDir(), fileutil.PrivateDirMode)
 	if err != nil {
-		return errors.Wrapf(err, "failed creating go sdk download path; version=%s", cmd.dlOptions.version)
+		return errors.Wrapf(err, "failed creating go sdk download path; version=%s", version)
 	}
-	artifactFile, err := cmd.fs.Create(cmd.DownloadArtifactPath())
+	artifactFile, err := cmd.Fs.Create(cmd.DownloadArtifactPath())
 	if err != nil {
 		return errors.Wrapf(err, "failed creating / opening file handle for the download")
 	}
@@ -137,30 +132,24 @@ func (cmd *GoDownloadCmd) ExecuteCommand(ctx context.Context, root string, args 
 	dl := downloader.NewDownloader(cmd.DownloadUri(), cmd.DownloadProgressDesc(), artifactFile, cmd.Out())
 	err = dl.Download(ctx)
 	if err != nil {
-		return errors.Wrapf(err, "failed downloading go sdk %v from the remote server %s", cmd.version, cmd.baseURI)
+		return errors.Wrapf(err, "failed downloading go sdk %v from the remote server %s", version, cmd.baseURI)
 	}
 	return nil
 }
 
-func (cmd *GoDownloadCmd) Init(_ context.Context, _ string, args []string) error {
-	cmd.goSDKCore = DefaultSDKCore()
+func (cmd *GoDownloadCmd) Init() {
+	if cmd == nil {
+		cmd = &GoDownloadCmd{}
+	}
+	cmd.Fs = vfs.New(osfs.New())
+	cmd.Runtime = plugins2.OSRuntimeInfoGetter{}
+	cmd.Pather = devctlpath.DefaultPather()
+	cmd.Output = NewConsoleOutput()
 	cmd.dlOptions = &dlOptions{
-		version: args[1],
 		baseURI: "https://golang.org",
 	}
-	return nil
 }
 
 func (cmd *GoDownloadCmd) Out() io.Writer {
-	return cmd.out.out
-}
-
-func DefaultSDKCore() *goSDKCore {
-	return &goSDKCore{
-		runtimeInfoGetter: plugins2.OSRuntimeInfoGetter{},
-		fs:                afero.NewOsFs(),
-		pather:            devctlpath.DefaultPather(),
-		out:               NewConsoleOutput(),
-		sdk:               "go",
-	}
+	return cmd.Output.out
 }

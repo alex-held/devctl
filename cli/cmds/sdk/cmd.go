@@ -34,12 +34,6 @@ func (cmd *Cmd) ScopedPlugins() []plugins.Plugin {
 			plugs = append(plugs, p)
 		case Sdker:
 			plugs = append(plugs, p)
-		case Installer:
-			plugs = append(plugs, p)
-		case Lister:
-			plugs = append(plugs, p)
-		case Downloader:
-			plugs = append(plugs, p)
 		}
 	}
 

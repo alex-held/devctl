@@ -30,6 +30,10 @@
         <method importPath="math/rand" receiver="*Rand" name="Read" />
         <method importPath="os" receiver="*File" name="Close" />
         <method importPath="io" receiver="ReadCloser" name="Close" />
+        <method importPath="github.com/mandelsoft/vfs/pkg/vfs" receiver="FileSystem" name="MkdirAll" />
+        <method importPath="github.com/mandelsoft/vfs/pkg/vfs" receiver="VFS" name="MkdirAll" />
+        <method importPath="github.com/mandelsoft/vfs/pkg/vfs" receiver="FileSystem" name="Mkdir" />
+        <method importPath="github.com/mandelsoft/vfs/pkg/vfs" receiver="VFS" name="ReadDir" />
       </methods>
     </inspection_tool>
     <inspection_tool class="GoUnnecessarilyExportedIdentifiers" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
