@@ -9,39 +9,36 @@ import (
 	"github.com/onsi/gomega/types"
 )
 
-
-
-//BeASymlink succeeds if a file exists and is a directory.
+//BeADirectoryFs succeeds if a file exists and is a directory.
 //Actual must be a string representing the abs path to the file being checked.
-func BeASymlink(fs vfs.VFS) types.GomegaMatcher {
-	return &BeASymlinkMatcher{
+func BeADirectoryFs(fs vfs.VFS) types.GomegaMatcher {
+	return &BeADirMatcher{
 		Fs: fs,
 	}
 }
 
-
-type notASymlinkError struct {
+type notADirError struct {
 	VFS      vfs.VFS
 	FileInfo os.FileInfo
 	Err      error
 }
 
-func (t notASymlinkError) Error() string {
+func (t notADirError) Error() string {
 	fi := t.FileInfo
 	mode := fi.Mode()
 	return fmt.Sprintf("file mode is: %v", mode)
 }
 
-type BeASymlinkMatcher struct {
+type BeADirMatcher struct {
 	Fs       vfs.VFS
 	expected interface{}
 	err      error
 }
 
-func (matcher *BeASymlinkMatcher) Match(actual interface{}) (success bool, err error) {
+func (matcher *BeADirMatcher) Match(actual interface{}) (success bool, err error) {
 	fileName, ok := actual.(string)
 	if !ok {
-		return false, fmt.Errorf("BeASymlinkMatcher matcher expects a file path")
+		return false, fmt.Errorf("BeADirMatcher matcher expects a file path")
 	}
 
 	fi, err := matcher.Fs.Lstat(fileName)
@@ -51,12 +48,12 @@ func (matcher *BeASymlinkMatcher) Match(actual interface{}) (success bool, err e
 	}
 
 	switch mode := fi.Mode(); {
-	case mode&os.ModeSymlink != 0:
+	case mode.IsDir():
+	case mode&os.ModeDir != 0:
 		return true, nil
 	case mode.IsRegular():
-	case mode.IsDir():
 	default:
-		matcher.err = notASymlinkError{
+		matcher.err = notADirError{
 			VFS:      matcher.Fs,
 			FileInfo: fi,
 			Err:      fmt.Errorf("the file has a wrong os.FileMode. %v", mode),
@@ -66,10 +63,10 @@ func (matcher *BeASymlinkMatcher) Match(actual interface{}) (success bool, err e
 	return true, nil
 }
 
-func (matcher *BeASymlinkMatcher) FailureMessage(actual interface{}) (message string) {
-	return format.Message(actual, fmt.Sprintf("to be a symlink: %s", matcher.err))
+func (matcher *BeADirMatcher) FailureMessage(actual interface{}) (message string) {
+	return format.Message(actual, fmt.Sprintf("to be a directory: %s", matcher.err))
 }
 
-func (matcher *BeASymlinkMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return format.Message(actual, fmt.Sprintf("not be a symlink"))
+func (matcher *BeADirMatcher) NegatedFailureMessage(actual interface{}) (message string) {
+	return format.Message(actual, fmt.Sprintf("not be a directory"))
 }

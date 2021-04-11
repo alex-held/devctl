@@ -13,6 +13,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/franela/goblin v0.0.0-20210113153425-413781f5e6c8
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/gin-gonic/gin v1.6.3 // indirect
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210410170116-ea3d685f79fb // indirect
 	github.com/go-openapi/errors v0.20.0 // indirect
 	github.com/go-openapi/strfmt v0.20.1 // indirect
@@ -22,6 +23,7 @@ require (
 	github.com/golang/mock v1.5.0
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.5 // indirect
+	github.com/gookit/color v1.4.2 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/karrick/godirwalk v1.10.3
@@ -34,6 +36,7 @@ require (
 	github.com/onsi/ginkgo v1.16.1 // indirect
 	github.com/onsi/gomega v1.11.0
 	github.com/pkg/errors v0.9.1
+	github.com/pterm/pterm v0.12.13 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/schollz/progressbar/v3 v3.7.6
 	github.com/sirupsen/logrus v1.8.1
@@ -41,6 +44,7 @@ require (
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
+	github.com/testcontainers/testcontainers-go v0.10.0 // indirect
 	github.com/yuin/goldmark v1.3.4 // indirect
 	go.uber.org/zap v1.16.0 // indirect
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect

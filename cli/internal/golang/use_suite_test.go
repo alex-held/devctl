@@ -10,7 +10,7 @@ import (
 
 func TestNodes(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Go SDK Plugin")
+	RunSpecs(t, "go-plugin USE")
 }
 
 func ListFsEntryNames(fs vfs.FileSystem, path string) ([]string, error) {
