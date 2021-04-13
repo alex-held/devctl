@@ -10,7 +10,6 @@ import (
 	"net/http/httptest"
 	"os"
 	"path"
-	"regexp"
 	"testing"
 	"time"
 
@@ -110,16 +109,4 @@ func TestDownloader_Cancels_Download_When_Context_Is_Done(t *testing.T) {
 
 	err := sut.Download(ctx)
 	assert.Error(t, err)
-}
-
-func TestDownloader_Download_Reports_Progress(t *testing.T) {
-	buf := &bytes.Buffer{}
-	_, _, _, sut, ctx := setup(t, buf) //nolint:dogsled
-
-	err := sut.Download(ctx)
-	assert.NoError(t, err)
-	actualProgressOutput := buf.String()
-	println(actualProgressOutput)
-	regex := regexp.MustCompile(`.*\[1/1\][[:ascii:]]*\s*downloading go sdk 1\.16\.3 100% \[.*\] \(4\.8/4\.8 MB, \d*\.\d* MB/s\).*`)
-	assert.Regexp(t, regex, actualProgressOutput)
 }
