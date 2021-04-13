@@ -10,3 +10,7 @@ type progressBar struct {
 type progressReporter struct {
 
 }
+
+func (r progressReporter) report(size int, current int) error {
+return nil
+}
