@@ -3,7 +3,7 @@
     <module name="devctl" />
     <working_directory value="$PROJECT_DIR$/cmd/devctl" />
     <go_parameters value="-i" />
-    <parameters value="sdk go use 1.16.2" />
+    <parameters value="sdk go use 1.16.3" />
     <EXTENSION ID="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
       <option name="IS_SUBST" value="false" />
