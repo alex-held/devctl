@@ -1,12 +1,6 @@
 package testutils
 
-import (
-	"testing"
-
-	"github.com/franela/goblin"
-	. "github.com/onsi/gomega"
-)
-
+/*
 func TestTeardownCombine_Combination_Contains_All_Teardowns(t *testing.T) {
 	g := goblin.Goblin(t)
 	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
@@ -51,3 +45,4 @@ func TestTeardownCombine_Combination_Contains_All_Teardowns(t *testing.T) {
 		})
 	})
 }
+*/
