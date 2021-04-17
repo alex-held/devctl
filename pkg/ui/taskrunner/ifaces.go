@@ -31,12 +31,3 @@ type Runner interface {
 	Describer
 	Run(ctx context.Context) error
 }
-
-type Task struct {
-	Plugin      Executer
-	Description string
-	Root        string
-	Args        []string
-}
-
-type Tasks []Task

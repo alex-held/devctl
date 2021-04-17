@@ -29,17 +29,6 @@ func WithPTermOutput(output *ptermTaskRunnerOutput) Option {
 	}
 }
 
-func WithTaskRunnerOutput(progressbarFn func(title string), outFn func(format string, args ...interface{}), errFn func(format string, args ...interface{})) Option {
-	return func(tr *taskRunner) *taskRunner {
-		tr.output = &bufferTaskRunnerOutput{
-			ProgressBarPrinterFn: progressbarFn,
-			ErrPrinterFn:         errFn,
-			OutPrinterFn:         outFn,
-		}
-		return tr
-	}
-}
-
 func WithTimeout(timeout time.Duration) Option {
 	return func(tr *taskRunner) *taskRunner {
 		tr.AfterTaskTimeout = timeout
