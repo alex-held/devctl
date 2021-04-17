@@ -2,7 +2,23 @@ package taskrunner
 
 import (
 	"time"
+
+	"github.com/pterm/pterm"
 )
+
+var defaultOptions = []Option{
+	WithPTermOutput(&ptermTaskRunnerOutput{
+		Initializer: func() *pterm.ProgressbarPrinter {
+			return pterm.DefaultProgressbar.
+				WithTitle("Default Task Runner")
+		},
+		Err: pterm.Error,
+		Out: pterm.Success,
+	}),
+	WithTimeout( 500 * time.Millisecond),
+	WithTitle("Default Task Runner"),
+}
+
 
 type Option func(tr *taskRunner) *taskRunner
 
@@ -31,7 +47,7 @@ func WithTimeout(timeout time.Duration) Option {
 	}
 }
 
-func WithTasks(tasks ...task) Option {
+func WithTasks(tasks ...Task) Option {
 	return func(tr *taskRunner) *taskRunner {
 		tr.Tasks = append(tr.Tasks, tasks...)
 		return tr

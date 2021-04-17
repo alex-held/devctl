@@ -42,7 +42,7 @@ func TestTaskRunner_Run(t *testing.T) {
 	ctx := context.TODO()
 	sut := taskRunner{
 		Title: "TestTaskRunner_Run",
-		Tasks: []task{
+		Tasks: []Task{
 			{
 				Plugin: NoOpPlugin{
 					Out: io.Discard,
