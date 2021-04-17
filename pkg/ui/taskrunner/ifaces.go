@@ -23,7 +23,12 @@ type Executer interface {
 	ExecuteCommand(ctx context.Context, root string, args []string) error
 }
 
+type Describer interface {
+	Describe() string
+}
+
 type Runner interface {
+	Describer
 	Run(ctx context.Context) error
 }
 

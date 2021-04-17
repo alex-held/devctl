@@ -6,6 +6,8 @@ import (
 	"path"
 	"testing"
 
+	plugins2 "github.com/alex-held/devctl/pkg/plugins"
+	"github.com/gobuffalo/plugins"
 	"github.com/mandelsoft/vfs/pkg/memoryfs"
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	. "github.com/onsi/ginkgo"
@@ -20,6 +22,13 @@ const (
 	rootPath = "root"
 	version  = "1.51"
 )
+
+type NamedNoOpPlugin struct {
+	Name string
+	plugins2.NoOpPlugin
+}
+
+func (p *NamedNoOpPlugin) PluginName() string { return p.Name }
 
 var _ = Describe("go-plugin USE", func() {
 	var (
@@ -45,7 +54,36 @@ var _ = Describe("go-plugin USE", func() {
 	})
 
 	Context("USE <version>", func() {
+
+		When("using the TaskRunner", func() {
+
+			BeforeEach(func() {
+				_ = vs.MkdirAll(versionSdkDir, os.ModePerm)
+				_ = vs.MkdirAll(pp.SDK("go", version, "src"), os.ModePerm)
+				_ = vs.MkdirAll(pp.SDK("go", version, "doc"), os.ModePerm)
+				_ = vs.MkdirAll(pp.SDK("go", version, "bin"), os.ModePerm)
+
+				feeder := plugins.Feeder(func() []plugins.Plugin {
+					return []plugins.Plugin{
+						&NamedNoOpPlugin{
+							Name: GoDownloadCmdName,
+						},
+					}
+				})
+
+				sut.WithPlugins(feeder)
+			})
+
+			It("resolves the correct plugins", func() {
+				runner := sut.CreateTaskRunner(GoDownloadCmdName)
+				desc := runner.Describe()
+				Expect(desc).Should(ContainSubstring(GoDownloadCmdName))
+			})
+
+		})
+
 		When("no @current version has been installed", func() {
+
 			BeforeEach(func() {
 				_ = vs.MkdirAll(versionSdkDir, os.ModePerm)
 				_ = vs.MkdirAll(pp.SDK("go", version, "src"), os.ModePerm)
@@ -97,8 +135,8 @@ var _ = Describe("go-plugin USE", func() {
 				Expect(expectedOldVersion).Should(Or(BeADirectoryFs(vs), BeASymlink(vs)))
 			})
 		})
-	})
 
+	})
 })
 
 func TestGoUseCmd_Link(t *testing.T) {
@@ -125,6 +163,7 @@ func TestGoUseCmd_Link(t *testing.T) {
 	})
 
 	Context("Go SDK Plugin - Use", func() {
+
 		When("no 'current' symlink in go sdk directory", func() {
 			BeforeEach(func() {
 				_ = fs.MkdirAll(goSdkDir, os.ModePerm)

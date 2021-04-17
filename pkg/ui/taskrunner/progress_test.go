@@ -2,40 +2,11 @@ package taskrunner
 
 import (
 	"context"
-	"fmt"
 	"io"
-	"os"
 	"testing"
+
+	"github.com/alex-held/devctl/pkg/plugins"
 )
-
-type NoOpPlugin struct {
-	Out io.Writer
-}
-
-type TestNoOpPlugin struct {
-	NoOpPlugin
-	error
-}
-
-func (t TestNoOpPlugin) ExecuteCommand(_ context.Context, root string, args []string) error {
-	fmt.Fprintf(t.Out, "Executing NoOpPlugin..\tRoot=%s\tArgs=%v\n", root, args)
-	if t.error != nil {
-		fmt.Fprintf(t.Out, "[NoOpPlugin] Error occurred! ErrorF=%+v\n", t.error)
-	}
-	fmt.Fprintln(t.Out, "[NoOpPlugin] Success! occurred!")
-	return t.error
-}
-
-func (NoOpPlugin) PluginName() string { return "NoOpPlugin" }
-
-func (p NoOpPlugin) ExecuteCommand(_ context.Context, root string, args []string) error {
-	out := p.Out
-	if out == nil {
-		out = os.Stdout
-	}
-	fmt.Fprintf(out, "Executing NoOpPlugin..\tRoot=%s\tArgs=%v\n", root, args)
-	return nil
-}
 
 /*
 func TestTaskRunner_Run(t *testing.T) {
@@ -95,7 +66,7 @@ func TestTaskRunner_Run(t *testing.T) {
 
 var defaultTestTasks = Tasks{
 	{
-		Plugin: NoOpPlugin{
+		Plugin: plugins.NoOpPlugin{
 			Out: io.Discard,
 		},
 		Description: "Downloading go sdk",
@@ -103,7 +74,7 @@ var defaultTestTasks = Tasks{
 		Args:        []string{},
 	},
 	{
-		Plugin: NoOpPlugin{
+		Plugin: plugins.NoOpPlugin{
 			Out: io.Discard,
 		},
 		Description: "Extracting go sdk",
@@ -111,7 +82,7 @@ var defaultTestTasks = Tasks{
 		Args:        nil,
 	},
 	{
-		Plugin: NoOpPlugin{
+		Plugin: plugins.NoOpPlugin{
 			Out: io.Discard,
 		},
 		Description: "Linking go sdk",
@@ -119,21 +90,13 @@ var defaultTestTasks = Tasks{
 		Args:        nil,
 	},
 	{
-		Plugin: NoOpPlugin{
+		Plugin:plugins. NoOpPlugin{
 			Out: io.Discard,
 		},
 		Description: "Listing go sdk",
 		Root:        "test",
 		Args:        nil,
 	},
-	/*{
-		Plugin: NoOpPlugin{
-			Out: io.Discard,
-		},
-		Description: "NoOp Task 5",
-		Root:        "test",
-		Args:        nil,
-	},*/
 }
 
 func TestNewTaskRunner(t *testing.T) {

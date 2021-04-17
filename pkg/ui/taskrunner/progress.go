@@ -2,6 +2,8 @@ package taskrunner
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/pterm/pterm"
@@ -33,6 +35,14 @@ type taskRunner struct {
 
 	DoneC  chan struct{}
 	TaskMC chan TaskRunnerMsg
+}
+
+func (r *taskRunner) Describe() string {
+	sb := &strings.Builder{}
+	fmt.Fprintf(sb, "Title:\t%s\n", r.Title)
+	fmt.Fprintf(sb, "Tasks:\t%v\n", r.Tasks)
+	_, _ = fmt.Fprintln(sb)
+	return sb.String()
 }
 
 func (r *taskRunner) Run(ctx context.Context) error {
@@ -94,17 +104,16 @@ func (r *taskRunner) Run(ctx context.Context) error {
 type taskRunnerStartMsg struct {
 	message string
 }
-func (t *taskRunnerStartMsg) Error() error { return nil }
-func (t *taskRunnerStartMsg) Print(o TaskRunnerOutput) {o.PrintTaskProgress(t.message)}
 
-
-
+func (t *taskRunnerStartMsg) Error() error             { return nil }
+func (t *taskRunnerStartMsg) Print(o TaskRunnerOutput) { o.PrintTaskProgress(t.message) }
 
 type taskRunnerEndMsg struct {
 	message string
 	error   error
 }
-func (t *taskRunnerEndMsg) Error() error {return t.error}
+
+func (t *taskRunnerEndMsg) Error() error { return t.error }
 func (t *taskRunnerEndMsg) Print(o TaskRunnerOutput) {
 	if t.error != nil {
 		o.ErrorF("%v", t.error)
