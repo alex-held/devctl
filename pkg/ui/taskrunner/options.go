@@ -6,6 +6,11 @@ import (
 	"github.com/pterm/pterm"
 )
 
+
+
+type Option func(tr *taskRunner) *taskRunner
+
+
 var defaultOptions = []Option{
 	WithPTermOutput(&ptermTaskRunnerOutput{
 		Initializer: func() *pterm.ProgressbarPrinter {
@@ -15,12 +20,28 @@ var defaultOptions = []Option{
 		Err: pterm.Error,
 		Out: pterm.Success,
 	}),
-	WithTimeout( 500 * time.Millisecond),
+	WithTimeout(500 * time.Millisecond),
 	WithTitle("Default Task Runner"),
 }
 
 
-type Option func(tr *taskRunner) *taskRunner
+
+
+
+
+type NoOpOutput struct{}
+
+func (n NoOpOutput) ErrorF(_ string, _ ...interface{}) {}
+func (n NoOpOutput) Printf(_ string, _ ...interface{}) {}
+func (n NoOpOutput) PrintTaskProgress(_ string)        {}
+func (n NoOpOutput) Next()                             {}
+
+func WithDiscardOutput() Option {
+	return func(tr *taskRunner) *taskRunner {
+		tr.output = &NoOpOutput{}
+		return tr
+	}
+}
 
 func WithPTermOutput(output *ptermTaskRunnerOutput) Option {
 	return func(tr *taskRunner) *taskRunner {
@@ -36,7 +57,7 @@ func WithTimeout(timeout time.Duration) Option {
 	}
 }
 
-func WithTasks(tasks ...Task) Option {
+func WithTasks(tasks ...Tasker) Option {
 	return func(tr *taskRunner) *taskRunner {
 		tr.Tasks = append(tr.Tasks, tasks...)
 		return tr

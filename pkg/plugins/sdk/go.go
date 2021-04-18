@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/alex-held/devctl/pkg/system"
 	"github.com/blang/semver"
 	"github.com/coreos/etcd/pkg/fileutil"
 	"github.com/pkg/errors"
@@ -20,7 +21,6 @@ import (
 
 	"github.com/alex-held/devctl/pkg/constants"
 	"github.com/alex-held/devctl/pkg/devctlpath"
-	"github.com/alex-held/devctl/pkg/plugins"
 )
 
 type devctlSdkpluginGo struct {
@@ -29,17 +29,17 @@ type devctlSdkpluginGo struct {
 	HTTPClient        http.Client
 	BaseURI           string
 	Context           context.Context
-	RuntimeInfoGetter plugins.RuntimeInfoGetter
+	RuntimeInfoGetter system.RuntimeInfoGetter
 }
 
-func (p *devctlSdkpluginGo) NewFunc() plugins.SDKPlugin {
+func (p *devctlSdkpluginGo) NewFunc() SDKPlugin {
 	return &devctlSdkpluginGo{
 		FS:                afero.NewOsFs(),
 		Pather:            devctlpath.DefaultPather(),
 		HTTPClient:        http.Client{},
 		BaseURI:           "https://golang.org",
 		Context:           context.Background(),
-		RuntimeInfoGetter: plugins.OSRuntimeInfoGetter{},
+		RuntimeInfoGetter: system.OSRuntimeInfoGetter{},
 	}
 }
 

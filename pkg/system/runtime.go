@@ -1,4 +1,4 @@
-package plugins
+package system
 
 import (
 	"fmt"
@@ -30,7 +30,7 @@ type OSRuntimeInfoGetter struct{}
 // [OS] = OS (DARWIN, LINUX)
 // [arch] = amd64, arm64
 // [ARCH] = AMD64, ARM64
-func (g OSRuntimeInfoGetter) Format(pattern string, args ...interface{}) string {
+func (g *OSRuntimeInfoGetter) Format(pattern string, args ...interface{}) string {
 	info := g.Get()
 	return info.Format(pattern, args...)
 }

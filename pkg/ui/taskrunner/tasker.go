@@ -1,4 +1,4 @@
-package taskrunner
+﻿package taskrunner
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 	"github.com/pterm/pterm"
 )
 
-func NewTaskRunner(opts ...Option) (tr *taskRunner) {
-	tr = &taskRunner{
+func NewTaskRunner(opts ...Option) (runner *taskRunner) {
+	tr := &taskRunner{
 		DoneC:  make(chan struct{}),
 		TaskMC: make(chan TaskRunnerMsg),
 	}
@@ -23,7 +23,8 @@ func NewTaskRunner(opts ...Option) (tr *taskRunner) {
 		tr = opt(tr)
 	}
 
-	return tr
+	runner = tr
+	return runner
 }
 
 type taskRunner struct {
@@ -35,14 +36,6 @@ type taskRunner struct {
 
 	DoneC  chan struct{}
 	TaskMC chan TaskRunnerMsg
-}
-
-func (r *taskRunner) Describe() string {
-	sb := &strings.Builder{}
-	fmt.Fprintf(sb, "Title:\t%s\n", r.Title)
-	fmt.Fprintf(sb, "Tasks:\t%v\n", r.Tasks)
-	_, _ = fmt.Fprintln(sb)
-	return sb.String()
 }
 
 func (r *taskRunner) Run(ctx context.Context) error {
@@ -64,16 +57,15 @@ func (r *taskRunner) Run(ctx context.Context) error {
 	go func() {
 		for _, t := range r.Tasks {
 			// Communicate that a Task will be started
-			r.TaskMC <- &taskRunnerStartMsg{t.Description}
+			r.TaskMC <- &taskRunnerStartMsg{t.Describe()}
 
 			// Start the Task
-			err := t.Plugin.ExecuteCommand(ctx, t.Root, t.Args)
-
+			err := t.Task(ctx)
 			time.Sleep(r.AfterTaskTimeout)
 
 			// Communicate that a Task has been completed
 			r.TaskMC <- &taskRunnerEndMsg{
-				message: t.Description,
+				message: t.Describe(),
 				error:   err,
 			}
 
@@ -98,7 +90,26 @@ func (r *taskRunner) Run(ctx context.Context) error {
 			// no-op
 		}
 	}
+}
 
+
+func (r *taskRunner) Wrap(executeWhenTrue ConditionalExecutorFn) Tasker {
+	tasker := NewConditionalTask(
+		r.Title,
+		func(ctx context.Context) error {
+			return r.Run(ctx)
+		},
+		executeWhenTrue,
+	)
+	return tasker
+}
+
+func (r *taskRunner) Describe() string {
+	sb := &strings.Builder{}
+	fmt.Fprintf(sb, "Title:\t%s\n", r.Title)
+	fmt.Fprintf(sb, "Tasks:\t%v\n", r.Tasks)
+	_, _ = fmt.Fprintln(sb)
+	return sb.String()
 }
 
 type taskRunnerStartMsg struct {

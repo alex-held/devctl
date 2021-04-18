@@ -26,7 +26,7 @@ func (l lLevel) ColorPrintf(format string, args ...interface{}) termenv.Style {
 }
 
 func (l lLevel) Color() termenv.Color {
-	var clr termenv.RGBColor = termenv.RGBColor("#17AFE1")
+	var clr = termenv.RGBColor("#17AFE1")
 	switch logrus.Level(l) {
 	case logrus.DebugLevel, logrus.TraceLevel:
 		clr = termenv.RGBColor("#17AFE1")

@@ -3,10 +3,9 @@ package sdk
 import (
 	"io"
 
+	flagger2 "github.com/alex-held/devctl/pkg/plugins/flagger"
 	"github.com/gobuffalo/plugins/plugflag"
 	"github.com/spf13/pflag"
-
-	"github.com/alex-held/devctl/internal/plugins/flagger"
 )
 
 func (cmd *Cmd) Flags() *pflag.FlagSet {
@@ -23,7 +22,7 @@ func (cmd *Cmd) Flags() *pflag.FlagSet {
 				flags.AddGoFlag(f)
 			}
 		case Pflagger:
-			for _, f := range flagger.CleanPflags(p, t.SetupFlags()) {
+			for _, f := range flagger2.CleanPflags(p, t.SetupFlags()) {
 				flags.AddFlag(f)
 			}
 		}

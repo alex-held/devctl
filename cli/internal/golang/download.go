@@ -8,6 +8,9 @@ import (
 	"os"
 	"path"
 
+	plugins2 "github.com/alex-held/devctl/pkg/plugins"
+	downloader2 "github.com/alex-held/devctl/pkg/plugins/downloader"
+	"github.com/alex-held/devctl/pkg/system"
 	"github.com/coreos/etcd/pkg/fileutil"
 	"github.com/gobuffalo/plugins"
 	"github.com/gobuffalo/plugins/plugcmd"
@@ -15,19 +18,17 @@ import (
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	"github.com/pkg/errors"
 
-	"github.com/alex-held/devctl/internal/plugins/downloader"
-	plugins2 "github.com/alex-held/devctl/pkg/plugins"
-
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 var _ plugcmd.Namer = &GoDownloadCmd{}
 var _ plugins.Plugin = &GoDownloadCmd{}
+var _ plugins2.Executor = &GoDownloadCmd{}
 
 type GoDownloadCmd struct {
 	Fs      vfs.VFS
 	Pather  devctlpath.Pather
-	Runtime plugins2.RuntimeInfoGetter
+	Runtime system.RuntimeInfoGetter
 	*dlOptions
 	Output *output
 }
@@ -37,7 +38,7 @@ func (cmd *GoDownloadCmd) CmdName() string {
 }
 
 func (cmd *GoDownloadCmd) PluginName() string {
-	return "sdk/go/download"
+	return GoDownloadCmdName
 }
 
 type dlOptions struct {
@@ -127,7 +128,7 @@ func (cmd *GoDownloadCmd) ExecuteCommand(ctx context.Context, root string, args 
 		return errors.Wrapf(err, "failed creating / opening file handle for the download")
 	}
 
-	dl := downloader.NewDownloader(cmd.downloadURI(), cmd.DownloadProgressDesc(), artifactFile, cmd.Out())
+	dl := downloader2.NewDownloader(cmd.downloadURI(), cmd.DownloadProgressDesc(), artifactFile, cmd.Out())
 	err = dl.Download(ctx)
 	if err != nil {
 		return errors.Wrapf(err, "failed downloading go sdk %v from the remote server %s", version, cmd.baseURI)
@@ -140,7 +141,7 @@ func (cmd *GoDownloadCmd) Init() {
 		cmd = &GoDownloadCmd{}
 	}
 	cmd.Fs = vfs.New(osfs.New())
-	cmd.Runtime = plugins2.OSRuntimeInfoGetter{}
+	cmd.Runtime = system.OSRuntimeInfoGetter{}
 	cmd.Pather = devctlpath.DefaultPather()
 	cmd.Output = NewConsoleOutput()
 	cmd.dlOptions = &dlOptions{

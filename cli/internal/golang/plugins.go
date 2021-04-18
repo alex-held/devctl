@@ -19,6 +19,7 @@ func Plugins() []plugins.Plugin {
 			Plugins: []plugins.Plugin{
 				&GoDownloadCmd{},
 				&GoListerCmd{},
+				&GoLinkerCmd{},
 				&GoInstallCmd{},
 				&GoUseCmd{},
 			},

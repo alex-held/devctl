@@ -2,8 +2,6 @@ package taskrunner
 
 import (
 	"context"
-
-	"github.com/gobuffalo/plugins"
 )
 
 type TaskRunnerMsg interface {
@@ -18,11 +16,6 @@ type TaskRunnerOutput interface {
 	Next()
 }
 
-type Executer interface {
-	plugins.Plugin
-	ExecuteCommand(ctx context.Context, root string, args []string) error
-}
-
 type Describer interface {
 	Describe() string
 }
@@ -30,4 +23,13 @@ type Describer interface {
 type Runner interface {
 	Describer
 	Run(ctx context.Context) error
+	Wrap(executeWhenTrue ConditionalExecutorFn) Tasker
 }
+
+type Tasker interface {
+	Describer
+	Task(ctx context.Context) (err error)
+}
+
+type ConditionalExecutorFn func() bool
+type TaskActionFn func(ctx context.Context) error

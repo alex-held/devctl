@@ -12,15 +12,9 @@ import (
 func SymLink(pather devctlpath.Pather, fs vfs.VFS, version string) (err error) {
 	sdkPath := pather.SDK("go", version)
 	current := pather.SDK("go", "current")
-	println(sdkPath)
-	println(current)
 
-	evalSymlinks, err := fs.EvalSymlinks(current)
-	if err != nil {
-		println("evalSymlinks failed: \n" + err.Error())
-		return err
-	}
-	println(evalSymlinks)
+	fs.Remove(current)
+	fs.Symlink(sdkPath, current)
 
 	readlink, err := fs.Readlink(current)
 	if err == nil {

@@ -7,7 +7,7 @@ import (
 
 type DebugFunc func(format string, args ...interface{})
 
-var _ Log = NewLogger(WithName(""), WithLevel(LogLevelWarn))
+var _ = NewLogger(WithName(""), WithLevel(LogLevelWarn))
 
 var (
 	enabledDebugs           = getEnabledDebugs()

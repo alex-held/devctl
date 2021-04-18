@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/alex-held/devctl/internal/plugins/exec"
+	exec2 "github.com/alex-held/devctl/pkg/plugins/exec"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := exec.Run(ctx, pwd, os.Args[1:]); err != nil {
+	if err := exec2.Run(ctx, pwd, os.Args[1:]); err != nil {
 		log.Fatal(err)
 	}
 }

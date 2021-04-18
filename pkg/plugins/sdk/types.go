@@ -1,4 +1,4 @@
-package plugins
+package sdk
 
 type SDKPlugin interface {
 	Name() string

@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TaskRunner Compound" type="CompoundRunConfigurationType">
+    <toRun name="Tasker TestSuite" type="GoTestRunConfiguration" />
+    <toRun name="Go SDK Plugin Suite" type="GoTestRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>

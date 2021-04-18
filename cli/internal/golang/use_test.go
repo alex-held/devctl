@@ -6,20 +6,21 @@ import (
 	"path"
 	"testing"
 
+	. "github.com/alex-held/devctl/cli/internal/testutils"
+	"github.com/alex-held/devctl/pkg/mocks"
 	plugins2 "github.com/alex-held/devctl/pkg/plugins"
+	"github.com/alex-held/devctl/pkg/system"
 	"github.com/gobuffalo/plugins"
 	"github.com/mandelsoft/vfs/pkg/memoryfs"
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	. "github.com/alex-held/devctl/cli/internal/testutils"
-
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 const (
-	rootPath = "root"
+	rootPath = "/root"
 	version  = "1.51"
 )
 
@@ -37,6 +38,8 @@ var _ = Describe("go-plugin USE", func() {
 		expectedCurrent string
 		pp              devctlpath.Pather
 		sut             *GoUseCmd
+		linkerCmd       *GoLinkerCmd
+		installerCmd    *GoInstallCmd
 	)
 
 	BeforeEach(func() {
@@ -44,8 +47,25 @@ var _ = Describe("go-plugin USE", func() {
 		pp = devctlpath.NewPather(devctlpath.WithConfigRootFn(func() string {
 			return rootPath
 		}))
-
+		linkerCmd = &GoLinkerCmd{
+			path: pp,
+			fs:   vs,
+		}
+		installerCmd = &GoInstallCmd{
+			runtime: mocks.MockRuntimeInfoGetter{
+				RuntimeInfo: system.RuntimeInfo{
+					OS:   "darwin",
+					Arch: "amd64",
+				},
+			},
+			path: pp,
+			Fs:   vs,
+		}
 		sut = &GoUseCmd{
+			plugins: []plugins.Plugin{
+				installerCmd,
+				linkerCmd,
+			},
 			path: pp,
 			fs:   vs,
 		}
@@ -103,25 +123,35 @@ var _ = Describe("go-plugin USE", func() {
 			BeforeEach(func() {
 				_ = vs.MkdirAll(pp.SDK("go"), os.ModePerm)
 				_ = vs.MkdirAll(pp.Download("go"), os.ModePerm)
-				_ = vs.MkdirAll(expectedCurrent, os.ModePerm)
+				_ = vs.MkdirAll(pp.SDK("go", "19.5"), os.ModePerm)
+				_ = vs.Symlink(pp.SDK("go", "19.5"), expectedCurrent)
 			})
 
 			It("replaces @current symlink with which links to <version>", func() {
 
-				By("Symlinking /root/sdks/go/current -> /root/sdks/go/1.16.3 \n" +
-					"ln -s -v -F  /root/sdks/go/1.16.3  /root/sdks/go/current")
+				Expect(sut.ExecuteCommand(context.Background(), "devctl", []string{"use", "1.16.3"})).To(Succeed())
+				Expect(expectedCurrent).Should(BeASymlink(vs))
+				actual, err := vs.Readlink(expectedCurrent)
+				Expect(err).Should(Succeed())
+				Expect(actual).ShouldNot(Equal("1.16.3"))
+			})
 
-				Expect(vs.Symlink(expectedCurrent, pp.SDK("go", "19.5"))).To(Succeed())
+			It("replaces @current symlink with which links to <version>", func() {
 
 				Expect(sut.ExecuteCommand(context.Background(), "devctl", []string{"use", "1.16.3"})).To(Succeed())
 
 				currentFi, err := vs.Lstat(expectedCurrent)
-				Expect(expectedCurrent).Should(And(BeASymlink(vs), Not(BeADirectoryFs(vs))))
+				statCurrentFi, err := vs.Stat(expectedCurrent)
+				_ = statCurrentFi
+
+				Expect(expectedCurrent).Should(BeASymlink(vs))
+
 				Expect(currentFi).ShouldNot(BeNil())
 				Expect(err).Should(BeNil())
 
 				expectedNewVersion := pp.SDK("go", "1.16.3")
 				newVersionFi, err := vs.Lstat(expectedNewVersion)
+
 				Expect(err).Should(BeNil())
 				Expect(newVersionFi).ShouldNot(BeNil())
 
@@ -133,6 +163,14 @@ var _ = Describe("go-plugin USE", func() {
 				Expect(oldFi).ShouldNot(BeNil())
 				Expect(err).Should(BeNil())
 				Expect(expectedOldVersion).Should(Or(BeADirectoryFs(vs), BeASymlink(vs)))
+			})
+
+			It("removes symlink from old to current", func() {
+				Expect(sut.ExecuteCommand(context.Background(), "devctl", []string{"use", "1.16.3"})).To(Succeed())
+
+				Expect(pp.SDK("go", "19.5")).Should(BeADirectoryFs(vs))
+				_, err := vs.Readlink(pp.SDK("go", "19.5"))
+				Expect(err).ShouldNot(Succeed())
 			})
 		})
 

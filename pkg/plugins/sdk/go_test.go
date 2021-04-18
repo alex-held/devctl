@@ -8,22 +8,22 @@ import (
 	"path"
 	"testing"
 
+	"github.com/alex-held/devctl/pkg/system"
 	"github.com/coreos/etcd/pkg/fileutil"
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
 
 	"github.com/alex-held/devctl/pkg/devctlpath"
-	"github.com/alex-held/devctl/pkg/plugins"
 )
 
 const defaultArchiveName = "go1.16.darwin-amd64.tar.gz"
 
 type testRuntimeInfoGetter struct {
-	RuntimeInfo plugins.RuntimeInfo
+	RuntimeInfo system.RuntimeInfo
 }
 
-func (g testRuntimeInfoGetter) Get() (ri plugins.RuntimeInfo) {
+func (g testRuntimeInfoGetter) Get() (ri system.RuntimeInfo) {
 	return g.RuntimeInfo
 }
 
@@ -78,7 +78,7 @@ func TestGoSDKPlugin(t *testing.T) {
 				HTTPClient: http.Client{},
 				BaseURI:    server.URL,
 				Context:    context.TODO(),
-				RuntimeInfoGetter: testRuntimeInfoGetter{RuntimeInfo: plugins.RuntimeInfo{
+				RuntimeInfoGetter: testRuntimeInfoGetter{RuntimeInfo: system.RuntimeInfo{
 					OS:   "darwin",
 					Arch: "amd64",
 				}},
