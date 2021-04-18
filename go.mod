@@ -17,8 +17,8 @@ require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210410170116-ea3d685f79fb // indirect
 	github.com/go-openapi/errors v0.20.0 // indirect
 	github.com/go-openapi/strfmt v0.20.1 // indirect
-	github.com/gobuffalo/envy v1.9.0
-	github.com/gobuffalo/events v1.4.1
+	github.com/gobuffalo/envy v1.9.0 // indirect
+	github.com/gobuffalo/events v1.4.1 // indirect
 	github.com/gobuffalo/plugins v0.0.0-20200405155620-289cda9b5190
 	github.com/golang/mock v1.5.0
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -26,18 +26,19 @@ require (
 	github.com/gookit/color v1.4.2 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible
 	github.com/json-iterator/go v1.1.10 // indirect
-	github.com/karrick/godirwalk v1.10.3
-	github.com/mandelsoft/vfs v0.0.0-20210316115144-f89ffba3b126 // indirect
-	github.com/markbates/oncer v1.0.0
-	github.com/markbates/safe v1.0.1
+	github.com/karrick/godirwalk v1.10.3 // indirect
+	github.com/kisielk/godepgraph v0.0.0-20190626013829-57a7e4a651a9 // indirect
+	github.com/mandelsoft/vfs v0.0.0-20210316115144-f89ffba3b126
+	github.com/markbates/oncer v1.0.0 // indirect
+	github.com/markbates/safe v1.0.1 // indirect
 	github.com/mattn/go-runewidth v0.0.12 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/muesli/reflow v0.2.0 // indirect
 	github.com/muesli/termenv v0.8.1
-	github.com/onsi/ginkgo v1.16.1 // indirect
+	github.com/onsi/ginkgo v1.16.1
 	github.com/onsi/gomega v1.11.0
 	github.com/pkg/errors v0.9.1
-	github.com/pterm/pterm v0.12.13 // indirect
+	github.com/pterm/pterm v0.12.13
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/schollz/progressbar/v3 v3.7.6
 	github.com/sirupsen/logrus v1.8.1
@@ -54,10 +55,10 @@ require (
 	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5 // indirect
 	golang.org/x/mobile v0.0.0-20210220033013-bdb1ca9a1e08 // indirect
 	golang.org/x/mod v0.4.2 // indirect
-	golang.org/x/net v0.0.0-20210410081132-afb366fc7cd1 // indirect
+	golang.org/x/net v0.0.0-20210415231046-e915ea6b2b7d // indirect
 	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57 // indirect
+	golang.org/x/sys v0.0.0-20210415045647-66c3f260301c // indirect
 	golang.org/x/term v0.0.0-20210406210042-72f3dc4e9b72 // indirect
 	golang.org/x/text v0.3.6 // indirect
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba // indirect

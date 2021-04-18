@@ -8,10 +8,15 @@ import (
 )
 
 type SimpleTask struct {
-	Description string
-	Action      func(ctx context.Context) error
+	Desc   string
+	Action func(ctx context.Context) error
 }
-func (t *SimpleTask) Describe() string { return t.Description }
+
+func (t *SimpleTask) Description() string {
+	return t.Desc
+}
+
+func (t *SimpleTask) Describe() string { return t.Desc }
 func (t *SimpleTask) Task(ctx context.Context) (err error) { return t.Action(ctx) }
 
 type Task struct {

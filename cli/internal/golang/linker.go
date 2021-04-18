@@ -1,4 +1,4 @@
-﻿package golang
+package golang
 
 import (
 	"context"
@@ -55,7 +55,7 @@ func tryRemoveSymlink(vfs vfs.VFS, name string) error {
 
 func (cmd *GoLinkerCmd) AsTasker(version string) taskrunner.Tasker {
 	return &taskrunner.SimpleTask{
-		Description: fmt.Sprintf("Linking go sdk %s to @current", version),
+		Desc: fmt.Sprintf("Linking go sdk %s to @current", version),
 		Action: func(ctx context.Context) error {
 			sdkPath := cmd.path.SDK("go", version)
 			currentPath := cmd.path.SDK("go", "current")

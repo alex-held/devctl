@@ -2,22 +2,23 @@ package golang
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
 
 	. "github.com/alex-held/devctl/cli/internal/testutils"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 	"github.com/alex-held/devctl/pkg/mocks"
-	plugins2 "github.com/alex-held/devctl/pkg/plugins"
+	devctlplugins "github.com/alex-held/devctl/pkg/plugins"
 	"github.com/alex-held/devctl/pkg/system"
 	"github.com/gobuffalo/plugins"
 	"github.com/mandelsoft/vfs/pkg/memoryfs"
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 const (
@@ -27,20 +28,13 @@ const (
 
 type NamedNoOpPlugin struct {
 	Name string
-	plugins2.NoOpPlugin
+	devctlplugins.NoOpPlugin
 }
 
-type testArchiveHttpHandler struct {
-	ArchiveBytes []byte // embed: testdata/archive.tar.gz
+func init() {
+	ArchiveBytes, _ = ioutil.ReadFile("testdata/go1.16.3.darwin-amd64.tar.gz")
 }
-
-func (t testArchiveHttpHandler) ServeHTTP(w http.ResponseWriter, request *http.Request) {
-	w.Header().Add("Content-Length", fmt.Sprintf("%d", len(t.ArchiveBytes)))
-	_, e := w.Write(t.ArchiveBytes)
-	if e != nil {
-		Panic()
-	}
-}
+var ArchiveBytes []byte
 
 func (p *NamedNoOpPlugin) PluginName() string { return p.Name }
 
@@ -72,7 +66,13 @@ var _ = Describe("go-plugin USE", func() {
 			},
 		}
 		mux = http.NewServeMux()
-		mux.Handle("/", testArchiveHttpHandler{})
+		mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
+			w.Header().Add("Content-Length", fmt.Sprintf("%d", len(ArchiveBytes)))
+			_, e := w.Write(ArchiveBytes)
+			if e != nil {
+				panic(e)
+			}
+		})
 
 		srvr = httptest.NewServer(mux)
 		vs = vfs.New(memoryfs.New())
@@ -96,9 +96,9 @@ var _ = Describe("go-plugin USE", func() {
 		}
 		sut = &GoUseCmd{
 			plugins: []plugins.Plugin{
+				dlCmd,
 				installerCmd,
 				linkerCmd,
-				dlCmd,
 			},
 			path: pp,
 			fs:   vs,
@@ -122,14 +122,13 @@ var _ = Describe("go-plugin USE", func() {
 						},
 					}
 				})
-
 				sut.WithPlugins(feeder)
 			})
 
 			It("resolves the correct plugins", func() {
-				runner := sut.CreateTaskRunner(GoDownloadCmdName)
+				runner := sut.CreateTaskRunner("1.16.3")
 				desc := runner.Describe()
-				Expect(desc).Should(ContainSubstring(GoDownloadCmdName))
+				Expect(desc).Should(ContainSubstring("1.16.3"))
 			})
 
 		})

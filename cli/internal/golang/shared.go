@@ -3,11 +3,16 @@ package golang
 import (
 	"fmt"
 
+	"github.com/alex-held/devctl/pkg/system"
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	"github.com/pkg/errors"
 
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )
+
+func FormatGoArchiveArtifactName(ri system.RuntimeInfo, version string) string {
+	return ri.Format("go%s.[os]-[arch].tar.gz", version)
+}
 
 func SymLink(pather devctlpath.Pather, fs vfs.VFS, version string) (err error) {
 	sdkPath := pather.SDK("go", version)

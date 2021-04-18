@@ -7,7 +7,6 @@ import (
 
 	"github.com/alex-held/devctl/pkg/ui/taskrunner"
 	"github.com/gobuffalo/plugins"
-	"github.com/mandelsoft/vfs/pkg/osfs"
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	"github.com/pkg/errors"
 
@@ -21,32 +20,15 @@ type GoUseCmd struct {
 }
 
 func (cmd *GoUseCmd) WithPlugins(feeder plugins.Feeder) { cmd.plugins = feeder() }
+
 func (cmd *GoUseCmd) CreateTaskRunner(version string) (runner taskrunner.Runner) {
 	var tasks taskrunner.Tasks
-
 	for _, plug := range cmd.plugins {
 		switch t := plug.(type) {
 		case *GoDownloadCmd:
-			tasks = append(tasks, taskrunner.NewConditionalTask(
-				fmt.Sprintf("Download go sdk %s", version),
-				func(ctx context.Context) error {
-					return t.ExecuteCommand(ctx, "use", []string{version})
-				}, func() bool {
-					_, err := cmd.fs.Stat(cmd.path.Download(version))
-					return err == nil
-				},
-			))
+			tasks = append(tasks, t.AsTasker(version))
 		case *GoInstallCmd:
-			tasks = append(tasks, &taskrunner.ConditionalTask{
-				Description: fmt.Sprintf("Install go sdk %s", version),
-				Action: func(ctx context.Context) error {
-					return t.ExecuteCommand(ctx, "use", []string{version})
-				},
-				ShouldExecute: func() bool {
-					exists, _ := cmd.fs.Exists(cmd.path.SDK("go", version))
-					return !exists
-				},
-			})
+			tasks = append(tasks, t.AsTasker(version))
 		case *GoLinkerCmd:
 			tasks = append(tasks, t.AsTasker(version))
 		default: // no-op
@@ -59,15 +41,6 @@ func (cmd *GoUseCmd) CreateTaskRunner(version string) (runner taskrunner.Runner)
 		taskrunner.WithTimeout(50*time.Millisecond),
 	)
 	return runner
-}
-
-func (cmd *GoUseCmd) Init() {
-	if cmd.path == nil {
-		cmd.path = devctlpath.DefaultPather()
-	}
-	if cmd.fs == nil {
-		cmd.fs = vfs.New(osfs.New())
-	}
 }
 
 func (cmd *GoUseCmd) PluginName() string {

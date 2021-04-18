@@ -1,4 +1,4 @@
-﻿package taskrunner
+package taskrunner
 
 import (
 	"context"
@@ -14,15 +14,12 @@ func NewTaskRunner(opts ...Option) (runner *taskRunner) {
 		DoneC:  make(chan struct{}),
 		TaskMC: make(chan TaskRunnerMsg),
 	}
-
 	for _, opt := range defaultOptions {
 		tr = opt(tr)
 	}
-
 	for _, opt := range opts {
 		tr = opt(tr)
 	}
-
 	runner = tr
 	return runner
 }
@@ -31,15 +28,12 @@ type taskRunner struct {
 	Title            string
 	Tasks            Tasks
 	AfterTaskTimeout time.Duration
-
 	output TaskRunnerOutput
-
 	DoneC  chan struct{}
 	TaskMC chan TaskRunnerMsg
 }
 
 func (r *taskRunner) Run(ctx context.Context) error {
-
 	if pTermOutput, ok := r.output.(*ptermTaskRunnerOutput); ok {
 		pTermOutput.p, _ = pTermOutput.Initializer().
 			WithRemoveWhenDone(false).
@@ -57,7 +51,8 @@ func (r *taskRunner) Run(ctx context.Context) error {
 	go func() {
 		for _, t := range r.Tasks {
 			// Communicate that a Task will be started
-			r.TaskMC <- &taskRunnerStartMsg{t.Describe()}
+			msg := t.Describe()
+			r.TaskMC <- &taskRunnerStartMsg{msg}
 
 			// Start the Task
 			err := t.Task(ctx)
@@ -91,7 +86,6 @@ func (r *taskRunner) Run(ctx context.Context) error {
 		}
 	}
 }
-
 
 func (r *taskRunner) Wrap(executeWhenTrue ConditionalExecutorFn) Tasker {
 	tasker := NewConditionalTask(

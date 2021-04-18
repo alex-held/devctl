@@ -30,8 +30,9 @@ type GoDownloadCmd struct {
 	Runtime system.RuntimeInfoGetter
 }
 
+
 func (cmd *GoDownloadCmd) AsTasker(version string) (task taskrunner.Tasker) {
-	artifactName := cmd.Runtime.Get().Format("go%s.[os]-[arch].tar.gz", version)
+	artifactName := FormatGoArchiveArtifactName(cmd.Runtime.Get(), version)
 	dlDirectory := cmd.Pather.Download("go", version)
 	archivePath := path.Join(dlDirectory, artifactName)
 	dlUri := cmd.Runtime.Get().Format("%s/dl/%s", cmd.BaseUri, artifactName)
@@ -59,7 +60,7 @@ func (cmd *GoDownloadCmd) AsTasker(version string) (task taskrunner.Tasker) {
 			return !exists
 		},
 	}
-	return nil
+	return task
 }
 
 func (cmd *GoDownloadCmd) CmdName() string {

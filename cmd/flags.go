@@ -1,7 +1,7 @@
 package cmd
 
 // Version is the semver of the devctl binary
-var Version string = "development"
+var Version = "development"
 
 var (
 	// verbose is whether to log debug statements

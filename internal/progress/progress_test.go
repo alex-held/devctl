@@ -1,8 +1,9 @@
 package progress
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestProgress(t *testing.T) {
