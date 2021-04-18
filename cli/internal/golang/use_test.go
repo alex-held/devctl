@@ -2,9 +2,10 @@ package golang
 
 import (
 	"context"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
-	"path"
-	"testing"
 
 	. "github.com/alex-held/devctl/cli/internal/testutils"
 	"github.com/alex-held/devctl/pkg/mocks"
@@ -29,6 +30,18 @@ type NamedNoOpPlugin struct {
 	plugins2.NoOpPlugin
 }
 
+type testArchiveHttpHandler struct {
+	ArchiveBytes []byte // embed: testdata/archive.tar.gz
+}
+
+func (t testArchiveHttpHandler) ServeHTTP(w http.ResponseWriter, request *http.Request) {
+	w.Header().Add("Content-Length", fmt.Sprintf("%d", len(t.ArchiveBytes)))
+	_, e := w.Write(t.ArchiveBytes)
+	if e != nil {
+		Panic()
+	}
+}
+
 func (p *NamedNoOpPlugin) PluginName() string { return p.Name }
 
 var _ = Describe("go-plugin USE", func() {
@@ -38,11 +51,30 @@ var _ = Describe("go-plugin USE", func() {
 		expectedCurrent string
 		pp              devctlpath.Pather
 		sut             *GoUseCmd
+		dlCmd           *GoDownloadCmd
 		linkerCmd       *GoLinkerCmd
 		installerCmd    *GoInstallCmd
+		srvr            *httptest.Server
+		mux             *http.ServeMux
+		riGetter        system.RuntimeInfoGetter
 	)
 
+	AfterSuite(func() {
+		srvr.Close()
+	})
+
 	BeforeEach(func() {
+
+		riGetter = mocks.MockRuntimeInfoGetter{
+			RuntimeInfo: system.RuntimeInfo{
+				OS:   "darwin",
+				Arch: "amd64",
+			},
+		}
+		mux = http.NewServeMux()
+		mux.Handle("/", testArchiveHttpHandler{})
+
+		srvr = httptest.NewServer(mux)
 		vs = vfs.New(memoryfs.New())
 		pp = devctlpath.NewPather(devctlpath.WithConfigRootFn(func() string {
 			return rootPath
@@ -52,19 +84,21 @@ var _ = Describe("go-plugin USE", func() {
 			fs:   vs,
 		}
 		installerCmd = &GoInstallCmd{
-			runtime: mocks.MockRuntimeInfoGetter{
-				RuntimeInfo: system.RuntimeInfo{
-					OS:   "darwin",
-					Arch: "amd64",
-				},
-			},
-			path: pp,
-			Fs:   vs,
+			runtime: riGetter,
+			path:    pp,
+			Fs:      vs,
+		}
+		dlCmd = &GoDownloadCmd{
+			Fs:      vs,
+			BaseUri: srvr.URL,
+			Pather:  pp,
+			Runtime: riGetter,
 		}
 		sut = &GoUseCmd{
 			plugins: []plugins.Plugin{
 				installerCmd,
 				linkerCmd,
+				dlCmd,
 			},
 			path: pp,
 			fs:   vs,
@@ -74,9 +108,7 @@ var _ = Describe("go-plugin USE", func() {
 	})
 
 	Context("USE <version>", func() {
-
 		When("using the TaskRunner", func() {
-
 			BeforeEach(func() {
 				_ = vs.MkdirAll(versionSdkDir, os.ModePerm)
 				_ = vs.MkdirAll(pp.SDK("go", version, "src"), os.ModePerm)
@@ -103,7 +135,6 @@ var _ = Describe("go-plugin USE", func() {
 		})
 
 		When("no @current version has been installed", func() {
-
 			BeforeEach(func() {
 				_ = vs.MkdirAll(versionSdkDir, os.ModePerm)
 				_ = vs.MkdirAll(pp.SDK("go", version, "src"), os.ModePerm)
@@ -128,7 +159,6 @@ var _ = Describe("go-plugin USE", func() {
 			})
 
 			It("replaces @current symlink with which links to <version>", func() {
-
 				Expect(sut.ExecuteCommand(context.Background(), "devctl", []string{"use", "1.16.3"})).To(Succeed())
 				Expect(expectedCurrent).Should(BeASymlink(vs))
 				actual, err := vs.Readlink(expectedCurrent)
@@ -137,29 +167,23 @@ var _ = Describe("go-plugin USE", func() {
 			})
 
 			It("replaces @current symlink with which links to <version>", func() {
-
 				Expect(sut.ExecuteCommand(context.Background(), "devctl", []string{"use", "1.16.3"})).To(Succeed())
-
 				currentFi, err := vs.Lstat(expectedCurrent)
 				statCurrentFi, err := vs.Stat(expectedCurrent)
 				_ = statCurrentFi
 
 				Expect(expectedCurrent).Should(BeASymlink(vs))
-
 				Expect(currentFi).ShouldNot(BeNil())
 				Expect(err).Should(BeNil())
 
 				expectedNewVersion := pp.SDK("go", "1.16.3")
 				newVersionFi, err := vs.Lstat(expectedNewVersion)
-
 				Expect(err).Should(BeNil())
 				Expect(newVersionFi).ShouldNot(BeNil())
-
 				Expect(expectedNewVersion).Should(BeADirectoryFs(vs))
 
 				expectedOldVersion := pp.SDK("go", "19.5")
 				oldFi, err := vs.Lstat(expectedOldVersion)
-
 				Expect(oldFi).ShouldNot(BeNil())
 				Expect(err).Should(BeNil())
 				Expect(expectedOldVersion).Should(Or(BeADirectoryFs(vs), BeASymlink(vs)))
@@ -173,10 +197,10 @@ var _ = Describe("go-plugin USE", func() {
 				Expect(err).ShouldNot(Succeed())
 			})
 		})
-
 	})
 })
 
+/*
 func TestGoUseCmd_Link(t *testing.T) {
 	const rootPath = "/home/user1/.devctl"
 	const version = "1.0.0"
@@ -213,34 +237,11 @@ func TestGoUseCmd_Link(t *testing.T) {
 			It("The new GOROOT is symlinked to $SDKPATH/go/current", func() {
 				var err = sut.ExecuteCommand(context.Background(), "devctl", []string{version})
 				Expect(err).Should(BeNil())
-				ExpectFolders(fs, path.Join(goSdkDir, "current"), []string{"bin", "src", "doc"}, nil)
+				currejnt
+				Expect(fs.)
+				//	ExpectFolders(fs, path.Join(goSdkDir, "current"), []string{"bin", "src", "doc"}, nil)
 			})
 		})
 	})
 }
-
-func ExpectFolders(fs vfs.FileSystem, path string, names []string, err error) {
-	ExpectFoldersOrdering(fs, path, names, err, false)
-}
-
-func ExpectFoldersOrdering(fs vfs.FileSystem, path string, names []string, err error, forceOrder bool) {
-	var f, openErr = fs.Open(path)
-	if err == nil {
-		Expect(openErr).To(BeNil())
-	} else {
-		Expect(openErr).Should(Equal(err))
-	}
-
-	var nms, dirErr = f.Readdirnames(0)
-	Expect(dirErr).Should(BeNil())
-
-	if names == nil {
-		names = []string{}
-	}
-	found := append(names, nms...)
-	if forceOrder {
-		Expect(found).To(Equal(names))
-	} else {
-		Expect(found).To(ContainElements(names))
-	}
-}
+*/
