@@ -56,7 +56,6 @@ func (r *taskRunner) Run(ctx context.Context) error {
 
 			// Start the Task
 			err := t.Task(ctx)
-			time.Sleep(r.AfterTaskTimeout)
 
 			// Communicate that a Task has been completed
 			r.TaskMC <- &taskRunnerEndMsg{
