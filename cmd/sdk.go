@@ -20,9 +20,9 @@ import (
 // NewSdkCommand creates the `devenv sdk` commands
 func NewSdkCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:       "sdk",
-		Short:     "Configure SDK's",
-		ValidArgs: []string{"list", "add", "remove"},
+		Use:                    "sdk",
+		Short:                  "Configure SDK's",
+		ValidArgs:              []string{"list", "add", "remove"},
 	}
 
 	cmd.AddCommand(newSdkListCommand())

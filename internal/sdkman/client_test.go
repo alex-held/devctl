@@ -12,6 +12,7 @@ import (
 	"strings"
 	"testing"
 
+	testutils2 "github.com/alex-held/devctl/pkg/testutils"
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
@@ -19,12 +20,11 @@ import (
 	"github.com/alex-held/devctl/pkg/logging"
 
 	"github.com/alex-held/devctl/internal/system"
-	"github.com/alex-held/devctl/internal/testutils"
 )
 
 const baseURLPath = "/2"
 
-func setupNamed(name string) (client *Client, b *bytes.Buffer, logger logging.Log, mux *http.ServeMux, teardown testutils.Teardown) {
+func setupNamed(name string) (client *Client, b *bytes.Buffer, logger logging.Log, mux *http.ServeMux, teardown testutils2.Teardown) {
 	b = &bytes.Buffer{}
 	logger = logging.NewLogger(logging.WithBuffer(b), logging.WithLevel(logging.LogLevelDebug), logging.WithName(name))
 
@@ -53,7 +53,7 @@ func setupNamed(name string) (client *Client, b *bytes.Buffer, logger logging.Lo
 	return client, b, logger, mux, teardown
 }
 
-func setup() (client *Client, b *bytes.Buffer, logger logging.Log, mux *http.ServeMux, teardown testutils.Teardown) {
+func setup() (client *Client, b *bytes.Buffer, logger logging.Log, mux *http.ServeMux, teardown testutils2.Teardown) {
 	return setupNamed("")
 }
 
@@ -73,7 +73,7 @@ func TestSdkmanClient_ListCandidates(t *testing.T) {
 		var b *bytes.Buffer
 		var logger logging.Log
 		var mux *http.ServeMux
-		var teardown testutils.Teardown
+		var teardown testutils2.Teardown
 		var ctx context.Context
 
 		g.Describe("Download", func() {
@@ -117,7 +117,7 @@ func TestClient_Download(t *testing.T) {
 			var logger logging.Log
 			var mux *http.ServeMux
 			var _ bytes.Buffer
-			var teardown testutils.Teardown
+			var teardown testutils2.Teardown
 			var ctx context.Context
 
 			g.JustBeforeEach(func() {
