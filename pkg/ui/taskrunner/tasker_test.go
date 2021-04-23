@@ -3,7 +3,6 @@ package taskrunner
 import (
 	"context"
 	"io"
-	"os"
 	"testing"
 	"time"
 
@@ -114,27 +113,6 @@ var _ = Describe("Tasker", func() {
 		ctx    context.Context
 		desc   GinkgoTestDescription
 	)
-
-	Context("ErrTask", func() {
-		It("should end even if task go routine gets killed", func() {
-			var tasks = Tasks {
-				&SimpleTask{
-					Description: "Kill me",
-					Action: func(ctx context.Context) error {
-						os.Exit(100)
-						return nil
-					},
-				},
-			}
-			runner = NewTaskRunner(
-				WithDiscardOutput(),
-				WithTitle("Title"),
-				WithTasks(tasks ...),
-			)
-			err := runner.Run(ctx)
-			Expect(err).To(Succeed())
-		})
-	})
 
 	Context("ConditionalTask", func() {
 		var actualTaskDesc []string
