@@ -6,10 +6,11 @@ import (
 	"os"
 	"path"
 
-	"github.com/alex-held/devctl/pkg/ui/taskrunner"
 	"github.com/gobuffalo/plugins"
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	"github.com/pkg/errors"
+
+	"github.com/alex-held/devctl/pkg/ui/taskrunner"
 
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )
@@ -63,7 +64,7 @@ func (cmd *GoLinkerCmd) AsTasker(version string) taskrunner.Tasker {
 			if err != nil {
 				return err
 			}
-		//		err = cmd.fs.Remove(currentPath)
+			//		err = cmd.fs.Remove(currentPath)
 			_ = err // ingore the error.. rm -f
 			return cmd.fs.Symlink(sdkPath, currentPath)
 		},
@@ -90,7 +91,7 @@ func (cmd *GoLinkerCmd) CreateTaskRunner(version string) (runner taskrunner.Runn
 		)
 
 		linkVersionToCurrent := taskrunner.NewConditionalTask(
-			fmt.Sprintf("Link %s to @current", version),
+			fmt.Sprintf("Use %s to @current", version),
 			func(ctx context.Context) error {
 				err := cmd.fs.Symlink(sdkPath, current)
 				return err
@@ -148,7 +149,7 @@ func (cmd *GoLinkerCmd) ExecuteCommand(ctx context.Context, root string, args []
 	)
 
 	linkVersionToCurrent := taskrunner.NewConditionalTask(
-		fmt.Sprintf("Link %s to @current", version),
+		fmt.Sprintf("Use %s to @current", version),
 		func(ctx context.Context) error {
 			err := cmd.fs.Symlink(sdkPath, current)
 			return err

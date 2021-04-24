@@ -18,7 +18,6 @@ var (
 )
 
 func NewGenCmd() (cmd *cobra.Command) {
-
 	cmd = &cobra.Command{
 		Use:     "gen",
 		Example: "pluggen gen --out $PWD/testdata/myplugin.so --plugin plugins/testdata/myplugin --pkg myprojectname",

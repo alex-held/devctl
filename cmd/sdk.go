@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/alex-held/devctl/internal/plugins/sdk"
 	"github.com/bndr/gotabulate"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -20,9 +21,9 @@ import (
 // NewSdkCommand creates the `devenv sdk` commands
 func NewSdkCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                    "sdk",
-		Short:                  "Configure SDK's",
-		ValidArgs:              []string{"list", "add", "remove"},
+		Use:       "sdk",
+		Short:     "Configure SDK's",
+		ValidArgs: []string{"list", "add", "remove"},
 	}
 
 	cmd.AddCommand(newSdkListCommand())
@@ -41,6 +42,11 @@ func newSdkListCommand() *cobra.Command {
 		Run:     sdkListCommandfunc,
 	}
 }
+
+func getSDKPlugins() []sdk.SDKPlugin {
+	
+}
+
 
 func newSdkVersionsCommand() *cobra.Command {
 	cmd := &cobra.Command{

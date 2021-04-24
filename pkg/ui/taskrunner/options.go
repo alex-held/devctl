@@ -6,10 +6,7 @@ import (
 	"github.com/pterm/pterm"
 )
 
-
-
 type Option func(tr *taskRunner) *taskRunner
-
 
 var defaultOptions = []Option{
 	WithPTermOutput(&ptermTaskRunnerOutput{
@@ -23,11 +20,6 @@ var defaultOptions = []Option{
 	WithTimeout(500 * time.Millisecond),
 	WithTitle("Default Task Runner"),
 }
-
-
-
-
-
 
 type NoOpOutput struct{}
 

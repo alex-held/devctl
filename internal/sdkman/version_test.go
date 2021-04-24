@@ -8,9 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	testutils2 "github.com/alex-held/devctl/pkg/testutils"
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
+
+	testutils2 "github.com/alex-held/devctl/pkg/testutils"
 
 	"github.com/alex-held/devctl/internal/system"
 	"github.com/alex-held/devctl/pkg/logging"

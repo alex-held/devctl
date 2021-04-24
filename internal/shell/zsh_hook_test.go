@@ -6,10 +6,11 @@ import (
 	"testing"
 	"text/template"
 
-	matchers2 "github.com/alex-held/devctl/pkg/testutils/matchers"
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
+
+	matchers2 "github.com/alex-held/devctl/pkg/testutils/matchers"
 )
 
 type ShellHookFixture struct {

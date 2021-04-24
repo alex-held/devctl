@@ -10,7 +10,6 @@ import (
 
 //TestTaskerSuite tests Tasker, ConditionalTask, Task and TaskRunner
 func TestTaskerSuite(t *testing.T) {
-
 	config.GinkgoConfig.DryRun = false
 	config.GinkgoConfig.EmitSpecProgress = true
 	config.GinkgoConfig.DebugParallel = false

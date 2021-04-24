@@ -28,9 +28,9 @@ type taskRunner struct {
 	Title            string
 	Tasks            Tasks
 	AfterTaskTimeout time.Duration
-	output TaskRunnerOutput
-	DoneC  chan struct{}
-	TaskMC chan TaskRunnerMsg
+	output           TaskRunnerOutput
+	DoneC            chan struct{}
+	TaskMC           chan TaskRunnerMsg
 }
 
 func (r *taskRunner) Run(ctx context.Context) error {

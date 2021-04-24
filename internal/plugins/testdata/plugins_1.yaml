@@ -1,2 +1,2 @@
 sdk:
-  - go
+  go: /tmp/devctl/plugins/go.so

@@ -9,12 +9,13 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/mandelsoft/vfs/pkg/vfs"
+	"github.com/pkg/errors"
+
 	"github.com/alex-held/devctl/pkg/devctlpath"
 	"github.com/alex-held/devctl/pkg/plugins"
 	"github.com/alex-held/devctl/pkg/system"
 	"github.com/alex-held/devctl/pkg/ui/taskrunner"
-	"github.com/mandelsoft/vfs/pkg/vfs"
-	"github.com/pkg/errors"
 )
 
 var _ plugins.Executor = &GoInstallCmd{}

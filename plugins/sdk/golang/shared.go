@@ -3,9 +3,10 @@ package golang
 import (
 	"fmt"
 
-	"github.com/alex-held/devctl/pkg/system"
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	"github.com/pkg/errors"
+
+	"github.com/alex-held/devctl/pkg/system"
 
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )

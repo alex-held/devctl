@@ -45,6 +45,5 @@ func TestMatcherOpensFile(t *testing.T) {
 			continue
 		}
 		Expect(filename).Should(Not(BeAnExistingFileFs(tc.Fs)))
-
 	}
 }

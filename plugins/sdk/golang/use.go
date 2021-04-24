@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/alex-held/devctl/pkg/ui/taskrunner"
 	"github.com/gobuffalo/plugins"
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	"github.com/pkg/errors"
+
+	"github.com/alex-held/devctl/pkg/ui/taskrunner"
 
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )
@@ -69,7 +70,7 @@ func (cmd *GoUseCmd) ExecuteCommand(ctx context.Context, _ string, args []string
 		fi, err := cmd.fs.Stat(current)
 		if err == nil {
 			_ = cmd.fs.Remove(current)
-			fi.Name()
+			fi.PluginName()
 		}
 
 		// 2. Make sure directories exists
@@ -89,7 +90,7 @@ func (cmd *GoUseCmd) ExecuteCommand(ctx context.Context, _ string, args []string
 			}
 		}
 
-		// 5. Link the go sdk version to @current
+		// 5. Use the go sdk version to @current
 		// ln -s -v -F  /root/sdks/go/1.16.3  /root/sdks/go/current
 		// err = cmd.fs.Symlink(sdkPath, current)
 		return err*/

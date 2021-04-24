@@ -1,0 +1,6 @@
+mode: atomic
+github.com/alex-held/devctl/pkg/system/runtime.go:13.76,20.2 6 1
+github.com/alex-held/devctl/pkg/system/runtime.go:33.82,36.2 2 0
+github.com/alex-held/devctl/pkg/system/runtime.go:38.53,41.21 3 0
+github.com/alex-held/devctl/pkg/system/runtime.go:44.2,47.3 1 0
+github.com/alex-held/devctl/pkg/system/runtime.go:41.21,43.3 1 0

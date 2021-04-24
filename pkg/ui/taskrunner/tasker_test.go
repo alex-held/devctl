@@ -6,14 +6,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alex-held/devctl/pkg/plugins"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"github.com/alex-held/devctl/pkg/plugins"
 )
 
 var defaultTestTasks = Tasks{
 	&Task{
-		Plugin:      plugins.NoOpPlugin{
+		Plugin: plugins.NoOpPlugin{
 			Out: io.Discard},
 		Description: "Downloading go sdk",
 		Root:        "test",

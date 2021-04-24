@@ -3,69 +3,101 @@ package sdk
 import (
 	"context"
 	"fmt"
-	"path"
+	"io"
 	"plugin"
 	"reflect"
 
-	"github.com/alex-held/devctl/pkg/devctlpath"
-	"github.com/spf13/afero"
+	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
+type PluginFn func(context.Context, []string) error
+
+var pluginFnType = reflect.TypeOf((PluginFn)(nil))
+
 type SDKPlugin interface {
-	Name() string
+	SetStdout(io.Writer) error
+	PluginName() string
 	Install(ctx context.Context, args []string) error
 	Download(ctx context.Context, args []string) error
 	List(ctx context.Context, args []string) error
 	Current(ctx context.Context, args []string) error
 	Use(ctx context.Context, args []string) error
 }
-type PluginFn func(context.Context, []string) error
 
-type wrapper struct {
+type sdkPluginW struct {
 	plug       plugin.Plugin
-	NameFn     string
+	NameFn     func() string
 	InstallFn  PluginFn
 	DownloadFn PluginFn
 	ListFn     PluginFn
 	CurrentFn  PluginFn
 	UseFn      PluginFn
+	OutFn      func(writer io.Writer) error
 }
 
-func (w *wrapper) Name() string                                      { return w.Name() }
-func (w *wrapper) Install(ctx context.Context, args []string) error  { return w.InstallFn(ctx, args) }
-func (w *wrapper) Download(ctx context.Context, args []string) error { return w.DownloadFn(ctx, args) }
-func (w *wrapper) List(ctx context.Context, args []string) error     { return w.ListFn(ctx, args) }
-func (w *wrapper) Current(ctx context.Context, args []string) error  { return w.CurrentFn(ctx, args) }
-func (w *wrapper) Use(ctx context.Context, args []string) error      { return w.UseFn(ctx, args) }
-
-type registry struct {
-	pather devctlpath.Pather
-	fs     afero.Fs
+type SDKRegistry interface {
+	LoadSDKPlugins() (plugins []SDKPlugin, err error)
 }
 
-func (r *registry) LoadSDKPlugins() (plugins []SDKPlugin, err error) {
-	dir := r.pather.ConfigRoot("plugins", "sdk")
-	infos, err := afero.ReadDir(r.fs, dir)
+func LoadSDKPlugin(path string) (p SDKPlugin, err error) {
+	log.Debugf("Loading plugin from path '%s'\n", path)
+
+	plug, err := plugin.Open(path)
 	if err != nil {
-		return plugins, err
+		return nil, err
 	}
 
-	for _, fi := range infos {
-		filename := fi.Name()
-		path := path.Join(dir, filename)
-		p, err := plugin.Open(path)
-		_ = p
-		if err != nil {
-			return plugins, err
+	w := &sdkPluginW{
+		plug: *plug,
+	}
+
+	var lookupFns = []func() error{
+		func() error { return w.LookupPluginFn("Download") },
+		func() error { return w.LookupPluginFn("Install") },
+		func() error { return w.LookupPluginFn("Current") },
+		func() error { return w.LookupPluginFn("Use") },
+		func() error { return w.LookupPluginFn("List") },
+		func() error {
+			return w.Lookup("PluginName", reflect.TypeOf((func() string)(nil)), func(w *sdkPluginW, i interface{}) {
+				w.NameFn = func() string {
+					return i.(func() string)()
+				}
+			})
+		}, func() error {
+			var setStdoutSym, err = w.plug.Lookup("SetStdout")
+			if err != nil {
+				return fmt.Errorf("error while looking up symbol SDKPlugin.SetStdout\nErr=%+v\n", err)
+			}
+			if setStdoutFn, ok := setStdoutSym.(func(io.Writer) error); ok {
+				w.OutFn = setStdoutFn
+				return nil
+			}
+			return nil
+		},
+	}
+
+	for i, lookupFn := range lookupFns {
+		if err = lookupFn(); err != nil {
+			return w, errors.Wrapf(err, "failed to lookup PluginFn; i=%d\n", i)
 		}
-
 	}
-	return plugins, err
+	return w, err
 }
 
-type symbolSetter func(*wrapper, interface{})
+func (w *sdkPluginW) PluginName() string                               { return w.NameFn() }
+func (w *sdkPluginW) Install(ctx context.Context, args []string) error { return w.InstallFn(ctx, args) }
+func (w *sdkPluginW) Download(ctx context.Context, args []string) error {
+	return w.DownloadFn(ctx, args)
+}
+func (w *sdkPluginW) List(ctx context.Context, args []string) error    { return w.ListFn(ctx, args) }
+func (w *sdkPluginW) Current(ctx context.Context, args []string) error { return w.CurrentFn(ctx, args) }
+func (w *sdkPluginW) Use(ctx context.Context, args []string) error     { return w.UseFn(ctx, args) }
+func (w *sdkPluginW) SetStdout(writer io.Writer) error                 { return w.OutFn(writer) }
 
-func (w *wrapper) Lookup(name string, asType reflect.Type, setter symbolSetter) (err error) {
+type symbolSetter func(*sdkPluginW, interface{})
+
+func (w *sdkPluginW) Lookup(name string, asType reflect.Type, setter symbolSetter) (err error) {
 	sym, err := w.plug.Lookup(name)
 	if err != nil {
 		return err
@@ -78,41 +110,7 @@ func (w *wrapper) Lookup(name string, asType reflect.Type, setter symbolSetter) 
 	return nil
 }
 
-var pluginFnType = reflect.TypeOf((PluginFn)(nil))
-
-func LookupSDKPlugin(p *plugin.Plugin) (_ SDKPlugin, errs []error) {
-	fmt.Printf("Plugin: %+v\n", *p)
-	w := &wrapper{
-		plug: *p,
-	}
-
-	if err := w.Lookup("Install", pluginFnType, func(w *wrapper, v interface{}) {
-		as, ok := v.(func(context.Context, []string) error)
-		if !ok {
-			return
-		}
-		w.InstallFn = as
-	}); err != nil {
-		errs = append(errs, err)
-	}
-
-	lookupFns := []func() error{
-		func() error { return w.LookupPluginFn("Download") },
-		func() error { return w.LookupPluginFn("List") },
-	}
-
-	for i, lookupFn := range lookupFns {
-		err := lookupFn()
-		if err != nil {
-			fmt.Printf("failed to lookup PluginFn; i=%d;err=%v\n", i, err)
-			errs = append(errs, err)
-		}
-	}
-
-	return w, errs
-}
-
-func (w *wrapper) LookupPluginFn(name string) (err error) {
+func (w *sdkPluginW) LookupPluginFn(name string) (err error) {
 	symbol, err := w.plug.Lookup(name)
 	fn, ok := symbol.(func(context.Context, []string) error)
 	if !ok {

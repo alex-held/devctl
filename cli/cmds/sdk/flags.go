@@ -3,9 +3,10 @@ package sdk
 import (
 	"io"
 
-	flagger2 "github.com/alex-held/devctl/pkg/plugins/flagger"
 	"github.com/gobuffalo/plugins/plugflag"
 	"github.com/spf13/pflag"
+
+	flagger2 "github.com/alex-held/devctl/pkg/plugins/flagger"
 )
 
 func (cmd *Cmd) Flags() *pflag.FlagSet {

@@ -7,16 +7,17 @@ import (
 	"os"
 	"path"
 
-	"github.com/alex-held/devctl/pkg/devctlpath"
-	plugins2 "github.com/alex-held/devctl/pkg/plugins"
-	downloader2 "github.com/alex-held/devctl/pkg/plugins/downloader"
-	"github.com/alex-held/devctl/pkg/system"
-	"github.com/alex-held/devctl/pkg/ui/taskrunner"
 	"github.com/gobuffalo/plugins"
 	"github.com/gobuffalo/plugins/plugcmd"
 	"github.com/mandelsoft/vfs/pkg/osfs"
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	"github.com/pkg/errors"
+
+	"github.com/alex-held/devctl/pkg/devctlpath"
+	plugins2 "github.com/alex-held/devctl/pkg/plugins"
+	downloader2 "github.com/alex-held/devctl/pkg/plugins/downloader"
+	"github.com/alex-held/devctl/pkg/system"
+	"github.com/alex-held/devctl/pkg/ui/taskrunner"
 )
 
 var _ plugcmd.Namer = &GoDownloadCmd{}
@@ -30,7 +31,6 @@ type GoDownloadCmd struct {
 	Runtime system.RuntimeInfoGetter
 }
 
-
 func (cmd *GoDownloadCmd) AsTasker(version string) (task taskrunner.Tasker) {
 	artifactName := FormatGoArchiveArtifactName(cmd.Runtime.Get(), version)
 	dlDirectory := cmd.Pather.Download("go", version)
@@ -40,8 +40,7 @@ func (cmd *GoDownloadCmd) AsTasker(version string) (task taskrunner.Tasker) {
 	task = &taskrunner.ConditionalTask{
 		Description: fmt.Sprintf("downloading the go sdk %s archive to the local storage\n", version),
 		Action: func(ctx context.Context) error {
-			if err := cmd.Fs.MkdirAll(dlDirectory, os.ModePerm)
-				err != nil {
+			if err := cmd.Fs.MkdirAll(dlDirectory, os.ModePerm); err != nil {
 				return errors.Wrapf(err, "failed creating go sdk download path; version=%s", version)
 			}
 			artifactFile, err := cmd.Fs.Create(archivePath)

@@ -9,16 +9,17 @@ import (
 	"net/http/httptest"
 	"os"
 
-	. "github.com/alex-held/devctl/cli/internal/testutils"
-	"github.com/alex-held/devctl/pkg/devctlpath"
-	"github.com/alex-held/devctl/pkg/mocks"
-	devctlplugins "github.com/alex-held/devctl/pkg/plugins"
-	"github.com/alex-held/devctl/pkg/system"
 	"github.com/gobuffalo/plugins"
 	"github.com/mandelsoft/vfs/pkg/memoryfs"
 	"github.com/mandelsoft/vfs/pkg/vfs"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"github.com/alex-held/devctl/pkg/devctlpath"
+	"github.com/alex-held/devctl/pkg/mocks"
+	pkgPlugins "github.com/alex-held/devctl/pkg/plugins"
+	"github.com/alex-held/devctl/pkg/system"
+	. "github.com/alex-held/devctl/pkg/testutils"
 )
 
 const (
@@ -28,12 +29,13 @@ const (
 
 type NamedNoOpPlugin struct {
 	Name string
-	devctlplugins.NoOpPlugin
+	pkgPlugins.NoOpPlugin
 }
 
 func init() {
 	ArchiveBytes, _ = ioutil.ReadFile("testdata/go1.16.3.darwin-amd64.tar.gz")
 }
+
 var ArchiveBytes []byte
 
 func (p *NamedNoOpPlugin) PluginName() string { return p.Name }

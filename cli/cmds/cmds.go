@@ -48,7 +48,6 @@ func insidePlugins() []plugins.Plugin {
 	return plugs
 }
 
-
 func IsDevctl(mod string) bool {
 	if !strings.HasPrefix(mod, "go.mod") {
 		mod = filepath.Join(mod, "go.mod")

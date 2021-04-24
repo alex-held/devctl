@@ -1,15 +1,16 @@
 package plugins
 
 import (
-	"github.com/alex-held/devctl/pkg/devctlpath"
-	"github.com/alex-held/devctl/pkg/testutils/matchers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
 	"github.com/spf13/afero"
+
+	"github.com/alex-held/devctl/pkg/devctlpath"
+	"github.com/alex-held/devctl/pkg/testutils/matchers"
 )
 
-var _ = Describe("Store", func() {
+var _ = Describe("Store Suite", func() {
 
 	var sut Store
 	var pather devctlpath.Pather
@@ -67,7 +68,6 @@ var _ = Describe("Store", func() {
 		})
 
 		When("plugin manifest with content exists", func() {
-
 			BeforeEach(func() {
 				data, _ := afero.ReadFile(afero.NewOsFs(), "testdata/plugins_1.yaml")
 				_ = afero.WriteFile(fs, manifest, data, 0777)
@@ -76,15 +76,13 @@ var _ = Describe("Store", func() {
 			It("lists sdk plugins", func() {
 				plugins, err := sut.List(SDK)
 				Expect(err).Should(Succeed())
-				Expect(plugins).Should(Equal([]string{"go"}))
+				Expect(plugins).Should(ContainElement("/tmp/devctl/plugins/go.so"))
 			})
 		})
 	})
 
 	Context("Register", func() {
-
 		When("no plugin manifest exists", func() {
-
 			It("creates the plugin manifest", func() {
 				err := sut.Register(SDK, "scala")
 				Expect(err).Should(Succeed())
@@ -115,7 +113,10 @@ var _ = Describe("Store", func() {
 			It("appends the registered plugin to the corresponding category", func() {
 				err := sut.Register(SDK, "scala")
 				Expect(err).Should(Succeed())
-				Expect(sut).Should(ContainsPluginForKind(SDK, "scala"))
+				f, err := sut.(*store).load()
+				Expect(err).Should(Succeed())
+				Expect(f.SDK).Should(HaveLen(1))
+				Expect(f.SDK["scala"]).Should(ContainSubstring("scala"))
 			})
 		})
 
@@ -129,7 +130,8 @@ var _ = Describe("Store", func() {
 			It("appends the registered plugin to the corresponding category", func() {
 				plugins, err := sut.List(SDK)
 				Expect(err).Should(Succeed())
-				Expect(plugins).Should(Equal([]string{"go"}))
+				Expect(plugins).Should(HaveLen(1))
+				Expect(plugins["go"]).Should(ContainSubstring("/tmp/devctl/plugins/go.so"))
 			})
 		})
 
@@ -138,7 +140,7 @@ var _ = Describe("Store", func() {
 
 func ContainsPluginForKind(kind Kind, name string) types.GomegaMatcher {
 	type wrapper struct {
-		Plugins []string
+		Plugins map[string]string
 		Err     error
 	}
 	return WithTransform(func(store *store) wrapper {
@@ -149,6 +151,8 @@ func ContainsPluginForKind(kind Kind, name string) types.GomegaMatcher {
 		}
 	}, SatisfyAll(
 		WithTransform(func(w wrapper) error { return w.Err }, SatisfyAll(Succeed())),
-		WithTransform(func(w wrapper) []string { return w.Plugins }, SatisfyAll(ContainElement(name))),
-	))
+		WithTransform(func(w wrapper) map[string]string { return w.Plugins }, SatisfyAll(
+			ContainElement(ContainSubstring(name))),
+		)),
+	)
 }

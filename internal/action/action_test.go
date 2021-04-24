@@ -9,10 +9,11 @@ import (
 	"os/exec"
 	"testing"
 
-	testutils2 "github.com/alex-held/devctl/pkg/testutils"
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
+
+	testutils2 "github.com/alex-held/devctl/pkg/testutils"
 
 	"github.com/alex-held/devctl/pkg/logging"
 
