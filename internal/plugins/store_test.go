@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/afero"
 )
 
-
 var _ = Describe("Store", func() {
 
 	var sut Store
@@ -152,8 +151,4 @@ func ContainsPluginForKind(kind Kind, name string) types.GomegaMatcher {
 		WithTransform(func(w wrapper) error { return w.Err }, SatisfyAll(Succeed())),
 		WithTransform(func(w wrapper) []string { return w.Plugins }, SatisfyAll(ContainElement(name))),
 	))
-}
-
-func assertPluginManifestExists(fs afero.Fs, path string)  {
-	Expect(path).Should(matchers.BeAnExistingFileFs(fs))
 }

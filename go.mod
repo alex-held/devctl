@@ -5,6 +5,7 @@ go 1.16
 require (
 	cloud.google.com/go v0.81.0 // indirect
 	github.com/BurntSushi/xgb v0.0.0-20210121224620-deaf085860bc // indirect
+	github.com/Helcaraxan/gomod v0.6.2 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/bndr/gotabulate v1.1.2
@@ -25,6 +26,7 @@ require (
 	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/gookit/color v1.4.2 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible
+	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/karrick/godirwalk v1.10.3 // indirect
 	github.com/kisielk/godepgraph v0.0.0-20190626013829-57a7e4a651a9 // indirect
