@@ -1,11 +1,10 @@
 package cli
 
 import (
+	"github.com/alex-held/devctl/cli/cmds"
 	"github.com/gobuffalo/plugins"
 	"github.com/gobuffalo/plugins/plugcmd"
 	"github.com/gobuffalo/plugins/plugprint"
-
-	"github.com/alex-held/devctl/cli/cmds"
 )
 
 var _ plugcmd.SubCommander = &Devctl{}
@@ -24,7 +23,9 @@ func NewFromRoot(root string) (*Devctl, error) {
 		root: root,
 	}
 
-	b.Plugins = append(b.Plugins, cmds.AvailablePlugins(root)...)
+	//	b.Plugins = append(b.Plugins, cmds.AvailablePlugins(root)...)
+	alexCommands := cmds.AvailablePlugins(root)
+	_ = alexCommands
 
 	// pre scope the plugins to thin the initial set
 	plugs := b.ScopedPlugins()

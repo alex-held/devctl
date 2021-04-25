@@ -2,11 +2,8 @@ package plugins
 
 import (
 	"context"
-	"fmt"
-	"io"
 	"os"
 	"path"
-	"plugin"
 	"reflect"
 
 	"github.com/spf13/afero"
@@ -15,61 +12,86 @@ import (
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
-type symbolSetter func(*pluginWrapper, interface{})
+// GlobalRegistry is a v variable
+var GlobalRegistry Registry
+
+func init() {
+	var globalRegistry = registry{}
+	GlobalRegistry = globalRegistry
+}
+
 type PluginFn func(context.Context, []string) error
 
 var PluginFnType = reflect.TypeOf((PluginFn)(nil))
 
-func (r *registry) LoadSDKPlugins() (plugins []sdk.SDKPlugin, err error) {
-	dir := r.Pather.ConfigRoot("plugins")
-	files, err := afero.ReadDir(r.Fs, dir)
+type PluginProvider func() map[string]Plugin
+
+func (m *pluginManager) LoadSDKPlugins() (err error) {
+
+	dir := m.pather.ConfigRoot("plugins")
+	files, err := afero.ReadDir(m.fs, dir)
 	if err != nil {
-		return r.sdkPlugins, err
+		return err
 	}
 	for _, fi := range files {
+		pluginPath := path.Join(dir, fi.Name())
+		if m.registry.IsRegistered(pluginPath) {
+			continue
+		}
 		if !fi.IsDir() && fi.Mode()&os.ModeType == 0 {
-			filepath := path.Join(dir, fi.Name())
-			sdkPlugin, err := sdk.LoadSDKPlugin(filepath)
+			unboundPlugin, err := m.sdkLoaderFn.LoadSDKPlugin(pluginPath)
 			if err != nil {
-				return r.sdkPlugins, err
+				return err
 			}
-			r.sdkPlugins = append(r.sdkPlugins, sdkPlugin)
-			return r.sdkPlugins, err
+			sdkPlugin, err := m.sdkBinderFn.Bind(unboundPlugin)
+			if err != nil {
+				return err
+			}
+			m.registry.Register(pluginPath, sdkPlugin)
 		}
 	}
-	return r.sdkPlugins, err
+	return nil
 }
 
-func NewRegistry(pather devctlpath.Pather, fs afero.Fs) *registry {
-	r := &registry{
-		Pather: pather,
-		Fs:     fs,
-		Store: &store{
-			Pather: pather,
-			Fs:     fs,
-		},
-	}
-	r.sdkRegistry = (sdk.SDKRegistry)(r)
-	return r
+type registry map[string]Plugin
+
+func (r *registry) register(pluginPath string, plug Plugin) {
+	(*r)[pluginPath] = plug
 }
 
-type registry struct {
-	Pather devctlpath.Pather
-	Fs     afero.Fs
-	Store  Store
-
-	sdkPlugins  []sdk.SDKPlugin
-	sdkRegistry sdk.SDKRegistry
+func (r *registry) isRegistered(pluginPath string) bool {
+	_, ok := (*r)[pluginPath]
+	return !ok
 }
 
-func (r *registry) ReloadPlugins() (plugins []Plugin, err error) {
-	if r.sdkPlugins, err = r.sdkRegistry.LoadSDKPlugins(); err != nil {
-		return plugins, err
+type pluginManager struct {
+	provider PluginProvider
+	fs       afero.Fs
+	pather   devctlpath.Pather
+	registry registry
+
+	sdkPlugins  map[string]Plugin
+	sdkLoaderFn sdk.SDKPluginLoaderFn
+	sdkBinderFn sdk.SDKPluginBinderFn
+}
+
+func (m *pluginManager) GetProvider() PluginProvider {
+	copiedSnapShot := make(map[string]Plugin, len(m.registry))
+	for k, v := range m.registry {
+		copiedSnapShot[k] = v
 	}
-	for _, sdkPlugin := range r.sdkPlugins {
-		plugins = append(plugins, sdkPlugin)
+	return func() map[string]Plugin {
+		return copiedSnapShot
 	}
-	return plugins, err
+}
+
+func (r registry) Register(pluginPath string, Plugin Plugin) {
+	r[pluginPath] = Plugin
+}
+
+func (r registry) IsRegistered(pluginPath string) bool {
+	_, ok := r[pluginPath]
+	return !ok
 }
 
 type Plugin interface {
@@ -77,39 +99,6 @@ type Plugin interface {
 }
 
 type Registry interface {
-	ReloadPlugins() (plugins []Plugin, err error)
-}
-
-type pluginWrapper struct {
-	plug      plugin.Plugin
-	Name      string
-	LookupFns []func() error
-	stdout    io.Writer
-}
-
-func (w *pluginWrapper) LookupPluginFn(name string) (err error) {
-	symbol, err := w.plug.Lookup(name)
-	fn, ok := symbol.(func(context.Context, []string) error)
-	if !ok {
-		return fmt.Errorf("Could not load symbol '%s' as type 'func(context.Context, []string) error'\nSymbol: %+v\n\n", name, symbol)
-	}
-	pluginFn := PluginFn(fn)
-	pluginFnV := reflect.ValueOf(pluginFn)
-	wrapperV := reflect.ValueOf(w).Elem()
-	fieldV := wrapperV.FieldByName(name + "Fn")
-	fieldV.Set(pluginFnV)
-	return nil
-}
-
-func (w *pluginWrapper) lookupSymbol(name string, asType reflect.Type, setter symbolSetter) (err error) {
-	sym, err := w.plug.Lookup(name)
-	if err != nil {
-		return err
-	}
-	ok := reflect.TypeOf(sym).AssignableTo(asType)
-	if !ok {
-		return fmt.Errorf("symbol '%+v' is not assignable to asType '%s'\n", sym, asType.Name())
-	}
-	setter(w, sym)
-	return nil
+	Register(pluginPath string, plug Plugin)
+	IsRegistered(pluginPath string) bool
 }

@@ -6,26 +6,22 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gobuffalo/plugins"
-
-	"github.com/alex-held/devctl/cli/cmds/sdk"
-	"github.com/alex-held/devctl/cli/cmds/version"
-	"github.com/alex-held/devctl/cli/internal/golang"
+	"github.com/alex-held/devctl/pkg/plugins"
 )
 
 func Plugins() []plugins.Plugin {
 	var plugs []plugins.Plugin
 	plugs = append(plugs, insidePlugins()...)
 	plugs = append(plugs, outsidePlugins()...)
-	plugs = append(plugs, version.Plugins()...)
+	plugs = append(plugs, Plugins()...)
 	return plugs
 }
 
 func AvailablePlugins(root string) []plugins.Plugin {
 	var plugs []plugins.Plugin
-	plugs = append(plugs, version.Plugins()...)
-	plugs = append(plugs, sdk.Plugins()...)
-	plugs = append(plugs, golang.Plugins()...)
+	plugs = append(plugs, Plugins()...)
+	plugs = append(plugs, Plugins()...)
+	plugs = append(plugs, Plugins()...)
 
 	if IsDevctl(root) {
 		plugs = append(plugs, insidePlugins()...)
@@ -37,14 +33,14 @@ func AvailablePlugins(root string) []plugins.Plugin {
 
 func outsidePlugins() []plugins.Plugin {
 	var plugs []plugins.Plugin
-	plugs = append(plugs, sdk.Plugins()...)
-	plugs = append(plugs, golang.Plugins()...)
+	plugs = append(plugs, Plugins()...)
+	plugs = append(plugs, Plugins()...)
 	return plugs
 }
 
 func insidePlugins() []plugins.Plugin {
 	var plugs []plugins.Plugin
-	plugs = append(plugs, golang.Plugins()...)
+	plugs = append(plugs,Plugins()...)
 	return plugs
 }
 

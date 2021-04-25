@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/alex-held/devctl/internal/plugins/sdk"
 	"github.com/bndr/gotabulate"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -42,11 +41,6 @@ func newSdkListCommand() *cobra.Command {
 		Run:     sdkListCommandfunc,
 	}
 }
-
-func getSDKPlugins() []sdk.SDKPlugin {
-	
-}
-
 
 func newSdkVersionsCommand() *cobra.Command {
 	cmd := &cobra.Command{

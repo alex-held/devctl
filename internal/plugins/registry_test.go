@@ -3,7 +3,6 @@
 package plugins
 
 import (
-	"io/ioutil"
 	"os"
 	"path"
 
@@ -11,14 +10,13 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
 
-	"github.com/alex-held/devctl/internal/plugins/sdk"
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
-var _ = Describe("Registry", func() {
+var _ = Describe("Manager", func() {
 	var fs afero.Fs
 	var pather devctlpath.Pather
-	var sut Registry
+	var sut pluginManager
 	var sdkPluginDir string
 
 	BeforeEach(func() {
@@ -27,7 +25,11 @@ var _ = Describe("Registry", func() {
 			tmp, _ := os.MkdirTemp("devctl", "PluginRegistryTests")
 			return path.Join(tmp)
 		}))
-		sut = NewRegistry(pather, fs)
+		sut = pluginManager{
+			fs:       fs,
+			pather:   pather,
+			registry: GlobalRegistry.(registry),
+		}
 		sdkPluginDir = pather.ConfigRoot("plugins")
 	})
 
@@ -40,22 +42,17 @@ var _ = Describe("Registry", func() {
 		})
 
 		When("no plugin exists in the plugin search paths", func() {
-
 			BeforeEach(func() {
 				_ = fs.MkdirAll(sdkPluginDir, os.ModePerm)
 			})
 
 			It("doesn't return an error", func() {
-				_, err := sut.ReloadPlugins()
+				err := sut.LoadSDKPlugins()
 				Expect(err).Should(Succeed())
-			})
-			It("returns an empty list of plugins", func() {
-				plugins, _ := sut.ReloadPlugins()
-				Expect(plugins).Should(BeEmpty())
 			})
 		})
 
-		When("one sdk plugin exists in the /tmp/devctl/<prefix>/plugins", func() {
+		Describe("one sdk plugin exists in the /tmp/devctl/<prefix>/plugins", func() {
 
 			BeforeEach(func() {
 				data, _ := afero.ReadFile(afero.NewOsFs(), "testdata/plugins/sdk-01.so")
@@ -66,49 +63,32 @@ var _ = Describe("Registry", func() {
 				_ = fs.RemoveAll(path.Join(sdkPluginDir, "sdk-01.so"))
 			})
 
-			It("doesn't return an error", func() {
-				_, err := sut.ReloadPlugins()
-				Expect(err).Should(Succeed())
-			})
+			When("before the  pluginManager has started to load the plugins", func() {
 
-			It("returns a list with one SDKPlugin", func() {
-				plugins, _ := sut.ReloadPlugins()
-				Expect(plugins).Should(HaveLen(1))
-				sdkPlugin, ok := plugins[0].(sdk.SDKPlugin)
-				Expect(ok).Should(BeTrue())
-				Expect(sdkPlugin).ShouldNot(BeNil())
-			})
+				It("returns a provider with no plugins", func() {
+					provider := sut.GetProvider()
+					plugins := provider()
+					Expect(plugins).Should(HaveLen(0))
+				})
 
-			When("calling PluginName() on first SDKPlugin", func() {
-				It("returns the current version", func() {
-					plugins, _ := sut.ReloadPlugins()
-					sdkPlugin, _ := plugins[0].(sdk.SDKPlugin)
-					Expect(sdkPlugin.PluginName()).Should(Equal("sdk-01"))
+				It("returns not nil", func() {
+					Expect(sut.GetProvider()).ShouldNot(BeNil())
 				})
 			})
 
-			When("calling Current() on first SDKPlugin", func() {
-				var stdoutLogPath string
+			When("after the  pluginManager has loaded the plugins", func() {
+
 				BeforeEach(func() {
-					stdoutLogPath = pather.ConfigRoot("stdout.log")
-					stdoutLog, _ := os.Create(stdoutLogPath)
-					os.Stdout = stdoutLog
+					_ = sut.LoadSDKPlugins()
 				})
-				AfterEach(func() {
-					_ = fs.RemoveAll(stdoutLogPath)
+				It("returns a provider with one plugin", func() {
+					provider := sut.GetProvider()
+					plugins := provider()
+					Expect(plugins).Should(HaveLen(1))
 				})
 
-				It("returns the current version", func() {
-					plugins, _ := sut.ReloadPlugins()
-					sdkPlugin, _ := plugins[0].(sdk.SDKPlugin)
-					Expect(sdkPlugin.Current(nil, []string{"1.16.3"})).Should(Succeed())
-					b, _ := ioutil.ReadFile(stdoutLogPath)
-					Expect(string(b)).Should(ContainSubstring("1.16.3"))
-				})
 			})
-
 		})
-
 	})
 
 })

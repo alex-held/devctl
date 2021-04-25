@@ -6,9 +6,6 @@ import (
 	"io"
 	"plugin"
 	"reflect"
-
-	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 type PluginFn func(context.Context, []string) error
@@ -26,7 +23,7 @@ type SDKPlugin interface {
 }
 
 type sdkPluginW struct {
-	plug       plugin.Plugin
+	Plug       plugin.Plugin
 	NameFn     func() string
 	InstallFn  PluginFn
 	DownloadFn PluginFn
@@ -34,55 +31,6 @@ type sdkPluginW struct {
 	CurrentFn  PluginFn
 	UseFn      PluginFn
 	OutFn      func(writer io.Writer) error
-}
-
-type SDKRegistry interface {
-	LoadSDKPlugins() (plugins []SDKPlugin, err error)
-}
-
-func LoadSDKPlugin(path string) (p SDKPlugin, err error) {
-	log.Debugf("Loading plugin from path '%s'\n", path)
-
-	plug, err := plugin.Open(path)
-	if err != nil {
-		return nil, err
-	}
-
-	w := &sdkPluginW{
-		plug: *plug,
-	}
-
-	var lookupFns = []func() error{
-		func() error { return w.LookupPluginFn("Download") },
-		func() error { return w.LookupPluginFn("Install") },
-		func() error { return w.LookupPluginFn("Current") },
-		func() error { return w.LookupPluginFn("Use") },
-		func() error { return w.LookupPluginFn("List") },
-		func() error {
-			return w.Lookup("PluginName", reflect.TypeOf((func() string)(nil)), func(w *sdkPluginW, i interface{}) {
-				w.NameFn = func() string {
-					return i.(func() string)()
-				}
-			})
-		}, func() error {
-			var setStdoutSym, err = w.plug.Lookup("SetStdout")
-			if err != nil {
-				return fmt.Errorf("error while looking up symbol SDKPlugin.SetStdout\nErr=%+v\n", err)
-			}
-			if setStdoutFn, ok := setStdoutSym.(func(io.Writer) error); ok {
-				w.OutFn = setStdoutFn
-				return nil
-			}
-			return nil
-		},
-	}
-
-	for i, lookupFn := range lookupFns {
-		if err = lookupFn(); err != nil {
-			return w, errors.Wrapf(err, "failed to lookup PluginFn; i=%d\n", i)
-		}
-	}
-	return w, err
 }
 
 func (w *sdkPluginW) PluginName() string                               { return w.NameFn() }
@@ -95,31 +43,75 @@ func (w *sdkPluginW) Current(ctx context.Context, args []string) error { return 
 func (w *sdkPluginW) Use(ctx context.Context, args []string) error     { return w.UseFn(ctx, args) }
 func (w *sdkPluginW) SetStdout(writer io.Writer) error                 { return w.OutFn(writer) }
 
-type symbolSetter func(*sdkPluginW, interface{})
-
-func (w *sdkPluginW) Lookup(name string, asType reflect.Type, setter symbolSetter) (err error) {
-	sym, err := w.plug.Lookup(name)
-	if err != nil {
-		return err
-	}
-	ok := reflect.TypeOf(sym).AssignableTo(asType)
-	if !ok {
-		return fmt.Errorf("symbol '%+v' is not assignable to asType '%s'\n", sym, asType.Name())
-	}
-	setter(w, sym)
-	return nil
+type SDKPluginLoaderFn func(elfModule string) (plug *plugin.Plugin, err error)
+type SDKPluginLoader interface {
+	LoadSDKPlugin(elfModule string) (plug *plugin.Plugin, err error)
 }
 
-func (w *sdkPluginW) LookupPluginFn(name string) (err error) {
-	symbol, err := w.plug.Lookup(name)
-	fn, ok := symbol.(func(context.Context, []string) error)
-	if !ok {
-		return fmt.Errorf("Could not load symbol '%s' as type 'func(context.Context, []string) error'\nSymbol: %+v\n\n", name, symbol)
+func (loaderFnP SDKPluginLoaderFn) LoadSDKPlugin(elfModule string) (plug *plugin.Plugin, err error) {
+	fmt.Printf("Executing %T nil value\n", (SDKPluginLoader)(nil))
+	plug, err = plugin.Open(elfModule)
+	return plug, err
+}
+
+type SDKPluginBinder interface {
+	Bind(p *plugin.Plugin) (plugin SDKPlugin, err error)
+}
+
+//SDKPluginBinderFn already implements interface SDKPluginBinder
+type SDKPluginBinderFn func(p *plugin.Plugin) (plugin SDKPlugin, err error)
+
+func (binderFnP *SDKPluginBinderFn) Bind(plug *plugin.Plugin) (sdkPlugin SDKPlugin, err error) {
+	if binderFn := *binderFnP; binderFn != nil {
+		return binderFn(plug)
 	}
-	pluginFn := PluginFn(fn)
-	pluginFnV := reflect.ValueOf(pluginFn)
-	wrapperV := reflect.ValueOf(w).Elem()
-	fieldV := wrapperV.FieldByName(name + "Fn")
-	fieldV.Set(pluginFnV)
-	return nil
+
+	sdkPluginW := &sdkPluginW{Plug: *plug}
+	bindPluginFn := func(name string) (err error) {
+		symbol, err := sdkPluginW.Plug.Lookup(name)
+		switch fn := symbol.(type) {
+		case func(context.Context, []string) error:
+			pluginFn := PluginFn(fn)
+			pluginFnV := reflect.ValueOf(pluginFn)
+			wrapperV := reflect.ValueOf(sdkPluginW).Elem()
+			fieldV := wrapperV.FieldByName(name + "Fn")
+			fieldV.Set(pluginFnV)
+			return nil
+		default:
+			return fmt.Errorf("Could not load symbol '%s' as type 'func(context.Context, []string) error'\nSymbol: %+v\n\n", name, symbol)
+		}
+	}
+
+	if err = bindPluginFn("Download"); err != nil {
+		return sdkPluginW, err
+	}
+	if err = bindPluginFn("Install"); err != nil {
+		return sdkPluginW, err
+	}
+	if err = bindPluginFn("Use"); err != nil {
+		return sdkPluginW, err
+	}
+	if err = bindPluginFn("List"); err != nil {
+		return sdkPluginW, err
+	}
+	if err = bindPluginFn("Install"); err != nil {
+		return sdkPluginW, err
+	}
+
+	symbol, err := sdkPluginW.Plug.Lookup("SetStdout")
+	switch fn := symbol.(type) {
+	case func(writer io.Writer) error:
+		sdkPluginW.OutFn = fn
+	default:
+		return sdkPluginW, fmt.Errorf("Could not load symbol '%s' as type 'func(io.Writer) error'\nSymbol: %+v\n\n", "SetStdout", symbol)
+	}
+
+	symbol, err = sdkPluginW.Plug.Lookup("PluginName")
+	switch fn := symbol.(type) {
+	case func() string:
+		sdkPluginW.NameFn = fn
+	default:
+		return sdkPluginW, fmt.Errorf("Could not load symbol '%s' as type 'func() string'\nSymbol: %+v\n\n", "PluginName", symbol)
+	}
+	return sdkPluginW, nil
 }

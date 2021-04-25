@@ -1,10 +1,10 @@
-//go:generate pluggen gen -o "./testdata/plugins/sdk-02.so" -p "plugins/sdk-01/" --pkg devctl
+//go:generate pluggen gen -o "./testdata/plugins/sdk-01.so" -p "plugins/sdk-01" --pkg devctl
 
 package sdk
 
 import (
 	_ "embed"
-	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
 
@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	//go:embed testdata/plugins/sdk-02.so
+	//go:embed testdata/plugins/sdk-01.so
 	Sdk01Plugin  []byte
 	ExpectedArgs = []string{"1.16.3"}
 )
@@ -24,18 +24,14 @@ var (
 var _ = Describe("SDKPlugin", func() {
 	var fs afero.Fs
 	var pather devctlpath.Pather
-	var sut SDKPlugin
-	var err error
 	var sdkPluginDir, pluginPath string
 
 	BeforeEach(func() {
-		fs = afero.NewMemMapFs()
+		fs = afero.NewOsFs()
 		pather = devctlpath.NewPather(devctlpath.WithConfigRootFn(func() string {
-
-			wd, _ := os.Getwd()
 			tmp, _ := afero.TempDir(fs, "", "devctl-SDKPluginTests-*")
 			_ = fs.MkdirAll(tmp, os.ModePerm)
-			return path.Dir(path.Dir(path.Dir(wd)))
+			return tmp
 		}))
 		sdkPluginDir = pather.ConfigRoot("plugins")
 		pluginPath = path.Join(sdkPluginDir, "sdk-01.so")
@@ -44,30 +40,41 @@ var _ = Describe("SDKPlugin", func() {
 	Context("LoadSDKPlugin", func() {
 
 		When("file system does not contain plugins", func() {
+			var loaderSut SDKPluginLoaderFn
+
 			It("returns error when loading", func() {
-				sut, err = LoadSDKPlugin("no-path")
+				_, err :=  loaderSut.LoadSDKPlugin("no-path")
 				Expect(err).ShouldNot(Succeed())
 			})
 
 			It("returns error when loading", func() {
-				sut, err = LoadSDKPlugin("no-path")
-				Expect(sut).Should(BeNil())
+				unboundPlugin, _ :=  loaderSut.LoadSDKPlugin("no-path")
+				Expect(unboundPlugin).Should(BeNil())
 			})
 		})
 
-		When("file system one SDKPlugin", func() {
+	When("file system one SDKPlugin", func() {
+			var loaderSut SDKPluginLoaderFn
+
 			BeforeEach(func() {
-				_ = afero.WriteFile(fs, pluginPath, Sdk01Plugin, 0777)
-				sut, err = LoadSDKPlugin(pluginPath)
+				err := os.MkdirAll(path.Dir(pluginPath), os.ModePerm)
+				if err != nil {
+					panic(err)
+				}
+				err = ioutil.WriteFile(pluginPath, Sdk01Plugin, os.ModePerm)
+				if err != nil {
+					panic(err)
+				}
 			})
 
 			It("does not return error", func() {
-				fmt.Printf("SUT=%+v\nERR=%+v\n", sut, err)
+				_, err := loaderSut.LoadSDKPlugin(pluginPath)
 				Expect(err).Should(Succeed())
 			})
+
 			It("returns SDKPlugin when loading", func() {
-				fmt.Printf("SUT=%+v\nERR=%+v\n", sut, err)
-				Expect(sut).ShouldNot(BeNil())
+				actual, _ := loaderSut.LoadSDKPlugin(pluginPath)
+				Expect(actual).ShouldNot(BeNil())
 			})
 
 		})

@@ -1,0 +1,8 @@
+version: '3.5'
+
+services: 
+  devctl-plugin-builder:
+    image: "alexheld/devctl-plugin-builder"
+    build:
+      dockerfile: Dockerfile 
+      context: .
