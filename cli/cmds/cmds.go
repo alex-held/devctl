@@ -40,7 +40,7 @@ func outsidePlugins() []plugins.Plugin {
 
 func insidePlugins() []plugins.Plugin {
 	var plugs []plugins.Plugin
-	plugs = append(plugs,Plugins()...)
+	plugs = append(plugs, Plugins()...)
 	return plugs
 }
 

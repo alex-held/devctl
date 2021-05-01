@@ -22,7 +22,7 @@ type SDKPlugin interface {
 	Use(ctx context.Context, args []string) error
 }
 
-type sdkPluginW struct {
+type SdkPluginW struct {
 	Plug       plugin.Plugin
 	NameFn     func() string
 	InstallFn  PluginFn
@@ -33,40 +33,75 @@ type sdkPluginW struct {
 	OutFn      func(writer io.Writer) error
 }
 
-func (w *sdkPluginW) PluginName() string                               { return w.NameFn() }
-func (w *sdkPluginW) Install(ctx context.Context, args []string) error { return w.InstallFn(ctx, args) }
-func (w *sdkPluginW) Download(ctx context.Context, args []string) error {
+func (w *SdkPluginW) GetPlugin() *plugin.Plugin { return &w.Plug }
+func (w *SdkPluginW) Lookup(symName string) (sym plugin.Symbol, err error) {
+	fmt.Printf("looking up symbol '%s'\n", symName)
+	sym, err = w.Plug.Lookup(symName)
+	fmt.Printf("Symbol for '%s':\t%#v\nErr:%+v\n", symName, sym, err)
+	return sym, err
+}
+
+func (w *SdkPluginW) PluginName() string                               { return w.NameFn() }
+func (w *SdkPluginW) Install(ctx context.Context, args []string) error { return w.InstallFn(ctx, args) }
+func (w *SdkPluginW) Download(ctx context.Context, args []string) error {
 	return w.DownloadFn(ctx, args)
 }
-func (w *sdkPluginW) List(ctx context.Context, args []string) error    { return w.ListFn(ctx, args) }
-func (w *sdkPluginW) Current(ctx context.Context, args []string) error { return w.CurrentFn(ctx, args) }
-func (w *sdkPluginW) Use(ctx context.Context, args []string) error     { return w.UseFn(ctx, args) }
-func (w *sdkPluginW) SetStdout(writer io.Writer) error                 { return w.OutFn(writer) }
+func (w *SdkPluginW) List(ctx context.Context, args []string) error    { return w.ListFn(ctx, args) }
+func (w *SdkPluginW) Current(ctx context.Context, args []string) error { return w.CurrentFn(ctx, args) }
+func (w *SdkPluginW) Use(ctx context.Context, args []string) error     { return w.UseFn(ctx, args) }
+func (w *SdkPluginW) SetStdout(writer io.Writer) error                 { return w.OutFn(writer) }
 
-type SDKPluginLoaderFn func(elfModule string) (plug *plugin.Plugin, err error)
-type SDKPluginLoader interface {
-	LoadSDKPlugin(elfModule string) (plug *plugin.Plugin, err error)
+type PluginGetter interface {
+	GetPlugin() *plugin.Plugin
 }
 
-func (loaderFnP SDKPluginLoaderFn) LoadSDKPlugin(elfModule string) (plug *plugin.Plugin, err error) {
-	fmt.Printf("Executing %T nil value\n", (SDKPluginLoader)(nil))
-	plug, err = plugin.Open(elfModule)
-	return plug, err
+type SymbolLoader interface {
+	Lookup(symName string) (plugin.Symbol, error)
+}
+
+type SDKPluginLoaderFn func(elfModule string) (plug PluginGetter, err error)
+type SDKPluginLoader interface {
+	LoadSDKPlugin(elfModule string) (plug PluginGetter, err error)
+}
+
+func LoadSDKPlugin(elfModule string) (plug PluginGetter, err error) {
+	var fn *SDKPluginLoaderFn
+	return fn.LoadSDKPlugin(elfModule)
+}
+
+type pluginGetter struct {
+	Plug *plugin.Plugin
+}
+
+func (p *pluginGetter) GetPlugin() (plug *plugin.Plugin) {
+	return p.Plug
+}
+
+func (loaderFnP *SDKPluginLoaderFn) LoadSDKPlugin(elfModule string) (plug PluginGetter, err error) {
+	p, err := plugin.Open(elfModule)
+	pg := &pluginGetter{Plug: p}
+	return pg, err
 }
 
 type SDKPluginBinder interface {
 	Bind(p *plugin.Plugin) (plugin SDKPlugin, err error)
 }
 
-//SDKPluginBinderFn already implements interface SDKPluginBinder
+// SDKPluginBinderFn already implements interface SDKPluginBinder
 type SDKPluginBinderFn func(p *plugin.Plugin) (plugin SDKPlugin, err error)
 
+func Bind(plug *plugin.Plugin) (sdkPlugin SDKPlugin, err error) {
+	var fn *SDKPluginBinderFn
+	sdkPlugin, err = fn.Bind(plug)
+	return sdkPlugin, err
+}
+
 func (binderFnP *SDKPluginBinderFn) Bind(plug *plugin.Plugin) (sdkPlugin SDKPlugin, err error) {
-	if binderFn := *binderFnP; binderFn != nil {
-		return binderFn(plug)
+	if binderFnP != nil {
+		return (*binderFnP)(plug)
 	}
 
-	sdkPluginW := &sdkPluginW{Plug: *plug}
+	sdkPluginW := &SdkPluginW{Plug: *plug}
 	bindPluginFn := func(name string) (err error) {
 		symbol, err := sdkPluginW.Plug.Lookup(name)
 		switch fn := symbol.(type) {

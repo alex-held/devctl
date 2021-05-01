@@ -2,6 +2,8 @@
 
 package sdk
 
+/*
+
 import (
 	_ "embed"
 	"io/ioutil"
@@ -176,3 +178,7 @@ var _ = Describe("SDKPlugin", func() {
 //	_ = afero.NewOsFs().MkdirAll(path.Dir(pluginPath), os.ModePerm)
 //	_ = ioutil.WriteFile(pluginPath, p, os.ModePerm)
 //}
+
+
+
+*/

@@ -1,5 +1,7 @@
 package sdk
 
+/*
+
 import (
 	"bytes"
 	_ "embed"
@@ -99,3 +101,4 @@ var _ = Describe("GOSDKPlugin", func() {
 		})
 	})
 })
+*/

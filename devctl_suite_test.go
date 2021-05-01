@@ -1,4 +1,4 @@
-package sdk
+package main_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestSDKPluginBinderSuite(t *testing.T) {
+func TestDevctl(t *testing.T) {
 	RegisterFailHandler(Fail)
-	// RunSpecs(t, "GOSDKPlugin")
+	RunSpecs(t, "Devctl Suite")
 }

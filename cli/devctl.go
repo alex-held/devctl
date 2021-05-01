@@ -1,10 +1,11 @@
 package cli
 
 import (
-	"github.com/alex-held/devctl/cli/cmds"
 	"github.com/gobuffalo/plugins"
 	"github.com/gobuffalo/plugins/plugcmd"
 	"github.com/gobuffalo/plugins/plugprint"
+
+	"github.com/alex-held/devctl/cli/cmds"
 )
 
 var _ plugcmd.SubCommander = &Devctl{}

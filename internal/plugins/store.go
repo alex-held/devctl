@@ -2,18 +2,12 @@ package plugins
 
 import (
 	"fmt"
-	"io/fs"
+	"os"
 
 	"github.com/spf13/afero"
 	"gopkg.in/yaml.v3"
 
 	"github.com/alex-held/devctl/pkg/devctlpath"
-)
-
-type Kind int
-
-const (
-	SDK Kind = iota
 )
 
 type Store interface {
@@ -85,5 +79,5 @@ func (s *store) save(file *pluginsFile) (err error) {
 	if err != nil {
 		return err
 	}
-	return afero.WriteFile(s.Fs, path, bytes, fs.ModePerm)
+	return afero.WriteFile(s.Fs, path, bytes, os.ModePerm)
 }

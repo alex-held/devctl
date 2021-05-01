@@ -60,7 +60,6 @@ var _ = Describe("go-plugin USE", func() {
 	})
 
 	BeforeEach(func() {
-
 		riGetter = mocks.MockRuntimeInfoGetter{
 			RuntimeInfo: system.RuntimeInfo{
 				OS:   "darwin",
