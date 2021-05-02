@@ -11,8 +11,7 @@ services:
       - APP=DRONE
       - DEAMON=true
     env_file:
-      - .env
-      - .ci.env
+      - dev.env
     volumes:
       - /var/lib/drone:/data
     networks:
