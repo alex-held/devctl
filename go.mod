@@ -18,6 +18,7 @@ require (
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/gookit/color v1.4.2 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible
+	github.com/kunalkushwaha/ltag v0.2.2 // indirect
 	github.com/mandelsoft/vfs v0.0.0-20210316115144-f89ffba3b126
 	github.com/mattn/goveralls v0.0.8
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
