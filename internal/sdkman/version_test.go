@@ -10,10 +10,11 @@ import (
 
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
-	"github.com/sirupsen/logrus"
+
+	testutils2 "github.com/alex-held/devctl/pkg/testutils"
 
 	"github.com/alex-held/devctl/internal/system"
-	"github.com/alex-held/devctl/internal/testutils"
+	"github.com/alex-held/devctl/pkg/logging"
 )
 
 func TestVersionService_All(t *testing.T) {
@@ -23,14 +24,14 @@ func TestVersionService_All(t *testing.T) {
 	g.Describe("VersionService", func() {
 		g.Describe("All", func() {
 			var client *Client
-			var _ *logrus.Logger
+			var _ logging.Log
 			var mux *http.ServeMux
 			var _ bytes.Buffer
-			var teardown testutils.Teardown
+			var teardown testutils2.Teardown
 			var ctx context.Context
 
 			g.JustBeforeEach(func() {
-				client, _, mux, teardown = setup()
+				client, _, _, mux, teardown = setup()
 				ctx = context.Background()
 			})
 

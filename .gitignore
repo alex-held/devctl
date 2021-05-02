@@ -8,9 +8,15 @@
 .gradle/
 target/
 
+### Go Build and tools
+**/**.coverprofile
+
+
 
 testdata/devenv.yaml
-out/**
+out/
+build/bin/**
+!build/bin/.gitkeep
 
 *.iml
 **/.DS_Store

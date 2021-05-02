@@ -2,13 +2,19 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"github.com/bndr/gotabulate"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
 	config2 "github.com/alex-held/devctl/internal/config"
+	"github.com/alex-held/devctl/pkg/constants"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 
-	"github.com/alex-held/devctl/internal/cli"
+	"github.com/alex-held/devctl/internal/app"
 )
 
 // NewSdkCommand creates the `devenv sdk` commands
@@ -42,17 +48,18 @@ func newSdkVersionsCommand() *cobra.Command {
 		Short:     "Configures sdk versions",
 		ValidArgs: []string{"list"},
 		Run: func(cmd *cobra.Command, args []string) {
-			cfg := config2.LoadViperConfig()
+			cli := app.GetCLI()
+			cfg := cli.MustGetConfig()
 
 			var tVals [][]interface{}
-			for _, sdk := range cfg.SDKConfig.SDKS {
+			for _, sdk := range cfg.Sdks {
 				currentVal := sdk.Current
 				if currentVal == "" {
 					currentVal = "<not installed>"
 				}
-				tRowHeader := []interface{}{sdk.SDK, currentVal, "", ""}
+				tRowHeader := []interface{}{sdk, currentVal, "", ""}
 				tVals = append(tVals, tRowHeader)
-				for _, sdkInstallationConfig := range sdk.Installations {
+				for _, sdkInstallationConfig := range sdk.Candidates {
 					tRow := []interface{}{
 						"",
 						"",
@@ -77,6 +84,11 @@ func newSdkVersionsCommand() *cobra.Command {
 	return cmd
 }
 
+var (
+	sdkVersion       string
+	sdkCandidatePath string
+)
+
 // newSdkVersionsListCommand creates the `devenv sdk list` command
 func newSdkVersionsListCommand() *cobra.Command {
 	return &cobra.Command{
@@ -92,36 +104,34 @@ func newSdkVersionsListCommand() *cobra.Command {
 }
 
 func sdkVersionsListCommandfunc(cmd *cobra.Command, args []string) {
-	sdkArg := args[0]
-
-	versions := listSdkVersions(sdkArg)
+	versions := listSdkVersions()
 	for _, version := range versions {
 		fmt.Println(version)
 	}
 }
 
-func listSdkVersions(sdk string) (versions []string) {
-	cfg := config2.LoadViperConfig()
+func listSdkVersions() (versions []string) {
+	cli := app.GetCLI()
+	cfg := cli.MustGetConfig()
 
-	for _, sdkConfig := range cfg.SDKConfig.SDKS {
-		if sdkConfig.SDK == sdk {
-			for _, sdkInstallation := range sdkConfig.Installations {
-				versions = append(versions, sdkInstallation.Version)
-			}
+	for _, sdkConfig := range cfg.Sdks {
+		for _, sdkInstallation := range sdkConfig.Candidates {
+			versions = append(versions, sdkInstallation.Version)
 		}
 	}
-
 	return versions
 }
 
 // newSdkAddCommand creates the `devenv sdk add` command
 func newSdkAddCommand() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "add [sdk]",
 		Short: "Adds a local SDK",
 		Args:  cobra.ExactArgs(1),
 		Run:   sdkAddCommandfunc,
 	}
+
+	return cmd
 }
 
 // newSdkRemoveCommand creates the `devenv sdk remove` command
@@ -140,49 +150,87 @@ func newSdkRemoveCommand() *cobra.Command {
 
 func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 	if len(args) > 1 {
-		cli.ExitWithError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
+		app.ExitWhenError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
 		return
 	}
 
 	removeSDK := args[0]
-	devEnvConfig := config2.LoadViperConfig()
+	cli := app.GetCLI()
+	cfg := cli.MustGetConfig()
 
-	filteredSdks := devEnvConfig.SDKConfig.SDKS[:0]
-	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
-		if sdkConfig.SDK != removeSDK {
-			filteredSdks = append(filteredSdks, sdkConfig)
+	filteredSdks := cfg.Sdks
+
+	for sdk, config := range cfg.Sdks {
+		if sdk != removeSDK {
+			filteredSdks[sdk] = config
 		}
 	}
-	devEnvConfig.SDKConfig.SDKS = filteredSdks
-
-	err := config2.UpdateDevEnvConfig(*devEnvConfig)
+	cfg.Sdks = filteredSdks
+	err := cli.UpdateConfig(cfg)
 	if err != nil {
-		cli.ExitWithError(1, err)
+		app.ExitWhenError(1, err)
 	}
 }
 
+// nolint: gocognit
 func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	if len(args) > 1 {
-		cli.ExitWithError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
+		app.ExitWhenError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
 		return
 	}
 
 	addSDK := args[0]
-	devEnvConfig := config2.LoadViperConfig()
-	for _, sdkConfig := range devEnvConfig.SDKConfig.SDKS {
-		if sdkConfig.SDK == addSDK {
-			cli.ExitWithError(1, fmt.Errorf("SDK'%s' already configured. ", addSDK))
-			return
+
+	cli := app.GetCLI()
+	cfg := cli.MustGetConfig()
+
+	// Determine whether or not the sdk is already already tracked
+	if sdk, ok := cfg.Sdks[addSDK]; ok { //nolint:nestif
+		// Add sdk-candidate path to sdk
+		sdk.Candidates = append(sdk.Candidates, config2.SDKCandidate{
+			Path:    sdkCandidatePath,
+			Version: sdkVersion,
+		})
+		cfg.Sdks[addSDK] = sdk
+
+		err := cli.UpdateConfig(cfg)
+		if err != nil {
+			err = errors.Wrapf(err, "failed to save config. sdk not added.\n")
+			app.ExitWhenError(constants.Failure, err)
 		}
-	}
 
-	devEnvConfig.SDKConfig.SDKS = append(devEnvConfig.SDKConfig.SDKS, config2.DevEnvSDKConfig{
-		SDK: addSDK,
-	})
+		// Quit
+		os.Exit(0)
+	} else {
+		// Add new sdk
+		newSDKConfig := config2.DevEnvSDKConfig{
+			Current:    "latest",
+			Candidates: []config2.SDKCandidate{},
+		}
 
-	err := config2.UpdateDevEnvConfig(*devEnvConfig)
-	if err != nil {
-		cli.ExitWithError(1, err)
+		sdkName := devctlpath.SDKsPath(addSDK)
+		sdkCandidateDirs, err := ioutil.ReadDir(sdkName)
+		if err != nil {
+			panic(err)
+		}
+
+		for _, candidateDir := range sdkCandidateDirs {
+			if candidateDir.IsDir() {
+				name := candidateDir.Name()
+				newSDKConfig.Candidates = append(newSDKConfig.Candidates, config2.SDKCandidate{
+					Path:    name,
+					Version: filepath.Dir(name),
+				})
+			}
+			fmt.Printf("Candidate '%s' is not a directory.", candidateDir.Name())
+		}
+
+		cfg.Sdks[addSDK] = newSDKConfig
+		err = cli.UpdateConfig(cfg)
+		if err != nil {
+			err = errors.Wrapf(err, "failed to save config. sdk not added.\n")
+			app.ExitWhenError(constants.Failure, err)
+		}
 	}
 }
 
@@ -194,9 +242,10 @@ func sdkListCommandfunc(cmd *cobra.Command, args []string) {
 }
 
 func listSdks() (sdks []string) {
-	devenv := config2.LoadViperConfig()
-	for _, sdk := range devenv.SDKConfig.SDKS {
-		sdks = append(sdks, sdk.SDK)
+	cli := app.GetCLI()
+	cfg := cli.MustGetConfig()
+	for _, sdk := range cfg.Sdks {
+		sdks = append(sdks, sdk.Current)
 	}
 	return sdks
 }

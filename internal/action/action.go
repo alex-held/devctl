@@ -7,10 +7,10 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 
-	"github.com/alex-held/devctl/internal/logging"
+	"github.com/alex-held/devctl/pkg/logging"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
 	"github.com/alex-held/devctl/internal/sdkman"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 // Options contains the configuration options for Actions
@@ -18,12 +18,12 @@ type Options struct {
 	Fs     afero.Fs
 	Pather devctlpath.Pather
 	Client *sdkman.Client
-	Logger *logging.Logger
+	Logger logging.Log
 }
 
 type Option func(options *Options) *Options
 
-func WithLogger(l *logging.Logger) Option {
+func WithLogger(l logging.Log) Option {
 	return func(o *Options) *Options {
 		o.Logger = l
 		return o
@@ -66,9 +66,6 @@ type Actions struct {
 	Options  *Options
 	Install  *Install
 	Download *Download
-	Config   *Config
-	Symlink  *Symlink
-	Use      *Use
 }
 
 func NewActions(opts ...Option) *Actions {
@@ -93,9 +90,6 @@ func NewActions(opts ...Option) *Actions {
 	actions.action = common
 	actions.Download = (*Download)(actions.action)
 	actions.Install = (*Install)(actions.action)
-	actions.Config = (*Config)(actions.action)
-	actions.Symlink = (*Symlink)(actions.action)
-	actions.Use = (*Use)(actions.action)
 
 	return actions
 }

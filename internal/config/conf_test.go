@@ -1,24 +1,23 @@
 package config
 
 import (
-	"path"
+	"bytes"
+	"io"
+	"os"
 	"testing"
 
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 
-	"github.com/alex-held/devctl/internal/testutils"
+	"github.com/alex-held/devctl/pkg/logging"
 )
 
-var expectedConfig = &DevEnvConfig{
+var expectedConfig = &DevCtlConfig{
 	GlobalConfig: DevEnvGlobalConfig{Version: "v1"},
-	SDKConfig: DevEnvSDKSConfig{SDKS: []DevEnvSDKConfig{
-		{
-			SDK:     "java",
+	Sdks: map[string]DevEnvSDKConfig{
+		"java": {
 			Current: "openjdk-11",
-			Installations: []DevEnvSDKInstallationConfig{
+			Candidates: []SDKCandidate{
 				{
 					Path:    "/Library/Java/VirtualMachines/OpenJDK15/Contents/Home",
 					Version: "openjdk-15",
@@ -29,41 +28,55 @@ var expectedConfig = &DevEnvConfig{
 				},
 			},
 		},
-		{
-			SDK: "haskell",
-		},
-	}},
+		"haskell": {},
+	},
+}
+
+func TestSerializeConfig(t *testing.T) {
+	b := &bytes.Buffer{}
+	logger := logging.NewLogger(
+		logging.WithBuffer(b),
+		logging.WithLevel(logging.LogLevelDebug),
+		logging.WithName("Serialize"),
+	)
+
+	yaml := expectedConfig.GoString()
+	logger.Print(yaml)
 }
 
 func TestViperConfig(t *testing.T) {
 	g := goblin.Goblin(t)
+
 	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 
 	g.Describe("ViperConfig", func() {
-		const testdataPath = "testdata/devenv.yaml"
-		dir := path.Dir(testdataPath)
-		config := path.Base(testdataPath)
+		const testdataPath = "testdata/config.yaml"
+		var b *bytes.Buffer
+		var logger logging.Log
+		var cfg *DevCtlConfig
+
+		g.BeforeEach(func() {
+			b = &bytes.Buffer{}
+			logger = logging.NewLogger(
+				logging.WithLevel(logging.LogLevelDebug),
+				logging.WithBuffer(b),
+				logging.WithName("ViperConfigTest"),
+				logging.WithOutputs(io.MultiWriter(os.Stderr, os.Stdout)),
+			)
+		})
 
 		g.It("WHEN Loading Config from file => THEN config contains all configurations of the config-file", func() {
-			viper.AddConfigPath(dir)
-			viper.SetConfigName(config)
-			viper.SetConfigType("yaml")
-
-			cfg := LoadViperConfig()
-			logger := testutils.NewLogger()
-			fields := logrus.Fields{
-				"testdata-path": testdataPath,
-				"global-config": cfg.GlobalConfig,
-				"SDK-config":    cfg.SDKConfig,
-				"config":        *cfg,
+			var err error
+			cfg, err = parseConfigFile(testdataPath)
+			if err != nil {
+				g.Failf(err.Error())
 			}
 
-			logger.WithFields(fields).Traceln("loaded viper config from testdata/devenv.yaml")
-			Expect(cfg.GlobalConfig).To(Equal(DevEnvGlobalConfig{Version: "v1"}))
-			Expect(cfg.SDKConfig.SDKS[0].SDK).To(Equal("java"))
-			Expect(cfg.SDKConfig.SDKS).To(HaveLen(2))
-			Expect(cfg.SDKConfig.SDKS[0].Installations).To(HaveLen(2))
-			Expect(cfg).To(Equal(expectedConfig))
+			if cfg == nil {
+				g.Failf("could not read config file. ")
+			}
+			logger.Warnf("%+v", cfg)
+			Expect(*cfg).To(Equal(*expectedConfig))
 		})
 	})
 }

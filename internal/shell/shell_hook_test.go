@@ -2,37 +2,12 @@ package shell
 
 import (
 	"html/template"
-	"os"
-	"path"
 	"strings"
 	"testing"
 
 	"github.com/pkg/errors"
-	"github.com/spf13/afero"
 	assert2 "github.com/stretchr/testify/assert"
-
-	"github.com/alex-held/devctl/internal/devctlpath"
 )
-
-func setup(t *testing.T, content string) (filepath string, file afero.File, fs afero.Fs) {
-	fs = afero.NewMemMapFs()
-	home, err := os.UserHomeDir()
-	if err != nil {
-		t.Fatalf("Cannot setup shellrc file for test. error=%v", err)
-	}
-	filepath = path.Join(home, ".zshrc")
-	file, err = fs.Create(filepath)
-	if err != nil {
-		t.Fatalf("Cannot setup shellrc file for test. error=%v", err)
-	}
-	_, err = file.WriteString(content)
-	if err != nil {
-		t.Fatalf("Cannot setup shellrc file for test. error=%v", err)
-	}
-	return filepath, file, fs
-}
-
-const defaultShellRc = "# ZSHRC - START\n\nsource $DOTFILES/zsh/init.zsh\n\n# ZSHRC - END\n"
 
 type ShellRC struct {
 	Before        string
@@ -44,7 +19,9 @@ type ShellRC struct {
 
 func (rc *ShellRC) Render() (rendered string, err error) {
 	tmpl, err := template.ParseGlob("templates/shellrc.tmpl")
-
+	if err != nil {
+		return "", err
+	}
 	sb := strings.Builder{}
 
 	err = tmpl.ExecuteTemplate(&sb, "shellrc", *rc)
@@ -82,17 +59,4 @@ export DEVCTL_PATH=/homedir/.devctl
 		t.Fatal(err)
 	}
 	assert2.Equal(t, expected, actual)
-}
-
-type DevCtlInjector struct {
-	RC     *ShellRC
-	Pather devctlpath.Pather
-}
-
-func (i *DevCtlInjector) AddDevCtlSection() {
-
-}
-
-func AddDevCtlEnvVars() {
-
 }

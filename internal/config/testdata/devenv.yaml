@@ -1,22 +1,12 @@
 global:
   version: v1
 
-sdk:
-  sdks:
-    - sdk: java
-      current: openjdk-11
-      installations:
-        - version: openjdk-15
-          path: "/Library/Java/VirtualMachines/OpenJDK15/Contents/Home"
-        - version: openjdk-11
-          path: "/Library/Java/VirtualMachines/OpenJDK11/Contents/Home"
-    - sdk: haskell
-
-
-installations:
-  sdks:
-    java:
-      current: openjdk-11
-      installations:
-        openjdk-15: "/Library/Java/VirtualMachines/OpenJDK15/Contents/Home"
-        openjdk-11: "/Library/Java/VirtualMachines/OpenJDK11/Contents/Home"
+sdks:
+- sdk: java
+  current: openjdk-11
+  candidates:
+    - path: /Library/Java/VirtualMachines/OpenJDK15/Contents/Home
+      version: openjdk-15
+    - path: /Library/Java/VirtualMachines/OpenJDK11/Contents/Home
+      version: openjdk-11
+- sdk: haskell

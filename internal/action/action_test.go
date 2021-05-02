@@ -13,11 +13,12 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
 
-	"github.com/alex-held/devctl/internal/logging"
+	testutils2 "github.com/alex-held/devctl/pkg/testutils"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
+	"github.com/alex-held/devctl/pkg/logging"
+
 	"github.com/alex-held/devctl/internal/sdkman"
-	"github.com/alex-held/devctl/internal/testutils"
+	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
 func testExists(g *goblin.G, fs afero.Fs, expected, msg string) {
@@ -33,9 +34,9 @@ type ActionTestFixture struct {
 	g        *goblin.G
 	actions  *Actions
 	fs       afero.Fs
-	logger   *logging.Logger
+	logger   logging.Log
 	mux      *http.ServeMux
-	teardown testutils.Teardown
+	teardown testutils2.Teardown
 	context  context.Context
 	client   *sdkman.Client
 	pather   devctlpath.Pather
@@ -58,7 +59,7 @@ func SetupFs(g *goblin.G, fs afero.Fs, dirs []string, links map[string]string) {
 	}
 }
 
-func SetupFixtureDeps(g *goblin.G, fs afero.Fs, pather devctlpath.Pather, logger *logging.Logger, td func()) (fixture *ActionTestFixture) {
+func SetupFixtureDeps(g *goblin.G, fs afero.Fs, pather devctlpath.Pather, logger logging.Log, td func()) (fixture *ActionTestFixture) {
 	const baseURLPath = "/2"
 	mux := http.NewServeMux()
 
@@ -98,7 +99,7 @@ func SetupFixtureDeps(g *goblin.G, fs afero.Fs, pather devctlpath.Pather, logger
 }
 
 func SetupFixture(g *goblin.G) (fixture *ActionTestFixture) {
-	return SetupFixtureDeps(g, afero.NewMemMapFs(), devctlpath.NewPather(), testutils.NewLogger(), func() {})
+	return SetupFixtureDeps(g, afero.NewMemMapFs(), devctlpath.NewPather(), logging.NewLogger(), func() {})
 }
 
 func TestNewActions(t *testing.T) {

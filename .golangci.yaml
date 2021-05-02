@@ -176,12 +176,11 @@ linters:
     - golint
     - gomnd
     - goprintffuncname
-    - gosec
+    #- gosec
     - gosimple
     - govet
     - ineffassign
     - interfacer
-    - lll
     - misspell
     - nakedret
     - noctx

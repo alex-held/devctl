@@ -2,15 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
-	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
-	"github.com/alex-held/devctl/internal/devctlpath"
-
-	"github.com/alex-held/devctl/internal/config"
-
-	"github.com/alex-held/devctl/internal/cli"
+	"github.com/alex-held/devctl/internal/app"
+	config2 "github.com/alex-held/devctl/internal/config"
 )
 
 func NewConfigCommand() *cobra.Command {
@@ -24,7 +21,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			c := cli.GetOrCreateCLI()
+			c := app.GetCLI()
 			fmt.Println(c.ConfigFileName())
 		},
 	}
@@ -46,11 +43,18 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		Args: cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			devEnvConfig := config.LoadViperConfig()
-			cfg, err := config.Load(afero.NewOsFs(), devctlpath.NewPather())
-			cli.ExitWithError(1, err)
-			configString := fmt.Sprintf("NewConfig: %+v\nOldConfig: %+v\n", *cfg, *devEnvConfig)
-			fmt.Println(configString)
+			cli := app.GetCLI()
+			cfg := cli.MustGetConfig()
+			err := printConfig(cfg)
+			if err != nil {
+				app.ExitWhenError(1, err)
+			}
+			os.Exit(0)
 		},
 	}
+}
+
+func printConfig(cfg *config2.DevCtlConfig) (err error) {
+	_, err = fmt.Fprintf(os.Stdout, "%#v", cfg)
+	return err
 }
