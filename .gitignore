@@ -8,6 +8,10 @@
 .gradle/
 target/
 
+### Go Build and tools
+**/**.coverprofile
+
+
 
 testdata/devenv.yaml
 out/

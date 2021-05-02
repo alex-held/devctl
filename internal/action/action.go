@@ -66,7 +66,6 @@ type Actions struct {
 	Options  *Options
 	Install  *Install
 	Download *Download
-	Symlink  *Symlink
 }
 
 func NewActions(opts ...Option) *Actions {
@@ -91,7 +90,6 @@ func NewActions(opts ...Option) *Actions {
 	actions.action = common
 	actions.Download = (*Download)(actions.action)
 	actions.Install = (*Install)(actions.action)
-	actions.Symlink = (*Symlink)(actions.action)
 
 	return actions
 }

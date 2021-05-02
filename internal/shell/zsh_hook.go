@@ -137,7 +137,7 @@ func (c *HookConfig) AddOrUpdateSectionForKey(name string, section Section) *Hoo
 				parent:   c.root.node,
 				isRooted: false,
 			}
-			in.Template = c.Templates.Lookup(in.TemplateId)
+			in.Template = c.Templates.lookupSymbol(in.TemplateId)
 			out = in
 			return out
 		})*/

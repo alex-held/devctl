@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  drone.io:
+    container_name: drone
+    image: drone/drone:1
+    ports:
+      - "80:80"
+      - "443:443"
+    labels:
+      - APP=DRONE
+      - DEAMON=true
+    env_file:
+      - dev.env
+    volumes:
+      - /var/lib/drone:/data
+    networks:
+      ngrok-net:
+        aliases:
+          - drone
+          - pipeline
+    tty: false
+    restart: on-failure
+    dns_search:
+      - alexheld.io
+      - homelab
+    dns:
+      - 192.168.1.254
+      - 8.8.8.8
+      - 8.8.4.4
+
+networks:
+  ngrok-net: { }

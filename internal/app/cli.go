@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/coreos/etcd/client"
-
 	"github.com/alex-held/devctl/internal/config"
 	"github.com/alex-held/devctl/pkg/constants"
 	"github.com/alex-held/devctl/pkg/devctlpath"
@@ -102,9 +100,6 @@ func ExitWhenError(code int, err error) {
 		return
 	}
 	_, _ = fmt.Fprintln(os.Stderr, "Error:", err)
-	if cerr, ok := err.(*client.ClusterError); ok {
-		_, _ = fmt.Fprintln(os.Stderr, cerr.Detail())
-	}
 	os.Exit(code)
 }
 

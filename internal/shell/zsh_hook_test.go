@@ -10,7 +10,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
 
-	"github.com/alex-held/devctl/internal/testutils/matchers"
+	matchers2 "github.com/alex-held/devctl/pkg/testutils/matchers"
 )
 
 type ShellHookFixture struct {
@@ -156,11 +156,11 @@ func TestGenerate(t *testing.T) {
 			},
 			TestCases: map[string]ShellHookGenerateAssertion{
 				"THEN generates DEVCTL section header": assert(
-					matchers.HaveSectionHeader("DEVCTL"),
+					matchers2.HaveSectionHeader("DEVCTL"),
 				),
 				"THEN generates DEVCTL exports": assert(
-					matchers.ContainExport("DEVCTL_PREFIX", ".devctl"),
-					matchers.ContainExport("DEVCTL_HOME", "$HOME/$DEVCTL_PREFIX"),
+					matchers2.ContainExport("DEVCTL_PREFIX", ".devctl"),
+					matchers2.ContainExport("DEVCTL_HOME", "$HOME/$DEVCTL_PREFIX"),
 				),
 				"THEN generates newlines after exports": assert(
 					HaveSuffix("\n\n"),
