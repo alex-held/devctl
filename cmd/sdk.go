@@ -14,7 +14,7 @@ import (
 	"github.com/alex-held/devctl/pkg/constants"
 	"github.com/alex-held/devctl/pkg/devctlpath"
 
-	"github.com/alex-held/devctl/internal/cli"
+	"github.com/alex-held/devctl/internal/app"
 )
 
 // NewSdkCommand creates the `devenv sdk` commands
@@ -48,7 +48,8 @@ func newSdkVersionsCommand() *cobra.Command {
 		Short:     "Configures sdk versions",
 		ValidArgs: []string{"list"},
 		Run: func(cmd *cobra.Command, args []string) {
-			cfg := config2.LoadViperConfig()
+			cli := app.GetCLI()
+			cfg := cli.MustGetConfig()
 
 			var tVals [][]interface{}
 			for _, sdk := range cfg.Sdks {
@@ -110,7 +111,8 @@ func sdkVersionsListCommandfunc(cmd *cobra.Command, args []string) {
 }
 
 func listSdkVersions() (versions []string) {
-	cfg := config2.LoadViperConfig()
+	cli := app.GetCLI()
+	cfg := cli.MustGetConfig()
 
 	for _, sdkConfig := range cfg.Sdks {
 		for _, sdkInstallation := range sdkConfig.Candidates {
@@ -148,37 +150,39 @@ func newSdkRemoveCommand() *cobra.Command {
 
 func sdkRemoveCommandfunc(cmd *cobra.Command, args []string) {
 	if len(args) > 1 {
-		cli.ExitWithError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
+		app.ExitWhenError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
 		return
 	}
 
 	removeSDK := args[0]
-	devEnvConfig := config2.LoadViperConfig()
+	cli := app.GetCLI()
+	cfg := cli.MustGetConfig()
 
-	filteredSdks := devEnvConfig.Sdks
+	filteredSdks := cfg.Sdks
 
-	for sdk, config := range devEnvConfig.Sdks {
+	for sdk, config := range cfg.Sdks {
 		if sdk != removeSDK {
 			filteredSdks[sdk] = config
 		}
 	}
-	devEnvConfig.Sdks = filteredSdks
-	err := config2.UpdateDevEnvConfig(*devEnvConfig)
+	cfg.Sdks = filteredSdks
+	err := cli.UpdateConfig(cfg)
 	if err != nil {
-		cli.ExitWithError(1, err)
+		app.ExitWhenError(1, err)
 	}
 }
 
 // nolint: gocognit
 func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 	if len(args) > 1 {
-		cli.ExitWithError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
+		app.ExitWhenError(1, fmt.Errorf("too many arguments for command '%s'. ", cmd.UsageTemplate()))
 		return
 	}
 
 	addSDK := args[0]
 
-	cfg := config2.LoadViperConfig()
+	cli := app.GetCLI()
+	cfg := cli.MustGetConfig()
 
 	// Determine whether or not the sdk is already already tracked
 	if sdk, ok := cfg.Sdks[addSDK]; ok { //nolint:nestif
@@ -189,10 +193,10 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 		})
 		cfg.Sdks[addSDK] = sdk
 
-		err := config2.WriteDevEnvConfig("$HOME/.devctl2/ccc33.yaml", *cfg)
+		err := cli.UpdateConfig(cfg)
 		if err != nil {
 			err = errors.Wrapf(err, "failed to save config. sdk not added.\n")
-			cli.ExitWithError(constants.Failure, err)
+			app.ExitWhenError(constants.Failure, err)
 		}
 
 		// Quit
@@ -222,10 +226,10 @@ func sdkAddCommandfunc(cmd *cobra.Command, args []string) {
 		}
 
 		cfg.Sdks[addSDK] = newSDKConfig
-		err = config2.WriteDevEnvConfig("$HOME/.devctl2/ccc.yaml", *cfg)
+		err = cli.UpdateConfig(cfg)
 		if err != nil {
 			err = errors.Wrapf(err, "failed to save config. sdk not added.\n")
-			cli.ExitWithError(constants.Failure, err)
+			app.ExitWhenError(constants.Failure, err)
 		}
 	}
 }
@@ -238,8 +242,9 @@ func sdkListCommandfunc(cmd *cobra.Command, args []string) {
 }
 
 func listSdks() (sdks []string) {
-	devenv := config2.LoadViperConfig()
-	for _, sdk := range devenv.Sdks {
+	cli := app.GetCLI()
+	cfg := cli.MustGetConfig()
+	for _, sdk := range cfg.Sdks {
 		sdks = append(sdks, sdk.Current)
 	}
 	return sdks

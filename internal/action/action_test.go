@@ -13,10 +13,11 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
 
+	testutils2 "github.com/alex-held/devctl/pkg/testutils"
+
 	"github.com/alex-held/devctl/pkg/logging"
 
 	"github.com/alex-held/devctl/internal/sdkman"
-	"github.com/alex-held/devctl/internal/testutils"
 	"github.com/alex-held/devctl/pkg/devctlpath"
 )
 
@@ -35,7 +36,7 @@ type ActionTestFixture struct {
 	fs       afero.Fs
 	logger   logging.Log
 	mux      *http.ServeMux
-	teardown testutils.Teardown
+	teardown testutils2.Teardown
 	context  context.Context
 	client   *sdkman.Client
 	pather   devctlpath.Pather

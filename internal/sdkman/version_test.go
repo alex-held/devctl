@@ -11,8 +11,9 @@ import (
 	"github.com/franela/goblin"
 	. "github.com/onsi/gomega"
 
+	testutils2 "github.com/alex-held/devctl/pkg/testutils"
+
 	"github.com/alex-held/devctl/internal/system"
-	"github.com/alex-held/devctl/internal/testutils"
 	"github.com/alex-held/devctl/pkg/logging"
 )
 
@@ -26,7 +27,7 @@ func TestVersionService_All(t *testing.T) {
 			var _ logging.Log
 			var mux *http.ServeMux
 			var _ bytes.Buffer
-			var teardown testutils.Teardown
+			var teardown testutils2.Teardown
 			var ctx context.Context
 
 			g.JustBeforeEach(func() {

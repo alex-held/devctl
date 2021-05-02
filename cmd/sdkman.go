@@ -12,7 +12,7 @@ import (
 
 	"github.com/alex-held/devctl/internal/sdkman"
 
-	"github.com/alex-held/devctl/internal/cli"
+	"github.com/alex-held/devctl/internal/app"
 )
 
 var fmtFlag string
@@ -53,7 +53,7 @@ func NewSdkManListCommand() (cmd *cobra.Command) {
 			client := sdkman.NewSdkManClient()
 			sdks, resp, err := client.ListSdks.ListAllSDK(ctx)
 			if err != nil {
-				cli.ExitWithError(1, err)
+				app.ExitWhenError(1, err)
 			}
 			defer resp.Body.Close()
 
@@ -76,7 +76,7 @@ func NewSdkManListCommand() (cmd *cobra.Command) {
 		},
 	}
 
-	cmd.Flags().StringVarP(&fmtFlag, "format", "f", string(Table), "the output format of the cli app. -format=table")
+	cmd.Flags().StringVarP(&fmtFlag, "format", "f", string(Table), "the output format of the app app. -format=table")
 	return cmd
 }
 
@@ -91,7 +91,7 @@ func NewSdkManDefaultCommand() (cmd *cobra.Command) {
 			client := sdkman.NewSdkManClient()
 			defaultVersion, err := client.Version.Default(ctx, args[0])
 			if err != nil {
-				cli.ExitWithError(1, err)
+				app.ExitWhenError(1, err)
 			}
 
 			fmt.Println(defaultVersion)
@@ -110,7 +110,7 @@ func NewSdkManVersionsCommand() (cmd *cobra.Command) {
 			client := sdkman.NewSdkManClient()
 			defaultVersion, err := client.Version.All(ctx, args[0], system.DarwinX64)
 			if err != nil {
-				cli.ExitWithError(1, err)
+				app.ExitWhenError(1, err)
 			}
 
 			fmt.Println(defaultVersion)
@@ -137,24 +137,24 @@ func NewSdkManDownloadCommand() (cmd *cobra.Command) {
 
 			switch len(args) {
 			case 0:
-				cli.ExitWithError(1, os.ErrInvalid)
+				app.ExitWhenError(1, os.ErrInvalid)
 			case 1:
 				sdk := args[0]
 
 				version, err := client.Version.Default(ctx, sdk)
-				cli.ExitWithError(1, err)
+				app.ExitWhenError(1, err)
 				_, err = client.Download.DownloadSDK(ctx, sdk, version, system.GetCurrent())
-				cli.ExitWithError(1, err)
+				app.ExitWhenError(1, err)
 				os.Exit(0)
 			case 2: // nolint: gomnd
 				sdk := args[0]
 				version := args[1]
 
 				_, err := client.Download.DownloadSDK(ctx, sdk, version, system.GetCurrent())
-				cli.ExitWithError(1, err)
+				app.ExitWhenError(1, err)
 				os.Exit(0)
 			default:
-				cli.ExitWithError(1, errors.New("sdkman download called with too many arguments"))
+				app.ExitWhenError(1, errors.New("sdkman download called with too many arguments"))
 			}
 		},
 	}

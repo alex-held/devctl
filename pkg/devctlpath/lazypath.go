@@ -22,6 +22,7 @@ type lazypathFinder struct {
 	finder  finder
 }
 
+//go:generate mockgen -destination=../mocks/mock_pather.go -package=mocks  github.com/alex-held/devctl/pkg/devctlpath Pather
 // Pather resolves different paths related to the CLI itself
 type Pather interface {
 

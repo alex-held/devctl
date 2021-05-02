@@ -6,6 +6,7 @@ output: prefixed
 vars:
   BIN_DIR: '{{.PWD}}/build/bin'
   PROJECT: devctl
+  VERSION: v0.8
   GIT_COMMIT:
     sh: git log -n 1 --format=%h
 
@@ -45,7 +46,12 @@ tasks:
   build:
     desc: Builds {{.PROJECT}}
     cmds:
-      - go build -v -o out/{{.PROJECT}}
+      - go build -ldflags="-X cmd.Version={{.VERSION}}" -v -o out/{{.PROJECT}}
+
+  test:watch:
+    desc: Watches files and runs ginkgo tests on file changes
+    cmds:
+      - ginkgo watch -r -depth 3 -v
 
   test:cover:
     desc: Tests & Covers {{.PROJECT}}
