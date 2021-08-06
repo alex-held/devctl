@@ -13,19 +13,17 @@ require (
 	github.com/go-openapi/strfmt v0.20.1 // indirect
 	github.com/gobuffalo/plugins v0.0.0-20200405155620-289cda9b5190
 	github.com/golang/mock v1.5.0
-	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-github/v35 v35.1.1-0.20210429200835-576e460080e5
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/gookit/color v1.4.2 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible
-	github.com/kunalkushwaha/ltag v0.2.2 // indirect
 	github.com/mandelsoft/vfs v0.0.0-20210316115144-f89ffba3b126
 	github.com/mattn/goveralls v0.0.8
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/modocache/gover v0.0.0-20171022184752-b58185e213c5
 	github.com/muesli/termenv v0.8.1
-	github.com/onsi/ginkgo v1.16.1
-	github.com/onsi/gomega v1.11.0
+	github.com/onsi/ginkgo v1.16.4
+	github.com/onsi/gomega v1.15.0
 	github.com/pkg/errors v0.9.1
 	github.com/pterm/pterm v0.12.13
 	github.com/schollz/progressbar/v3 v3.7.6
@@ -35,7 +33,6 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
-	golang.org/x/net v0.0.0-20210415231046-e915ea6b2b7d // indirect
 	golang.org/x/sys v0.0.0-20210426230700-d19ff857e887 // indirect
 	golang.org/x/term v0.0.0-20210406210042-72f3dc4e9b72 // indirect
 	golang.org/x/tools v0.1.0
