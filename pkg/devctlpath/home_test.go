@@ -210,6 +210,52 @@ func TestHomeFinder(t *testing.T) {
 		})
 	})
 
+	/* PLUGINS */
+	g.Describe("PLUGINS", func() {
+		g.It("WHEN no pathFn set", func() {
+			userHome, _ := os.UserHomeDir()
+			expected := resolveConfigSubDir(userHome, testAppPrefix, "plugins")
+			lazyFinder = NewPather(WithAppPrefix(testAppPrefix))
+			actual := lazyFinder.Plugin()
+			Expect(actual).To(Equal(expected))
+		})
+
+		g.It("WHEN userHomeFn set", func() {
+			userHome := customUserHomeFn()
+			expected := resolveConfigSubDir(userHome, testAppPrefix, "plugins")
+			lazyFinder = NewPather(WithAppPrefix(testAppPrefix), WithUserHomeFn(customUserHomeFn))
+			actual := lazyFinder.Plugin()
+			Expect(actual).To(Equal(expected))
+		})
+
+		g.It("WHEN configRoot set", func() {
+			expected := filepath.Join(customConfigRoot, "plugins")
+			lazyFinder = NewPather(WithAppPrefix(testAppPrefix), WithConfigRootFn(func() string {
+				return customConfigRoot
+			}))
+			actual := lazyFinder.Plugin()
+			Expect(actual).To(Equal(expected))
+		})
+
+		g.It("WHEN app prefix starts with a '.'", func() {
+			expected := filepath.Join(customConfigRoot, "plugins")
+			lazyFinder = NewPather(WithAppPrefix(testAppPrefixWithLeadingDot), WithConfigRootFn(func() string {
+				return customConfigRoot
+			}))
+			actual := lazyFinder.Plugin()
+			Expect(actual).To(Equal(expected))
+		})
+
+		g.It("WHEN providing sub directories parameter", func() {
+			expected := filepath.Join(customConfigRoot, "plugins/some/sub/dir")
+			lazyFinder = NewPather(WithAppPrefix(testAppPrefix), WithConfigRootFn(func() string {
+				return customConfigRoot
+			}))
+			actual := lazyFinder.Plugin("some", "sub", "dir")
+			Expect(actual).To(Equal(expected))
+		})
+	})
+
 	/* Config */
 	g.Describe("Config", func() {
 		g.It("WHEN no pathFn set", func() {

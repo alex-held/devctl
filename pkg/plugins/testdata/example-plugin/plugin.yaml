@@ -1,0 +1,13 @@
+version: "v1.2.3"
+plugin:
+  name: "example-plugin"
+  pkg: "example_plugin"
+  cmd: "example-plugin"
+  help: |-
+    USAGE
+      example-plugin <flags> [subcommand]
+  subcommands:
+    - cmd: "list"
+      help: |-
+        USAGE
+          example-plugin <flags> list

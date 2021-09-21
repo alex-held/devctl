@@ -1,0 +1,17 @@
+version: "v1.0.0"
+plugin:
+  cmd: "plugin1"
+  help: |-
+    USAGE
+      plugin1 <flags> [subcommand]
+  subcommands:
+    - cmd: "list"
+      help: |-
+        USAGE
+          plugin1 <flags> list
+    - cmd: "view"
+      help: |-
+        USAGE
+          plugin1 <flags> view [name]
+  name: "plugin1"
+  pkg: "plugin_1"
