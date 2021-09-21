@@ -81,9 +81,14 @@ func (e *Engine) execute(p *Plugin, args []string) (err error) {
 	}
 
 	// get symbols
-	val, err := i.Eval(p.Pkg + ".New")
-	newFunc := val.Interface().(func([]string) error)
+	createConfigFuncVal, err := i.Eval(p.Pkg + "CreateConfig")
+	createConfigFunc := createConfigFuncVal.Interface().(func(string) interface{})
+
+	newFuncVal, err := i.Eval(p.Pkg + ".New")
+	newFunc := newFuncVal.Interface().(func(interface{}, []string) error)
 
 	// execute plugin
-	return newFunc(args)
+	cfg := createConfigFunc(e.cfg.Pather.ConfigRoot())
+	fmt.Printf("CFG: %v", cfg)
+	return newFunc(cfg, args)
 }
