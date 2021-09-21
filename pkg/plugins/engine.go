@@ -80,15 +80,23 @@ func (e *Engine) execute(p *Plugin, args []string) (err error) {
 		return err
 	}
 
-	// get symbols
-	createConfigFuncVal, err := i.Eval(p.Pkg + "CreateConfig")
-	createConfigFunc := createConfigFuncVal.Interface().(func(string) interface{})
 
-	newFuncVal, err := i.Eval(p.Pkg + ".New")
-	newFunc := newFuncVal.Interface().(func(interface{}, []string) error)
+	vConfigFn, err :=  i.Eval(p.Pkg + `.CreateConfig`)
+	if err != nil {
+		return  fmt.Errorf("failed to eval CreateConfig: %w", err)
+	}
+
+	vNewFn, err := i.Eval(p.Pkg+ `.New`)
+	if err != nil {
+		return  fmt.Errorf("failed to eval New: %w", err)
+	}
+
+
+	createConfigFn := vConfigFn.Interface().(func(string) interface{})
+	newFn := vNewFn.Interface().(func(interface{}, []string) error)
 
 	// execute plugin
-	cfg := createConfigFunc(e.cfg.Pather.ConfigRoot())
+	cfg := createConfigFn(e.cfg.Pather.ConfigRoot())
 	fmt.Printf("CFG: %v", cfg)
-	return newFunc(cfg, args)
+	return newFn(cfg, args)
 }
