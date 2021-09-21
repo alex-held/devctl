@@ -1,7 +1,7 @@
 version: "v1.2.3"
 plugin:
   name: "golang"
-  pkg: "plugin_golang"
+  pkg: "golang"
   cmd: "go"
   help: |-
     USAGE
