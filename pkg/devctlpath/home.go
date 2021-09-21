@@ -51,6 +51,10 @@ func (f *lazypathFinder) Download(elem ...string) string {
 func SDKsPath(elem ...string) string                { return lf.SDK(elem...) }
 func (f *lazypathFinder) SDK(elem ...string) string { return f.resolveSubDir("sdks", elem...) }
 
+// PluginPath returns the path where devctl plugins are located.
+func PluginPath(elem ...string) string                 { return lf.SDK(elem...) }
+func (f *lazypathFinder) Plugin(elem ...string) string { return f.resolveSubDir("plugins", elem...) }
+
 // CachePath returns the path where Helm stores cached objects.
 func CachePath(elem ...string) string                 { return lf.Cache(elem...) }
 func (f *lazypathFinder) Cache(elem ...string) string { return f.cachePath(elem...) }

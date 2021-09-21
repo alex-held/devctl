@@ -46,6 +46,9 @@ type Pather interface {
 
 	// Cache returns the path where to cache files
 	Cache(elem ...string) string
+
+	// Plugin returns the path where to cache files
+	Plugin(elem ...string) string
 }
 
 type Option func(*lazypathFinder) *lazypathFinder

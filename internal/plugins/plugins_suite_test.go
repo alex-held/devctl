@@ -22,10 +22,10 @@ import (
 
 func TestPlugins(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Plugins Suite")
+	RunSpecs(t, "Plugin Suite")
 }
 
-var _ = Describe("Plugins", func() {
+var _ = Describe("Plugin", func() {
 	Describe("Store", func() {
 		tmpRoot := "/tmp/devctl"
 		pather := devctlpath.NewPather(devctlpath.WithConfigRootFn(func() string {
