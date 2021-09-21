@@ -47,6 +47,8 @@ github.com/alex-held/devctl v0.9.3-beta h1:sVIuUPNTTWYgI7ojDWFa2qfFcZzkz08zOTWkM
 github.com/alex-held/devctl v0.9.3-beta/go.mod h1:CAedq6iXWLgzqUW2mBAuRK48m3W1mS+F3Vp3O88mh5o=
 github.com/alex-held/devctl v0.9.4-beta h1:ehakUfANW5c8RyvzE6jhy58zA/PktaW3v5EH5t1AfpA=
 github.com/alex-held/devctl v0.9.4-beta/go.mod h1:CAedq6iXWLgzqUW2mBAuRK48m3W1mS+F3Vp3O88mh5o=
+github.com/alex-held/devctl v0.9.5-beta h1:/ecX9+HYDU5eEaU/bUMioFVlR7rps3MK6yADqMcu0Xg=
+github.com/alex-held/devctl v0.9.5-beta/go.mod h1:CAedq6iXWLgzqUW2mBAuRK48m3W1mS+F3Vp3O88mh5o=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=
