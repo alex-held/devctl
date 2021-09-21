@@ -100,5 +100,7 @@ func (e *Engine) execute(p *Plugin, args []string) (err error) {
 	// execute plugin
 	cfg := createConfigFn(e.cfg.Pather.ConfigRoot())
 	fmt.Printf("CFG: %v", cfg)
+	fmt.Printf("EXEC with args; args=%#v", args)
+
 	return newFn(cfg, args)
 }
