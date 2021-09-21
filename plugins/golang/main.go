@@ -14,18 +14,22 @@ type Config struct {
 }
 
 // CreateConfig creates the default plugin config
-func CreateConfig(devctlPath string) *Config {
+func CreateConfig(devctlPath string) map[string]string {
 	goSDKInstallPath := devctlpath.NewPather(devctlpath.WithConfigRootFn(func() string {
 		return devctlPath
 	})).SDK("go")
 
-	return &Config{
-		InstallPath: goSDKInstallPath,
+	return map[string]string{
+		goSDKInstallPathKey: goSDKInstallPath,
 	}
 }
 
-func New(cfg *Config, args []string) (err error) {
+const goSDKInstallPathKey = "goSDKInstallPath"
+
+func New(cfgMap map[string]string, args []string) (err error) {
 	args = args[1:]
+
+	cfg := &Config{InstallPath: cfgMap[goSDKInstallPathKey]}
 
 	if len(args) == 0 {
 		usage()

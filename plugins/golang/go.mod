@@ -3,7 +3,7 @@ module github.com/alex-held/devctl/plugins/golang
 go 1.16
 
 require (
-	github.com/alex-held/devctl v0.9.5-beta
+	github.com/alex-held/devctl v0.9.6-beta
 	github.com/go-openapi/errors v0.20.1 // indirect
 	github.com/go-openapi/strfmt v0.20.2 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect

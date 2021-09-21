@@ -60,6 +60,10 @@ func (e *Engine) Execute(pluginName string, args []string) (err error) {
 	return ErrNoPluginWithNameFound
 }
 
+type BasicConfiguration struct {
+	DevctlPath string `yaml:"devctl_path"`
+}
+
 func (e *Engine) execute(p *Plugin, args []string) (err error) {
 	i := interp.New(interp.Options{
 		GoPath: path.Join(p.RootPath, "_gopath"),
@@ -90,8 +94,8 @@ func (e *Engine) execute(p *Plugin, args []string) (err error) {
 		return fmt.Errorf("failed to eval New: %w", err)
 	}
 
-	createConfigFn := vConfigFn.Interface().(func(string) *struct{})
-	newFn := vNewFn.Interface().(func(*struct{}, []string) error)
+	createConfigFn := vConfigFn.Interface().(func(string) map[string]string)
+	newFn := vNewFn.Interface().(func(map[string]string, []string) error)
 
 	// execute plugin
 	cfg := createConfigFn(e.cfg.Pather.ConfigRoot())
