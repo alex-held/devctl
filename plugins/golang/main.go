@@ -13,8 +13,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/alex-held/devctl/pkg/devctlpath"
-	"github.com/alex-held/devctl/pkg/system"
+	"github.com/alex-held/devctl-kit/pkg/devctlpath"
+	"github.com/alex-held/devctl-kit/pkg/system"
 	"github.com/spf13/afero"
 )
 

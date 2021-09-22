@@ -14,7 +14,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
 
-	"github.com/alex-held/devctl/pkg/devctlpath"
+	"github.com/alex-held/devctl-kit/pkg/devctlpath"
 )
 
 var (

@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/afero"
 	"gopkg.in/yaml.v3"
 
-	"github.com/alex-held/devctl/pkg/devctlpath"
+	"github.com/alex-held/devctl-kit/pkg/devctlpath"
 )
 
 type Store interface {

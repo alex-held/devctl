@@ -1,7 +1,10 @@
 package plugins
 
 import (
+	"bytes"
+	"os"
 	"path"
+	template2 "text/template"
 
 	"github.com/spf13/afero"
 	"gopkg.in/yaml.v3"
@@ -18,10 +21,51 @@ type CommandSpec struct {
 	Subcommands []CommandSpec `yaml:"subcommands,omitempty"`
 }
 
+type ConfigSpec struct {
+	Values  map[string]string
+	Static  map[string]interface{}
+	Dynamic map[string]string
+}
+
+func ResolveDynamic(c ConfigSpec, e *Engine) (cfg ConfigSpec, err error) {
+	cfg = c
+
+	templates := map[string]*template2.Template{}
+
+	for k, v := range c.Dynamic {
+		if tmpl, err := template2.New(k).Parse(v); err == nil {
+			templates[k] = tmpl
+			continue
+		}
+		return cfg, err
+	}
+
+	home, _ := os.UserHomeDir()
+	values := map[string]interface{}{
+		"DEVCTL_PATH_USERHOME": home,
+		"DEVCTL_PATH_ROOT":     e.cfg.Pather.ConfigRoot(),
+		"DEVCTL_PATH_CONFIG":   e.cfg.Pather.Config(),
+		"DEVCTL_PATH_SDK":      e.cfg.Pather.SDK(),
+		"DEVCTL_PATH_PLUGIN":   e.cfg.Pather.Plugin(),
+		"values":               c.Values,
+	}
+
+	for key, tmpl := range templates {
+		w := &bytes.Buffer{}
+		if err := tmpl.Execute(w, values); err != nil {
+			return cfg, err
+		}
+		cfg.Dynamic[key] = w.String()
+	}
+
+	return cfg, nil
+}
+
 type PluginSpec struct {
 	*CommandSpec `yaml:"cmd,inline"`
-	Name         string `yaml:"name"`
-	Pkg          string `yaml:"pkg"`
+	Name         string     `yaml:"name"`
+	Pkg          string     `yaml:"pkg"`
+	Config       ConfigSpec `yaml:"config,omitempty"`
 }
 
 func (e *Engine) LoadPlugin(manifestPath string) (p *Plugin, err error) {

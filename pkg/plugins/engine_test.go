@@ -7,6 +7,8 @@ import (
 
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/alex-held/devctl-kit/pkg/devctlpath"
 )
 
 func newTestEngine() *Engine {
@@ -18,76 +20,40 @@ func newTestEngine() *Engine {
 
 func TestLoadManifest(t *testing.T) {
 	sut := newTestEngine()
-	manifest, err := sut.LoadPlugin("testdata/plugin1.yaml")
+	manifest, err := sut.LoadPlugin("testdata/plugin1/plugin.yaml")
 	assert.NoError(t, err)
 
 	assert.Equal(t, manifest.Version, "v1.2.3")
 	assert.Equal(t, manifest.PluginSpec.Name, "plugin1")
 }
 
-func TestExecutePlugin(t *testing.T) {
-	pluginRootPath := "testdata/example-plugin"
+func TestExecPlugin(t *testing.T) {
+	pluginRootPath := "testdata/example-exec-plugin"
 	out := &bytes.Buffer{}
 	sut := NewEngine(func(c *Config) *Config {
 		c.Out = out
-		c.Pather = nil
+		c.Pather = devctlpath.NewPather(devctlpath.WithConfigRootFn(func() string {
+			return "/home/user/.devctl"
+		}))
 		c.Fs = afero.NewOsFs()
 		return c
 	})
 
-	manifest, err := sut.LoadPlugin(path.Join(pluginRootPath, "plugin.yaml"))
+	p, err := sut.LoadPlugin(path.Join(pluginRootPath, "plugin.yaml"))
 	assert.NoError(t, err)
 
-	assert.Equal(t, manifest.Version, "v1.2.3")
-	assert.Equal(t, manifest.PluginSpec.Name, "example-plugin")
-	assert.Equal(t, manifest.PluginSpec.Pkg, "example_plugin")
-
-	err = sut.Execute("example-plugin", []string{"hello world"})
-	assert.Equal(t, "some error", err.Error())
-
-	expected := "fmt\n[INFO]\t  New called with args=[hello world]\n[DEBUG]\t  Example Plugin name=New()\n"
-	actual := out.String()
-	assert.Equal(t, expected, actual)
-}
-
-func TestExecute(t *testing.T) {
-	buf := &bytes.Buffer{}
-
-	sut := NewEngine(func(c *Config) *Config {
-		c.Pather = nil
-		c.Out = buf
-		return c
-	})
-
-	sut.pluginCache["go"] = &Plugin{
-		Source: `package plugin_go
-		import "fmt"
-		func New(args []string)(error){
-			fmt.Printf("arglen=%d", len(args))
-		    return nil
-		}`,
-		RootPath: "plugin-go",
-		Manifest: &Manifest{
-			Version: "v1.0.0",
-			PluginSpec: PluginSpec{
-				Name: "go",
-				CommandSpec: &CommandSpec{
-					Cmd:  "go",
-					Help: "USAGE\n go [args]",
-				},
-				Pkg: "plugin_go",
-			},
-		},
+	cfg := map[string]interface{}{
+		"InstallPath": "/home/user/.devctl/sdks/go",
 	}
 
-	err := sut.Execute("go", []string{"hello", "world"})
+	args := []string{"use", "1.16.8"}
+	execP, err := sut.NewExecutablePlugin(p, cfg)
 	assert.NoError(t, err)
 
-	actualOut := buf.String()
-	assert.Equal(t, "arglen=2", actualOut)
+	result := execP.Exec(args)
 
-	println("")
-	println("--- actual out ---")
-	println(actualOut)
-	println("------------------")
+	assert.Equal(t, "cfg.InstallPath=/home/user/.devctl/sdks/go\nargs[0]=use\nargs[1]=1.16.8\n", out.String())
+	assert.Equal(t, "exec done", result.Error())
+
+	t.Log(out.String())
 }

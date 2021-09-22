@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 	yaml2 "sigs.k8s.io/yaml"
 
-	"github.com/alex-held/devctl/pkg/constants"
+	"github.com/alex-held/devctl-kit/pkg/constants"
 )
 
 // DefaultConfig creates a blank *DevCtlConfig
