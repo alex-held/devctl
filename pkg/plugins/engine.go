@@ -17,7 +17,7 @@ import (
 	"github.com/traefik/yaegi/stdlib/unsafe"
 
 	"github.com/alex-held/devctl-kit/pkg/devctlpath"
-	kit "github.com/alex-held/devctl-kit/pkg/plugins"
+	"github.com/alex-held/devctl-kit/pkg/plugins"
 )
 
 type Engine struct {
@@ -157,9 +157,9 @@ func (e *Engine) NewExecutablePlugin(p *Plugin, config map[string]interface{}) (
 }
 
 func (e *Engine) decodeConfig(vConfig reflect.Value, cfg map[string]interface{}) (err error) {
-	cfg["Context"] = &kit.Context{
+	cfg["Context"] = &plugins.Context{
 		Out:     e.cfg.Out,
-		Pather:  e.cfg.Pather.ConfigRoot(),
+		Pather:  e.cfg.Pather,
 		Context: context.Background(),
 	}
 	d, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
