@@ -27,14 +27,16 @@ func TestInit(t *testing.T) {
 				cmd:  "init",
 				args: []string{""},
 				cfg: Config{
-					Completions: map[string]string{
-						"kubectl":       "source <(kubectl completion zsh)",
-						"golangci-lint": "source <(golangci-lint completion zsh)",
-						"gh":            "source <(gh completion -s zsh)",
-						"operator-sdk":  "source <(operator-sdk completion zsh)",
-						"kompose":       "source <(kompose completion zsh)",
-						"kubebuilder":   "source <(kubebuilder completion zsh)",
-						"kustomize":     "source <(kustomize completion zsh)",
+					Completions: CompletionsSpec{
+						CLI: map[string]string{
+							"kubectl":       "source <(kubectl completion zsh)",
+							"golangci-lint": "source <(golangci-lint completion zsh)",
+							"gh":            "source <(gh completion -s zsh)",
+							"operator-sdk":  "source <(operator-sdk completion zsh)",
+							"kompose":       "source <(kompose completion zsh)",
+							"kubebuilder":   "source <(kubebuilder completion zsh)",
+							"kustomize":     "source <(kustomize completion zsh)",
+						},
 					},
 					Context: &plugins.Context{
 						Out: nil,

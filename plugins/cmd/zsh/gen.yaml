@@ -1,0 +1,24 @@
+exports:
+  DEVCTL_ROOT: "$HOME/.devctl"
+  GOPATH: "$HOME/go"
+  GOROOT: "$DEVCTL_ROOT/sdks/go/current"
+completions:
+  cli:
+    npm: "completion"
+    gh: "completion -s zsh"
+    kubectl: "completion zsh"
+    kustomize: "completion zsh"
+    operator-sdk: "completion zsh"
+    golangci-lint: "completion zsh"
+  command:
+    gobuffalo: |-
+      if [[ ! -f "${ZINIT[COMPLETIONS_DIR]}/_buffalo" ]]; then
+        if [[ -f "$ZSH/custom/gobuffalo.zsh/buffalo.plugin.zsh" ]]; then
+          ln -s $ZSH/custom/gobuffalo.zsh/buffalo.plugin.zsh $ZINIT[COMPLETIONS_DIR]/_buffalo
+          source $ZINIT[COMPLETIONS_DIR]/_buffalo
+        fi
+      fi
+    nvm: |-
+      [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"
+      [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"
+
