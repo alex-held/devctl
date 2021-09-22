@@ -1,0 +1,20 @@
+{{ template "fileheader" . }}
+
+{{.Header}}
+
+typeset -A cmds=(
+{{ range $name, $command := .Completions.CLI }}
+    ["{{ $name }}"]="{{ $command }}"{{ end }}
+)
+
+for k v in ${(kv)cmds}; do
+    [[ ! -f {{ .COMPLETIONS_DIR }} ]] && eval "$k $v" > "{{ .COMPLETIONS_DIR }}/_$k" || true
+    source "{{ .COMPLETIONS_DIR }}/_$k"
+done
+
+unset cmds
+
+{{ range $name, $command := .Completions.Command }}# {{ $name }}
+{{ $command }}
+
+{{ end -}}
