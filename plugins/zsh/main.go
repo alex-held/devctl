@@ -1,0 +1,5 @@
+package zsh
+
+func Execute() {
+
+}

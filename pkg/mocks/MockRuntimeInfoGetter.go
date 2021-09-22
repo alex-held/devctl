@@ -1,6 +1,6 @@
 package mocks
 
-import "github.com/alex-held/devctl/pkg/system"
+import "github.com/alex-held/devctl-kit/pkg/system"
 
 type MockRuntimeInfoGetter struct {
 	system.RuntimeInfo

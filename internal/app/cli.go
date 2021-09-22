@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/alex-held/devctl/internal/config"
-	"github.com/alex-held/devctl/pkg/constants"
-	"github.com/alex-held/devctl/pkg/devctlpath"
+	"github.com/alex-held/devctl-kit/pkg/constants"
+	"github.com/alex-held/devctl-kit/pkg/devctlpath"
 	"github.com/alex-held/devctl/pkg/logging"
 )
 
