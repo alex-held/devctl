@@ -1,36 +1,19 @@
 package zsh
 
 import (
-	"bytes"
 	_ "embed"
-	"io"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/yaml.v3"
 )
-
-func ReadConfigFile(r io.Reader) (f *ConfigFile, err error) {
-	b := &bytes.Buffer{}
-	if _, err = io.Copy(b, r); err != nil {
-		return nil, err
-	}
-
-	f = &ConfigFile{}
-
-	if err = yaml.Unmarshal(b.Bytes(), f); err != nil {
-		return nil, err
-	}
-	return f, nil
-}
 
 //go:embed "testdata/config.yaml"
 var testConfigFile string
 
 func TestReadConfigFile(t *testing.T) {
 
-	expected := ConfigFile{
+	expected := Config{
 		Exports: map[string]string{
 			"DEVCTL_ROOT": "$HOME/.devctl",
 			"GOPATH":      "$HOME/go",
