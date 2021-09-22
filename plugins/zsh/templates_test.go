@@ -1,15 +1,12 @@
 package zsh
 
 import (
-	"flag"
 	"os"
 	"testing"
 
 	"github.com/alex-held/devctl-kit/pkg/devctlpath"
 	"github.com/stretchr/testify/assert"
 )
-
-var genGoldenMaster = flag.Bool("golden-master", false, "-golden-record")
 
 func TestCompletionsTempl(t *testing.T) {
 	completionsDir := devctlpath.DevCtlConfigRoot("configs", "zsh", "completions")
@@ -44,7 +41,7 @@ func TestCompletionsTempl(t *testing.T) {
 	assert.NoError(t, err)
 
 	if *genGoldenMaster {
-		_ = os.WriteFile("testdata/completions_test", []byte(actual), os.ModePerm)
+		_ = os.WriteFile("testdata/completions_test.golden", []byte(actual), os.ModePerm)
 		return
 	}
 
