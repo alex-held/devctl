@@ -7,6 +7,8 @@ import (
 	"os"
 
 	"github.com/alex-held/devctl-kit/pkg/devctlpath"
+
+	"github.com/alex-held/devctl/plugins/config"
 	"github.com/alex-held/devctl/plugins/zsh"
 )
 
@@ -19,7 +21,6 @@ func main() {
 
 	switch plugin {
 	case "zsh":
-
 		f, err := os.Open(configFile)
 		if err != nil {
 			fmt.Printf("ERROR=%v\n", err)
@@ -43,5 +44,9 @@ func main() {
 			fmt.Printf("ERROR=%v\n", err)
 			os.Exit(1)
 		}
+
+	case "config":
+		cfg := config.CreateConfig()
+		config.Exec(cfg, args)
 	}
 }

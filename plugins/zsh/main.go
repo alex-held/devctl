@@ -12,6 +12,10 @@ import (
 func CreateConfig() *Config {
 	return &Config{
 		Context: &plugins.Context{},
+		// Vars:        map[string]string{},
+		// Exports:     map[string]string{},
+		// Aliases:     map[string]string{},
+		// Completions: CompletionsSpec{},
 	}
 }
 
@@ -109,18 +113,5 @@ func (z *ZSH) initHandlers() {
 				return nil
 			}
 		},
-	}
-}
-
-func (c *Config) TemplateConfigs() (cfgs map[string]interface{}) {
-	return map[string]interface{}{
-		"completions": CompletionsTmplData{
-			Header:          GenerateBanner("Completions"),
-			COMPLETIONS_DIR: c.Pather.Config("zsh", "completions"),
-			CONFIGFILE:      c.Pather.Config("zsh", "config.yaml"),
-			Completions:     c.Completions,
-		},
-		"exports": c.Exports,
-		"aliases": c.Aliases,
 	}
 }
