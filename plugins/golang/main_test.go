@@ -1,4 +1,4 @@
-package golang
+package main
 
 import (
 	"bytes"
@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/alex-held/devctl-kit/pkg/devctlpath"
+
 	"github.com/alex-held/devctl/pkg/plugins"
 )
 

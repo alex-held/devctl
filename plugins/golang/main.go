@@ -1,4 +1,4 @@
-package golang
+package main
 
 import (
 	"archive/tar"
@@ -16,11 +16,62 @@ import (
 	"github.com/alex-held/devctl-kit/pkg/devctlpath"
 	"github.com/alex-held/devctl-kit/pkg/system"
 	"github.com/spf13/afero"
+	"github.com/spf13/cobra"
+
+	"github.com/alex-held/devctl/pkg/cli/options"
+	"github.com/alex-held/devctl/pkg/cli/util"
 )
 
 type Config struct {
 	InstallPath string `yaml:"install_path"`
 	Fs          afero.Fs
+	Streams     options.IOStreams
+}
+
+type CurrentCmdOptions struct {
+	*Config
+}
+
+func (o CurrentCmdOptions) Run(c *cobra.Command, args []string) error {
+	return handleCurrent(o)
+}
+
+func main() {
+	cmd := NewCmd()
+	util.CheckErr(cmd.Execute())
+}
+
+func NewCmd() *cobra.Command {
+	f := util.NewFactory()
+
+	cmd := &cobra.Command{
+		Use:   "devctl-go",
+		Short: "manages and installs go sdks",
+		Run: func(c *cobra.Command, args []string) {
+			_ = c.Help()
+		},
+	}
+	cmd.AddCommand(NewCurrentCmd(f))
+	return cmd
+}
+
+func NewCurrentCmd(f util.Factory) *cobra.Command {
+	o := CurrentCmdOptions{
+		&Config{
+			InstallPath: f.Pather().SDK("go"),
+			Fs:          afero.NewOsFs(),
+			Streams:     f.Streams(),
+		},
+	}
+	cmd := &cobra.Command{
+		Use:   "current",
+		Short: "prints the currently installed go version",
+		Run: func(c *cobra.Command, args []string) {
+			util.CheckErr(validateArgsForSubcommand("current", args, 0))
+			util.CheckErr(o.Run(c, args))
+		},
+	}
+	return cmd
 }
 
 // CreateConfig creates the default plugin config
@@ -35,45 +86,45 @@ func CreateConfig(devctlPath string) map[string]string {
 }
 
 const goSDKInstallPathKey = "goSDKInstallPath"
-
-func New(cfgMap map[string]string, args []string) (err error) {
-	args = args[0:]
-
-	cfg := &Config{InstallPath: cfgMap[goSDKInstallPathKey]}
-
-	if len(args) == 0 {
-		usage()
-		return fmt.Errorf("must atleast provide one argument")
-	}
-
-	subcmd := args[0]
-	args = args[1:]
-
-	switch subcmd {
-	case "list":
-		if err = validateArgsForSubcommand(subcmd, args, 0); err != nil {
-			return err
-		}
-		return handleList(cfg)
-	case "current":
-		if err = validateArgsForSubcommand(subcmd, args, 0); err != nil {
-			return err
-		}
-		return handleCurrent(cfg)
-	case "install":
-		if err = validateArgsForSubcommand(subcmd, args, 1); err != nil {
-			return err
-		}
-		return handleInstall(args[0], cfg)
-	case "use":
-		if err = validateArgsForSubcommand(subcmd, args, 1); err != nil {
-			return err
-		}
-		return handleUse(args[0], cfg)
-	default:
-		return fmt.Errorf("unknown subcommand '%s'; expected on of 'list, current, install, use'", subcmd)
-	}
-}
+//
+// func New(cfgMap map[string]string, args []string) (err error) {
+// 	args = args[0:]
+//
+// 	cfg := &Config{InstallPath: cfgMap[goSDKInstallPathKey]}
+//
+// 	if len(args) == 0 {
+// 		usage()
+// 		return fmt.Errorf("must atleast provide one argument")
+// 	}
+//
+// 	subcmd := args[0]
+// 	args = args[1:]
+//
+// 	switch subcmd {
+// 	case "list":
+// 		if err = validateArgsForSubcommand(subcmd, args, 0); err != nil {
+// 			return err
+// 		}
+// 		return handleList(cfg)
+// 	case "current":
+// 		if err = validateArgsForSubcommand(subcmd, args, 0); err != nil {
+// 			return err
+// 		}
+// 		return handleCurrent(cfg)
+// 	case "install":
+// 		if err = validateArgsForSubcommand(subcmd, args, 1); err != nil {
+// 			return err
+// 		}
+// 		return handleInstall(args[0], cfg)
+// 	case "use":
+// 		if err = validateArgsForSubcommand(subcmd, args, 1); err != nil {
+// 			return err
+// 		}
+// 		return handleUse(args[0], cfg)
+// 	default:
+// 		return fmt.Errorf("unknown subcommand '%s'; expected on of 'list, current, install, use'", subcmd)
+// 	}
+// }
 
 func formatGoArchiveArtifactName(ri system.RuntimeInfo, version string) string {
 	return ri.Format("go%s.[os]-[arch].tar.gz", version)
@@ -161,7 +212,7 @@ func handleUse(version string, config *Config) (err error) {
 	return err
 }
 
-func handleCurrent(config *Config) (err error) {
+func handleCurrent(config CurrentCmdOptions) (err error) {
 	installPath := path.Join(config.InstallPath, "current")
 	link, err := os.Readlink(installPath)
 	if err != nil {

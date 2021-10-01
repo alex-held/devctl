@@ -1,14 +1,11 @@
 package main
 
-func main() {
-	// ctx := context.Background()
-	//
-	// pwsd, err := os.Getwd()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+import (
+	"github.com/alex-held/devctl/pkg/cli"
+	"github.com/alex-held/devctl/pkg/cli/util"
+)
 
-	// if err := exec2.Run(ctx, pwd, os.Args[1:]); err != nil {
-	// 	log.Fatal(err)
-	// }
+func main() {
+	cmd := cli.NewDefaultKubectlCommand()
+	util.CheckErr(cmd.Execute())
 }

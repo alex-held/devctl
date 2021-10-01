@@ -38,10 +38,8 @@ var tmpls = map[string]string{
 var templates = template.New("")
 
 func init() {
-
 	templates, _ = templates.New("fileheader").Parse(fileHeaderTemplateString)
 	templates, _ = templates.New("completions").Parse(completionsTemplateString)
-
 }
 
 func (t CompletionsTmplData) Render() (s string, err error) {

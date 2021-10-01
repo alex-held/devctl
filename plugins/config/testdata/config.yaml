@@ -1,0 +1,6 @@
+vals:
+  a: "aaa"
+  b: "bbb"
+  c: "ccc"
+spec:
+  data: "{{.a}}/{{.b}/{{.c}}"
