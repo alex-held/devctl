@@ -23,8 +23,8 @@ func (o *InfoOptions) Run(f env.Factory, cmd *cobra.Command) error {
 	return nil
 }
 
-func NewCmd(f env.Factory, streams options.IOStreams) (cmd *cobra.Command) {
-	o := NewOptions(streams)
+func NewCmd(f env.Factory) (cmd *cobra.Command) {
+	o := NewOptions(f.Streams())
 
 	cmd = &cobra.Command{
 		Use:                   "info",

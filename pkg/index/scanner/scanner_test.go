@@ -1,4 +1,4 @@
-package index
+package scanner
 
 import (
 	"os"

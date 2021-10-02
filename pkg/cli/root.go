@@ -9,9 +9,9 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/alex-held/devctl/pkg/cli/cmds/plugin"
 	"github.com/alex-held/devctl/pkg/cli/cmds/info"
 	"github.com/alex-held/devctl/pkg/cli/cmds/list"
-	"github.com/alex-held/devctl/pkg/cli/cmds/plugin"
 	cliflag "github.com/alex-held/devctl/pkg/cli/flags"
 	"github.com/alex-held/devctl/pkg/cli/options"
 	"github.com/alex-held/devctl/pkg/cli/templates"
@@ -126,22 +126,20 @@ func NewDevctlCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 	// From this point and forward we get warnings on flags that contain "_" separators
 	cmds.SetGlobalNormalizationFunc(cliflag.WarnWordSepNormalizeFunc)
 
-	ioStreams := options.IOStreams{In: in, Out: out, ErrOut: err}
-
 	f := env.NewFactory()
 
 	groups := templates.CommandGroups{
 		{
 			Message: "Basic Commands (Beginner):",
 			Commands: []*cobra.Command{
-				list.NewCmdCreate(f, ioStreams),
-				info.NewCmd(f, ioStreams),
+				list.NewCmdCreate(f),
+				info.NewCmd(f),
 			},
 		},
 		{
 			Message: "Advanced Commands (Plugins):",
 			Commands: []*cobra.Command{
-				plugin.NewCmd(f, ioStreams),
+				plugin.NewCmd(f),
 			},
 		},
 		// {

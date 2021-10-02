@@ -41,8 +41,8 @@ func (o *ListOptions) Run(f env.Factory, cmd *cobra.Command) error {
 }
 
 // NewCmdCreate returns new initialized instance of create sub command
-func NewCmdCreate(f env.Factory, ioStreams options.IOStreams) *cobra.Command {
-	o := NewListOptions(ioStreams)
+func NewCmdCreate(f env.Factory) *cobra.Command {
+	o := NewListOptions(f.Streams())
 
 	cmd := &cobra.Command{
 		Use:                   "create -f FILENAME",
