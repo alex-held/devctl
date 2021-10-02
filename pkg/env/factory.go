@@ -1,4 +1,4 @@
-package util
+package env
 
 import (
 	"io"
@@ -8,8 +8,10 @@ import (
 	"github.com/alex-held/devctl-kit/pkg/devctlpath"
 	"github.com/alex-held/devctl-kit/pkg/log"
 	"github.com/alex-held/devctl-kit/pkg/system"
+	"github.com/spf13/afero"
 
 	"github.com/alex-held/devctl/pkg/cli/options"
+	"github.com/alex-held/devctl/pkg/cli/util"
 	"github.com/alex-held/devctl/pkg/validation"
 )
 
@@ -24,14 +26,20 @@ type factory struct {
 	//	parser        sync.Once
 	getter  sync.Once
 	streams options.IOStreams
+	fs      afero.Fs
+	paths   Paths
 }
 
 func (f *factory) RuntimeInfo() system.RuntimeInfo {
 	return f.runtimeInfoGetter.Get()
 }
 
-func (f *factory) NewBuilder() *Builder {
-	return &Builder{}
+func (f *factory) NewBuilder() *util.Builder {
+	return &util.Builder{}
+}
+
+func (f *factory) Fs() afero.Fs {
+	return f.fs
 }
 
 func (f *factory) Logger() log.Logger {
@@ -40,6 +48,9 @@ func (f *factory) Logger() log.Logger {
 
 func (f *factory) Pather() devctlpath.Pather {
 	return f.pather
+}
+func (f *factory) Paths() Paths {
+	return f.paths
 }
 
 func (f *factory) Streams() options.IOStreams {
@@ -57,11 +68,15 @@ type Factory interface {
 
 	// NewBuilder returns an object that assists in loading objects from both disk and the server
 	// and which implements the common patterns for CLI interactions with generic resources.
-	NewBuilder() *Builder
+	NewBuilder() *util.Builder
 
 	Logger() log.Logger
 
 	Pather() devctlpath.Pather
+
+	Paths() Paths
+
+	Fs() afero.Fs
 
 	Streams() options.IOStreams
 
@@ -76,9 +91,11 @@ type Factory interface {
 
 type FactoryConfig struct {
 	Pather            devctlpath.Pather
+	Paths             Paths
 	LoggerConfig      *log.Config
 	Streams           *options.IOStreams
 	RuntimeInfoGetter system.RuntimeInfoGetter
+	Fs                afero.Fs
 }
 
 type FactoryOption func(*FactoryConfig) *FactoryConfig
@@ -96,8 +113,11 @@ func WithIO(in io.Reader, out, err io.Writer) FactoryOption {
 
 func NewFactory(opts ...FactoryOption) Factory {
 	cfg := &FactoryConfig{
-		Pather:       devctlpath.DefaultPather(),
-		LoggerConfig: &log.DefaultConfig,
+		Pather:            devctlpath.DefaultPather(),
+		LoggerConfig:      &log.DefaultConfig,
+		Fs:                afero.NewOsFs(),
+		RuntimeInfoGetter: system.OSRuntimeInfoGetter{},
+		Paths:             MustGetPaths(),
 	}
 	defaults := []FactoryOption{
 		WithIO(os.Stdin, os.Stdout, os.Stdout),
@@ -110,8 +130,10 @@ func NewFactory(opts ...FactoryOption) Factory {
 	return &factory{
 		runtimeInfoGetter: cfg.RuntimeInfoGetter,
 		pather:            cfg.Pather,
+		paths:             cfg.Paths,
 		logger:            log.New(cfg.LoggerConfig),
 		getter:            sync.Once{},
 		streams:           *cfg.Streams,
+		fs:                cfg.Fs,
 	}
 }

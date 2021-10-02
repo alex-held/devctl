@@ -16,6 +16,7 @@ import (
 	"github.com/alex-held/devctl/pkg/cli/options"
 	"github.com/alex-held/devctl/pkg/cli/templates"
 	"github.com/alex-held/devctl/pkg/cli/util"
+	"github.com/alex-held/devctl/pkg/env"
 )
 
 // NewDefaultKubectlCommand creates the `kubectl` command with default arguments
@@ -127,7 +128,7 @@ func NewDevctlCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 
 	ioStreams := options.IOStreams{In: in, Out: out, ErrOut: err}
 
-	f := util.NewFactory()
+	f := env.NewFactory()
 
 	groups := templates.CommandGroups{
 		{

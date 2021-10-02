@@ -20,6 +20,7 @@ import (
 
 	"github.com/alex-held/devctl/pkg/cli/options"
 	"github.com/alex-held/devctl/pkg/cli/util"
+	"github.com/alex-held/devctl/pkg/env"
 )
 
 type Config struct {
@@ -42,7 +43,7 @@ func main() {
 }
 
 func NewCmd() *cobra.Command {
-	f := util.NewFactory()
+	f := env.NewFactory()
 
 	cmd := &cobra.Command{
 		Use:   "devctl-go",
@@ -55,7 +56,7 @@ func NewCmd() *cobra.Command {
 	return cmd
 }
 
-func NewCurrentCmd(f util.Factory) *cobra.Command {
+func NewCurrentCmd(f env.Factory) *cobra.Command {
 	o := CurrentCmdOptions{
 		&Config{
 			InstallPath: f.Pather().SDK("go"),

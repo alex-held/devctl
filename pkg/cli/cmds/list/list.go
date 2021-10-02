@@ -5,6 +5,7 @@ import (
 
 	"github.com/alex-held/devctl/pkg/cli/options"
 	"github.com/alex-held/devctl/pkg/cli/util"
+	"github.com/alex-held/devctl/pkg/env"
 )
 
 type ListOptions struct {
@@ -28,19 +29,19 @@ func (o *ListOptions) ValidateArgs(cmd *cobra.Command, args []string) error {
 }
 
 // Complete completes all the required options
-func (o *ListOptions) Complete(f util.Factory, cmd *cobra.Command) error {
+func (o *ListOptions) Complete(f env.Factory, cmd *cobra.Command) error {
 	// implement for completions
 	// https://pkg.go.dev/k8s.io/cli-runtime/pkg/genericclioptions#RecordFlags.Complete
 	return nil
 }
 
 // Run performs the listing of plugins
-func (o *ListOptions) Run(f util.Factory, cmd *cobra.Command) error {
+func (o *ListOptions) Run(f env.Factory, cmd *cobra.Command) error {
 	return nil
 }
 
 // NewCmdCreate returns new initialized instance of create sub command
-func NewCmdCreate(f util.Factory, ioStreams options.IOStreams) *cobra.Command {
+func NewCmdCreate(f env.Factory, ioStreams options.IOStreams) *cobra.Command {
 	o := NewListOptions(ioStreams)
 
 	cmd := &cobra.Command{
