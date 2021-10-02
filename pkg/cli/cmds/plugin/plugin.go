@@ -14,6 +14,7 @@ import (
 
 	"github.com/alex-held/devctl/pkg/cli/options"
 	"github.com/alex-held/devctl/pkg/cli/util"
+	"github.com/alex-held/devctl/pkg/env"
 )
 
 type PathVerifier interface {
@@ -80,7 +81,7 @@ func NewPluginListOptions(ioStreams options.IOStreams) *PluginListOptions {
 }
 
 // Complete completes all the required options
-func (o *PluginListOptions) Complete(f util.Factory, cmd *cobra.Command) error {
+func (o *PluginListOptions) Complete(f env.Factory, cmd *cobra.Command) error {
 	o.Verifier = &CommandOverrideVerifier{
 		root:        cmd.Root(),
 		seenPlugins: make(map[string]string),
@@ -91,7 +92,7 @@ func (o *PluginListOptions) Complete(f util.Factory, cmd *cobra.Command) error {
 }
 
 // Run performs the listing of plugins
-func (o *PluginListOptions) Run(f util.Factory, cmd *cobra.Command) error {
+func (o *PluginListOptions) Run(f env.Factory, cmd *cobra.Command) error {
 	pluginsFound := false
 	isFirstFile := true
 	pluginErrors := []error{}
@@ -168,7 +169,7 @@ func (o *PluginListOptions) Run(f util.Factory, cmd *cobra.Command) error {
 	return nil
 }
 
-func NewPluginListCmd(f util.Factory, streams options.IOStreams) (cmd *cobra.Command) {
+func NewPluginListCmd(f env.Factory, streams options.IOStreams) (cmd *cobra.Command) {
 	o := NewPluginListOptions(streams)
 
 	cmd = &cobra.Command{
@@ -186,7 +187,7 @@ func NewPluginListCmd(f util.Factory, streams options.IOStreams) (cmd *cobra.Com
 }
 
 // NewCmd returns new initialized instance of plugin sub command
-func NewCmd(f util.Factory, streams options.IOStreams) *cobra.Command {
+func NewCmd(f env.Factory, streams options.IOStreams) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "plugin",
 		DisableFlagsInUseLine: true,

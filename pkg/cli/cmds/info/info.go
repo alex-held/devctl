@@ -5,6 +5,7 @@ import (
 
 	"github.com/alex-held/devctl/pkg/cli/options"
 	"github.com/alex-held/devctl/pkg/cli/util"
+	"github.com/alex-held/devctl/pkg/env"
 )
 
 type InfoOptions struct {
@@ -17,12 +18,12 @@ func NewOptions(streams options.IOStreams) *InfoOptions {
 	}
 }
 
-func (o *InfoOptions) Run(f util.Factory, cmd *cobra.Command) error {
+func (o *InfoOptions) Run(f env.Factory, cmd *cobra.Command) error {
 	f.Logger().Infof("devctl info\nPath=%s\n", f.Pather().ConfigRoot())
 	return nil
 }
 
-func NewCmd(f util.Factory, streams options.IOStreams) (cmd *cobra.Command) {
+func NewCmd(f env.Factory, streams options.IOStreams) (cmd *cobra.Command) {
 	o := NewOptions(streams)
 
 	cmd = &cobra.Command{
