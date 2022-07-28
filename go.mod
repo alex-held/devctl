@@ -18,7 +18,6 @@ require (
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/gookit/color v1.4.2 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible
-	github.com/kunalkushwaha/ltag v0.2.2 // indirect
 	github.com/mandelsoft/vfs v0.0.0-20210316115144-f89ffba3b126
 	github.com/mattn/goveralls v0.0.8
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
@@ -34,11 +33,7 @@ require (
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
-	golang.org/x/net v0.0.0-20210415231046-e915ea6b2b7d // indirect
-	golang.org/x/sys v0.0.0-20210426230700-d19ff857e887 // indirect
-	golang.org/x/term v0.0.0-20210406210042-72f3dc4e9b72 // indirect
-	golang.org/x/tools v0.1.0
+	golang.org/x/tools v0.1.12
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	sigs.k8s.io/yaml v1.2.0
